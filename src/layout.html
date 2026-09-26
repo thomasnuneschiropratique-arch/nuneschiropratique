@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--CSP-->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<link rel="canonical" href="{{CANONICAL}}">
+<meta name="theme-color" content="#305A59">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:type" content="{{OG_TYPE}}">
+<meta property="og:site_name" content="Cabinet chiropratique Thomas Nunes">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:url" content="{{CANONICAL}}">
+<meta property="og:image" content="{{OG_IMAGE}}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:description" content="{{DESCRIPTION}}">
+<meta name="twitter:image" content="{{OG_IMAGE}}">
+
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/img/favicon-512.png" sizes="512x512" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<!-- Polices servies depuis ce site : aucune requête vers Google.
+     On précharge les deux fichiers réellement utilisés dès le premier écran ;
+     latin-ext et l'italique ne partent que si la page en a besoin. -->
+<link rel="preload" as="font" type="font/woff2" href="/fonts/ebgaramond-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/instrumentsans-latin.woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+
+<script>document.documentElement.className+=" js";</script>
+<link rel="stylesheet" href="/css/site.css">
+{{EXTRA_HEAD}}
+<!--PAGE_SCHEMA-->
+</head>
+<body class="{{BODY_CLASS}}">
+
+<a class="skip" href="#contenu">Aller au contenu principal</a>
+
+<header class="site-header" id="site-header" data-header>
+  <div class="site-header__inner">
+
+    <a class="brand" href="/" aria-label="Cabinet chiropratique Thomas Nunes - accueil">
+      <img class="brand__full" src="/img/logo-lockup.png"
+           alt="Cabinet chiropratique Thomas Nunes" width="560" height="213">
+      <img class="brand__glyph" src="/img/logo-glyph.png" alt="" aria-hidden="true"
+           width="160" height="118">
+    </a>
+
+    <nav class="nav" aria-label="Navigation principale">
+      <ul class="nav__list">
+          {{NAV}}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="btn btn--solid btn--sm" href="/prendre-rendez-vous/" data-flair>
+        <span class="btn__label">Prendre rendez-vous</span>
+      </a>
+      <button class="burger" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Ouvrir le menu" data-burger>
+        <span class="burger__bar"></span><span class="burger__bar"></span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<div class="drawer" id="drawer" data-drawer hidden>
+  <nav class="drawer__nav" aria-label="Navigation mobile">
+    <ul>
+            {{MOBILE_NAV}}
+    </ul>
+  </nav>
+  <div class="drawer__foot">
+    <a class="btn btn--solid" href="/prendre-rendez-vous/" data-flair><span class="btn__label">Prendre rendez-vous</span></a>
+    <a class="drawer__tel" href="tel:{{PHONE_E164}}">{{PHONE}}</a>
+  </div>
+</div>
+
+<main id="contenu">
+{{CONTENT}}
+<!--PAGER-->
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <img src="/img/logo-lockup-white.png" alt="Cabinet chiropratique Thomas Nunes" width="560" height="213" loading="lazy" class="site-footer__logo">
+      </div>
+
+      <div class="site-footer__cols">
+        <div class="fcol">
+          <h2 class="fcol__h">Le cabinet</h2>
+          <address>
+            Cabinet chiropratique - Thomas&nbsp;Nunes<br>
+            56 boulevard de Strasbourg<br>
+            31000 Toulouse<br>
+            <a href="tel:{{PHONE_E164}}">{{PHONE}}</a><br>
+            <a href="mailto:{{EMAIL}}">{{EMAIL}}</a>
+          </address>
+        </div>
+
+        <div class="fcol">
+          <h2 class="fcol__h">Navigation</h2>
+          <ul class="fcol__list">
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/la-chiropratique/">La chiropratique</a></li>
+            <li><a href="/a-propos/">A propos de moi</a></li>
+            <li><a href="/tarifs-et-remboursements/">Tarifs et remboursements</a></li>
+            <li><a href="/avis/">Avis</a></li>
+            <li><a href="/questions-frequentes/">Questions fréquentes</a></li>
+            <li><a href="/contact-et-acces/">Contact et Accès</a></li>
+            <li><a href="/prendre-rendez-vous/">Prendre rendez-vous</a></li>
+          </ul>
+        </div>
+
+        <div class="fcol">
+          <h2 class="fcol__h">Suivre le cabinet</h2>
+          <ul class="fcol__list">
+            <li><a href="https://www.instagram.com/nuneschiropratique/" target="_blank" rel="noopener me">Instagram<span class="ext" aria-hidden="true">↗</span></a></li>
+            <li><a href="https://www.facebook.com/profile.php?id=61585701608209" target="_blank" rel="noopener me">Facebook<span class="ext" aria-hidden="true">↗</span></a></li>
+            <li><a href="https://www.linkedin.com/in/thomas-nunes-5853b5300/" target="_blank" rel="noopener me">LinkedIn<span class="ext" aria-hidden="true">↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {{YEAR}} Cabinet chiropratique - Thomas Nunes</p>
+      <p>
+        <a href="/mentions-legales/">Mentions légales et politique de confidentialité</a>
+        <span class="site-footer__sep" aria-hidden="true">·</span>
+        <a href="#" data-consent-open>Gérer les cookies</a>
+      </p>
+    </div>
+
+  </div>
+</footer>
+
+<div class="consent" data-consent hidden>
+  <div class="consent__inner">
+    <p class="consent__text">
+      Ce site peut déposer un cookie de mesure publicitaire (Meta) afin d’évaluer
+      les campagnes du cabinet. Rien n’est déposé sans votre accord, et vos données
+      ne servent à rien d’autre. <a href="/mentions-legales/">En savoir plus</a>
+    </p>
+    <div class="consent__actions">
+      <button class="btn btn--ghost btn--sm" type="button" data-consent-no><span class="btn__label">Refuser</span></button>
+      <button class="btn btn--solid btn--sm" type="button" data-consent-yes><span class="btn__label">Accepter</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/site.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Physician", "MedicalBusiness"],
+      "@id": "https://nuneschiropratique.fr/#cabinet",
+      "name": "Cabinet chiropratique Thomas Nunes",
+      "alternateName": "Thomas Nunes \u2013 Chiropracteur \u00e0 Toulouse",
+      "url": "https://nuneschiropratique.fr/",
+      "logo": "https://nuneschiropratique.fr/img/favicon-512.png",
+      "image": "https://nuneschiropratique.fr/img/photos/accueil.jpg",
+      "telephone": "+33688755452",
+      "email": "thomasnunes.chiropratique@gmail.com",
+      "medicalSpecialty": "Chiropractic",
+      "priceRange": "60\u20ac",
+      "currenciesAccepted": "EUR",
+      "paymentAccepted": "Carte bancaire, Ch\u00e8que, Esp\u00e8ces",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "56 boulevard de Strasbourg",
+        "addressLocality": "Toulouse",
+        "postalCode": "31000",
+        "addressRegion": "Occitanie",
+        "addressCountry": "FR"
+      },
+      "geo": { "@type": "GeoCoordinates", "latitude": 43.6095985, "longitude": 1.4450570 },
+      "hasMap": "https://www.google.com/maps/search/?api=1&query=56+boulevard+de+Strasbourg,+31000+Toulouse",
+      "areaServed": { "@type": "City", "name": "Toulouse" },
+      "openingHoursSpecification": [
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday"], "opens": "11:00", "closes": "14:00" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Thursday"], "opens": "17:00", "closes": "20:00" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "10:00", "closes": "12:00" }
+      ],
+      "sameAs": [
+        "https://www.instagram.com/nuneschiropratique/",
+        "https://www.facebook.com/profile.php?id=61585701608209",
+        "https://www.linkedin.com/in/thomas-nunes-5853b5300/"
+      ],
+      "founder": { "@id": "https://nuneschiropratique.fr/#thomas-nunes" },
+      "employee": { "@id": "https://nuneschiropratique.fr/#thomas-nunes" },
+      "potentialAction": {
+        "@type": "ReserveAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://nuneschiropratique.fr/prendre-rendez-vous/",
+          "inLanguage": "fr-FR",
+          "actionPlatform": ["http://schema.org/DesktopWebPlatform","http://schema.org/MobileWebPlatform"]
+        },
+        "result": { "@type": "Reservation", "name": "Consultation de chiropratique" }
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://nuneschiropratique.fr/#thomas-nunes",
+      "name": "Thomas Nunes",
+      "jobTitle": "Chiropracteur",
+      "image": "https://nuneschiropratique.fr/img/photos/a-propos.jpg",
+      "url": "https://nuneschiropratique.fr/a-propos/",
+      "worksFor": { "@id": "https://nuneschiropratique.fr/#cabinet" },
+      "sameAs": ["https://www.linkedin.com/in/thomas-nunes-5853b5300/"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://nuneschiropratique.fr/#site",
+      "url": "https://nuneschiropratique.fr/",
+      "name": "Cabinet chiropratique Thomas Nunes",
+      "inLanguage": "fr-FR",
+      "publisher": { "@id": "https://nuneschiropratique.fr/#cabinet" }
+    }
+  ]
+}
+</script>
+<!--BREADCRUMB-->
+</body>
+</html>

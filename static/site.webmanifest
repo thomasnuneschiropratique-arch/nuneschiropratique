@@ -1,0 +1,14 @@
+{
+  "name": "Cabinet chiropratique Thomas Nunes",
+  "short_name": "Chiro Nunes",
+  "lang": "fr",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#FBFAF7",
+  "theme_color": "#305A59",
+  "icons": [
+    { "src": "/img/favicon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/img/favicon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/img/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

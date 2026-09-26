@@ -1,0 +1,30 @@
+Glissez vos photos du cabinet dans ce dossier.
+
+Peu importe le format (HEIC de l'iPhone, JPEG, PNG…).
+
+Ensuite, revenez dans le dossier du dessus et double-cliquez sur :
+
+    Importer les photos.command
+
+Une fenêtre s'ouvre, vous montre quelle photo va où, et vous demande de
+confirmer en tapant « o » puis Entrée.
+
+LE NOM DU FICHIER DÉCIDE DE L'EMPLACEMENT
+------------------------------------------
+Le tri ne se fait plus par ordre alphabétique (c'est ce qui avait envoyé
+un portrait sur la page d'accueil), mais sur le nom du fichier :
+
+  un nom contenant « salle », « cabinet » ou « soin »   -> Accueil
+  un nom contenant « ajustement » ou « cervical »       -> La chiropratique
+  un nom contenant « portrait » ou « thomas »           -> A propos de moi
+
+Il n'y a que trois emplacements : une photo par page, les autres pages
+n'en ont plus.
+
+POUR CHOISIR SOI-MÊME
+----------------------
+Depuis le dossier du site, dans le Terminal :
+
+    python3 import-photos.py --slot accueil "photos-a-importer/ma-photo.jpg"
+
+Emplacements possibles : accueil, chiropratique, a-propos

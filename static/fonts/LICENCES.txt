@@ -1,0 +1,17 @@
+Polices auto-hébergées — SIL Open Font License 1.1
+
+EB Garamond      — Georg Duffner, Octavio Pardo
+                   https://fonts.google.com/specimen/EB+Garamond
+Instrument Sans  — Rodrigo Fuenzalida, Jordan Egstad
+                   https://fonts.google.com/specimen/Instrument+Sans
+
+Les deux familles sont distribuées sous SIL Open Font License 1.1, qui
+autorise expressément l'auto-hébergement et la redistribution avec ce
+type de notice.  Texte complet : https://openfontlicense.org
+
+Elles sont servies depuis ce site plutôt que depuis le CDN de Google :
+aucune requête vers un serveur tiers, donc aucune donnée de visiteur
+transmise à Google, et un affichage plus rapide.
+
+Fichiers : sous-ensembles latin et latin-ext, en fonte variable
+(un seul fichier couvre les graisses 400 à 600).

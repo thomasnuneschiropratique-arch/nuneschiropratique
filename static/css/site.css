@@ -1,0 +1,1251 @@
+/* =========================================================================
+   Cabinet chiropratique Thomas Nunes — feuille de style
+   Palette dérivée du logo : vert pétrole #305A59 sur blanc cassé chaud.
+   ========================================================================= */
+
+/* ---------- 1. Tokens ---------- */
+:root{
+  --petrol:#305A59;
+  --petrol-deep:#22423F;
+  --petrol-darkest:#152B29;
+  --petrol-mid:#3F6E6C;
+  --petrol-light:#6D9997;
+  --petrol-wash:#E7EFEE;
+  --petrol-veil:#F1F6F5;
+
+  --ink:#1B2523;
+  --ink-soft:#4B5755;
+  --ink-faint:#586160;
+  --ink-ghost:#646F6D;
+
+  --paper:#FBFAF7;
+  --paper-warm:#F4F1EA;
+  --paper-pure:#FFFFFF;
+  --rule:#E3DED4;
+  --rule-strong:#CFC9BC;
+
+  --serif:"EB Garamond",Iowan Old Style,Palatino,"Times New Roman",serif;
+  --sans:"Instrument Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+
+  --wrap:1320px;
+  --gutter:clamp(20px,5vw,72px);
+  --measure:72ch;
+
+  --sp-section:clamp(60px,7.5vw,112px);
+  --sp-block:clamp(36px,5vw,64px);
+
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --header-h:104px;
+  --header-h-stuck:66px;
+}
+
+/* ---------- 2. Reset ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body,h1,h2,h3,h4,p,figure,blockquote,dl,dd,ul,ol,address{margin:0}
+ul,ol{padding:0;list-style:none}
+img,svg,iframe{display:block;max-width:100%}
+img{height:auto}
+button,input,textarea,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+address{font-style:normal}
+:focus-visible{outline:2px solid var(--petrol);outline-offset:3px;border-radius:2px}
+
+html{scroll-behavior:smooth}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+
+body{
+  font-family:var(--sans);
+  font-size:clamp(1rem,.965rem + .16vw,1.075rem);
+  line-height:1.65;
+  color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+body.is-locked{overflow:hidden}
+
+.skip{
+  position:absolute;left:12px;top:-60px;z-index:200;
+  background:var(--petrol);color:#fff;padding:10px 18px;border-radius:2px;
+  font-size:.9rem;transition:top .2s var(--ease);
+}
+.skip:focus{top:12px}
+
+/* ---------- 3. Typographie ---------- */
+h1,h2,h3,h4,.display{
+  font-family:var(--serif);
+  font-weight:400;
+  letter-spacing:-.012em;
+  line-height:1.08;
+  text-wrap:balance;
+}
+.d-xl{font-size:clamp(2.7rem,6.6vw,5.4rem)}
+.d-l {font-size:clamp(2.2rem,4.8vw,3.9rem)}
+.d-m {font-size:clamp(1.85rem,3.4vw,2.85rem);line-height:1.12}
+.d-s {font-size:clamp(1.35rem,2vw,1.75rem);line-height:1.2}
+h3,.d-xs{font-size:clamp(1.12rem,1.35vw,1.3rem);line-height:1.3}
+
+em,.italic{font-style:italic}
+
+.eyebrow{
+  font-family:var(--sans);
+  font-size:.72rem;
+  font-weight:500;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+  color:var(--petrol);
+  display:block;
+}
+.eyebrow::before{
+  content:"";display:inline-block;vertical-align:middle;
+  width:26px;height:1px;background:var(--petrol);
+  margin-right:.95em;margin-bottom:.16em;
+  transform-origin:left;
+}
+.eyebrow--plain::before{display:none}
+
+.idx{
+  font-family:var(--sans);
+  font-size:.7rem;font-weight:500;letter-spacing:.16em;
+  color:var(--ink-ghost);font-variant-numeric:tabular-nums;
+}
+
+.lead{
+  font-size:clamp(1.12rem,1.05rem + .45vw,1.4rem);
+  line-height:1.55;color:var(--ink-soft);
+  max-width:42em;
+}
+.prose p{max-width:var(--measure)}
+.prose p + p{margin-top:1.05em}
+.prose strong{font-weight:600;color:var(--ink)}
+.prose a:not(.btn):not(.link){
+  color:var(--petrol);text-decoration:underline;
+  text-decoration-thickness:1px;text-underline-offset:3px;
+  text-decoration-color:color-mix(in srgb,var(--petrol) 35%,transparent);
+  transition:text-decoration-color .25s var(--ease);
+}
+.prose a:not(.btn):not(.link):hover{text-decoration-color:var(--petrol)}
+
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- 4. Mise en page ---------- */
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:var(--gutter)}
+.wrap--narrow{max-width:900px}
+.section{padding-block:var(--sp-section)}
+.section--tight{padding-block:clamp(52px,7vw,96px)}
+.section--wash{background:var(--petrol-veil)}
+.section--warm{background:var(--paper-warm)}
+.section--dark{background:var(--petrol-darkest);color:#EDF1F0}
+.section--dark .eyebrow{color:var(--petrol-light)}
+.section--dark .eyebrow::before{background:var(--petrol-light)}
+.section--dark .lead{color:#B9C6C4}
+
+.rule{height:1px;background:var(--rule);border:0;margin:0}
+.rule--soft{background:color-mix(in srgb,var(--rule) 60%,transparent)}
+
+/* Colonne de lecture. Il y avait ici une colonne d'index à gauche, qui
+   n'affichait qu'un libellé numéroté ; elle a été retirée, et avec elle le
+   vide qu'elle creusait sur toute la hauteur du site. */
+.ed{display:block}
+.ed__aside{display:none}
+.ed__body{min-width:0;max-width:78ch}
+
+.cols-2{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(28px,4vw,64px);
+}
+.split{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:clamp(24px,3.5vw,64px);
+  align-items:center;
+}
+.split__media{grid-column:span 6}
+.split__text{grid-column:span 6}
+.split--reverse .split__media{order:2}
+.split--7-5 .split__media{grid-column:span 7}
+.split--7-5 .split__text{grid-column:span 5}
+.split--5-7 .split__media{grid-column:span 5}
+.split--5-7 .split__text{grid-column:span 7}
+/* Colonne étroite pour les photos en portrait : à 40 % de large, une image
+   au format 2:3 fait près de 700 px de haut et écrase le texte à côté. */
+.split--4-8 .split__media{grid-column:span 4}
+.split--4-8 .split__text{grid-column:span 8}
+.split--top{align-items:start}
+
+/* ---------- 5. Boutons & liens ---------- */
+.btn{
+  position:relative;display:inline-flex;align-items:center;gap:.6em;
+  font-family:var(--sans);font-size:.875rem;font-weight:500;
+  letter-spacing:.055em;text-transform:uppercase;
+  padding:1.05em 1.9em;border-radius:2px;
+  isolation:isolate;overflow:hidden;
+  transition:color .35s var(--ease),border-color .35s var(--ease);
+  -webkit-tap-highlight-color:transparent;
+}
+.btn__label{position:relative;z-index:2;display:block}
+.btn::after{ /* pastille de remplissage, position pilotée par --fx/--fy */
+  content:"";position:absolute;z-index:1;inset:0;margin:auto;
+  width:160%;aspect-ratio:1;border-radius:50%;
+  left:var(--fx,50%);top:var(--fy,50%);translate:-50% -50%;
+  transform:scale(0);transform-origin:center;
+  transition:transform .45s var(--ease-out);
+}
+.btn:hover::after,.btn:focus-visible::after{transform:scale(1)}
+
+.btn--solid{background:var(--petrol);color:#fff;border:1px solid var(--petrol)}
+.btn--solid::after{background:var(--petrol-darkest)}
+.btn--solid:hover,.btn--solid:focus-visible{border-color:var(--petrol-darkest)}
+
+.btn--ghost{border:1px solid var(--rule-strong);color:var(--ink)}
+.btn--ghost::after{background:var(--ink)}
+.btn--ghost:hover,.btn--ghost:focus-visible{color:var(--paper);border-color:var(--ink)}
+
+.btn--light{border:1px solid rgba(255,255,255,.34);color:#fff}
+.btn--light::after{background:#fff}
+.btn--light:hover,.btn--light:focus-visible{color:var(--petrol-darkest);border-color:#fff}
+
+.btn--sm{padding:.82em 1.4em;font-size:.775rem}
+.btn--lg{padding:1.2em 2.3em}
+
+/* lien fléché souligné */
+.link{
+  display:inline-flex;align-items:baseline;gap:.55em;
+  font-size:.86rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--petrol);padding-bottom:.45em;position:relative;
+}
+.link::before{
+  content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;
+  background:color-mix(in srgb,var(--petrol) 30%,transparent);
+}
+.link::after{
+  content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;
+  background:var(--petrol);transform:scaleX(0);transform-origin:right;
+  transition:transform .45s var(--ease-out);
+}
+.link:hover::after,.link:focus-visible::after{transform:scaleX(1);transform-origin:left}
+.link__arrow{transition:transform .35s var(--ease-out)}
+.link:hover .link__arrow{transform:translateX(4px)}
+.section--dark .link{color:var(--petrol-light)}
+.section--dark .link::after{background:var(--petrol-light)}
+
+/* ---------- 6. En-tête ---------- */
+.site-header{
+  position:fixed;inset:0 0 auto 0;z-index:100;
+  background:color-mix(in srgb,var(--paper) 92%,transparent);
+  backdrop-filter:saturate(1.4) blur(10px);
+  -webkit-backdrop-filter:saturate(1.4) blur(10px);
+  border-bottom:1px solid var(--rule);
+  transform:translateY(0);
+  transition:transform .45s var(--ease-out),background .4s var(--ease),border-color .4s var(--ease);
+  will-change:transform;
+}
+.site-header.is-hidden{transform:translateY(-101%)}
+.site-header.is-stuck{border-bottom-color:var(--rule-strong)}
+
+/* transparent au-dessus d'un hero sombre, puis solide */
+.site-header.is-over-hero{
+  background:transparent;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+  /* filet clair : c'est lui qui dit où s'arrête la barre et où commence
+     la photo. Sans arête, la barre flottait sur l'image. */
+  border-bottom-color:rgba(255,255,255,.22);
+  color:#fff;
+}
+/* Bande sous la barre de navigation : sans elle, les entrées passent sur les
+   fenêtres claires de la photo et deviennent illisibles. Elle s'arrête net à
+   la hauteur de l'en-tête — c'est ce qui lui donne le statut de barre plutôt
+   que de simple ombre posée sur l'image. */
+.site-header.is-over-hero::before{
+  content:"";position:absolute;z-index:-1;inset:0;
+  background:linear-gradient(180deg,
+    rgba(12,26,25,.80) 0%, rgba(12,26,25,.70) 62%, rgba(12,26,25,.64) 100%);
+  pointer-events:none;
+}
+.site-header.is-over-hero .brand__full,
+.site-header.is-over-hero .brand__glyph{filter:brightness(0) invert(1)}
+.site-header.is-over-hero .nav__link{color:rgba(255,255,255,.88)}
+.site-header.is-over-hero .nav__link.is-active{color:#fff}
+.site-header.is-over-hero .btn--solid{background:transparent;border-color:rgba(255,255,255,.45);color:#fff}
+.site-header.is-over-hero .btn--solid::after{background:#fff}
+.site-header.is-over-hero .btn--solid:hover{color:var(--petrol-darkest);border-color:#fff}
+.site-header.is-over-hero .burger__bar{background:#fff}
+
+.site-header__inner{
+  width:100%;max-width:var(--wrap);margin-inline:auto;
+  padding:0 var(--gutter);height:var(--header-h);
+  display:flex;align-items:center;gap:clamp(16px,3vw,48px);
+  transition:height .45s var(--ease-out);
+}
+.site-header.is-stuck .site-header__inner{height:var(--header-h-stuck)}
+
+/* Le logo complet occupe le haut de page ; au défilement il cède la place au
+   seul symbole — le nom a déjà été lu, et la barre reste compacte. */
+.brand{display:flex;align-items:center;flex:none}
+.brand__full,.brand__glyph{
+  width:auto;display:block;
+  transition:height .45s var(--ease-out),filter .4s var(--ease);
+}
+.brand__full{height:clamp(46px,4.6vw,74px)}
+.brand__glyph{display:none;height:34px}
+
+/* une fois défilé, le nom a déjà été lu : la barre garde le seul symbole */
+.site-header.is-stuck .brand__full{display:none}
+.site-header.is-stuck .brand__glyph{display:block}
+
+.nav{margin-left:auto}
+.nav__list{display:flex;align-items:center;gap:clamp(14px,1.9vw,30px)}
+.nav__link{
+  display:block;font-size:.815rem;font-weight:500;letter-spacing:.04em;
+  white-space:nowrap;
+  color:var(--ink-soft);padding:.4em 0;position:relative;
+  transition:color .3s var(--ease);
+}
+.nav__link:hover{color:var(--ink)}
+.nav__link.is-active{color:var(--petrol)}
+/* survol : le libellé glisse vers le haut, sa copie prend sa place */
+[data-split-hover]{
+  display:block;position:relative;overflow:hidden;white-space:nowrap;
+}
+[data-split-hover] > span{display:block;transition:transform .42s var(--ease-out)}
+[data-split-hover] > span:last-child{position:absolute;inset:0;transform:translateY(105%)}
+.nav__link:hover [data-split-hover] > span:first-child{transform:translateY(-105%)}
+.nav__link:hover [data-split-hover] > span:last-child{transform:translateY(0)}
+.nav__link.is-active::after{
+  content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;opacity:.55;
+}
+
+.site-header__actions{display:flex;align-items:center;gap:14px;flex:none}
+
+.burger{
+  display:none;width:40px;height:40px;
+  flex-direction:column;justify-content:center;align-items:flex-end;gap:6px;
+  margin-right:-8px;
+}
+.burger__bar{
+  display:block;height:1.5px;background:var(--ink);
+  transition:width .35s var(--ease-out),transform .35s var(--ease-out),opacity .2s;
+}
+.burger__bar:nth-child(1){width:22px}
+.burger__bar:nth-child(2){width:15px}
+.burger:hover .burger__bar:nth-child(2){width:22px}
+.burger[aria-expanded="true"] .burger__bar:nth-child(1){width:22px;transform:translateY(3.75px) rotate(45deg)}
+.burger[aria-expanded="true"] .burger__bar:nth-child(2){width:22px;transform:translateY(-3.75px) rotate(-45deg)}
+
+/* ---------- 7. Tiroir mobile ---------- */
+.drawer{
+  position:fixed;inset:0;z-index:99;
+  background:var(--paper);
+  padding:calc(var(--header-h) + 28px) var(--gutter) 40px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  opacity:0;visibility:hidden;
+  transition:opacity .4s var(--ease),visibility .4s;
+}
+.drawer[hidden]{display:none}
+.drawer.is-open{opacity:1;visibility:visible}
+.drawer__nav li{
+  border-bottom:1px solid var(--rule);
+  opacity:0;transform:translateY(14px);
+}
+/* Décalage en cascade des entrées : porté par le CSS plutôt que par un
+   attribut style= sur chaque <li>. Cela permet une politique de sécurité
+   (CSP) sans 'unsafe-inline' pour les styles. */
+.drawer.is-open .drawer__nav li{
+  opacity:1;transform:none;
+  transition:opacity .5s var(--ease) var(--i,0s),transform .5s var(--ease-out) var(--i,0s);
+}
+.drawer__nav li:nth-child(1){--i:.06s}
+.drawer__nav li:nth-child(2){--i:.12s}
+.drawer__nav li:nth-child(3){--i:.18s}
+.drawer__nav li:nth-child(4){--i:.24s}
+.drawer__nav li:nth-child(5){--i:.30s}
+.drawer__nav li:nth-child(6){--i:.36s}
+.drawer__nav li:nth-child(7){--i:.42s}
+.drawer__nav a{
+  display:flex;align-items:baseline;gap:1em;
+  font-family:var(--serif);font-size:clamp(1.55rem,6.4vw,2.2rem);
+  padding:.62em 0;
+}
+.drawer__idx{
+  font-family:var(--sans);font-size:.6rem;letter-spacing:.16em;
+  color:var(--petrol);flex:none;
+}
+.drawer__foot{display:flex;flex-direction:column;gap:18px;align-items:flex-start;padding-top:28px}
+.drawer img{align-self:flex-start}
+.drawer__tel{font-family:var(--serif);font-size:1.45rem;color:var(--petrol)}
+
+/* ---------- 8. Pied de page ---------- */
+.site-footer{
+  background:var(--petrol-darkest);color:#CBD6D4;
+  padding-block:clamp(56px,7vw,92px) 32px;
+  font-size:.92rem;
+}
+.site-footer a{transition:color .25s var(--ease)}
+.site-footer a:hover{color:#fff}
+.site-footer__top{
+  display:grid;grid-template-columns:minmax(0,3fr) minmax(0,9fr);
+  gap:clamp(36px,5vw,72px);align-items:start;
+}
+.site-footer__logo{width:min(230px,70%);height:auto;opacity:.92}
+.site-footer__cols{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(24px,3vw,44px);
+}
+.fcol__h{
+  font-family:var(--sans);font-size:.68rem;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--petrol-light);margin-bottom:1.35em;
+}
+.fcol address,.fcol__list{line-height:1.95}
+.fcol{min-width:0}
+.fcol address{overflow-wrap:anywhere}
+.fcol address a[href^="mailto"]{font-size:.92em;letter-spacing:-.005em}
+.fcol__list a{position:relative}
+.fcol__list a::after{
+  content:"";position:absolute;left:0;bottom:-1px;width:100%;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:right;
+  transition:transform .4s var(--ease-out);
+}
+.fcol__list a:hover::after{transform:scaleX(1);transform-origin:left}
+.ext{font-size:.72em;margin-left:.45em;opacity:.65;display:inline-block}
+.site-footer__bottom{
+  margin-top:clamp(44px,6vw,76px);padding-top:22px;
+  border-top:1px solid rgba(255,255,255,.12);
+  display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between;
+  font-size:.82rem;color:#8FA09E;
+}
+
+/* ---------- 9. Hero ---------- */
+.hero{position:relative;min-height:min(84vh,780px);display:flex;align-items:flex-end;isolation:isolate}
+.hero__media{position:absolute;inset:0;z-index:-1;overflow:hidden;background:var(--petrol-darkest)}
+.hero__img{width:100%;height:100%;object-fit:cover;object-position:center 32%}
+.hero__media::after{
+  content:"";position:absolute;inset:0;
+  /* Deux voiles superposés plutôt qu'un assombrissement général : le premier
+     pose un lit sombre sous le texte, à gauche, là où il est nécessaire ;
+     le second retient seulement le haut et le bas. La moitié droite de la
+     photo — les fenêtres, la lumière — reste intacte, alors qu'un voile
+     uniforme assez dense pour rendre le titre lisible l'aurait éteinte. */
+  background:
+    linear-gradient(97deg,
+      rgba(14,30,29,.80) 0%, rgba(14,30,29,.66) 26%,
+      rgba(14,30,29,.30) 52%, rgba(14,30,29,0) 74%),
+    linear-gradient(180deg,
+      rgba(14,30,29,.34) 0%, rgba(14,30,29,.04) 30%,
+      rgba(14,30,29,.10) 66%, rgba(14,30,29,.46) 100%);
+}
+.hero__inner{
+  width:100%;max-width:var(--wrap);margin-inline:auto;
+  /* La marge haute réserve la place de l'en-tête fixe. Sans elle, sur un
+     écran peu haut (portable, fenêtre réduite), le titre remontait sous la
+     barre de navigation et s'y trouvait masqué. Le hero ayant une hauteur
+     minimale et non fixe, il s'agrandit au besoin plutôt que de rogner. */
+  padding:calc(var(--header-h) + clamp(16px,3vw,32px)) var(--gutter) clamp(52px,8vw,104px);
+  color:#fff;
+}
+.hero__title{font-size:clamp(2.5rem,6.2vw,5.1rem);max-width:15ch;color:#fff}
+.hero__sub{
+  margin-top:1.1em;max-width:44ch;font-size:clamp(1.02rem,1.1vw,1.2rem);
+  color:rgba(255,255,255,.84);line-height:1.62;
+}
+.hero__actions{margin-top:clamp(28px,3.5vw,44px);display:flex;flex-wrap:wrap;gap:14px}
+.hero__eyebrow{color:rgba(255,255,255,.82);margin-bottom:1.5em}
+.hero__eyebrow::before{background:rgba(255,255,255,.55)}
+.hero__scroll{
+  position:absolute;right:var(--gutter);bottom:clamp(52px,8vw,104px);
+  writing-mode:vertical-rl;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.66);display:flex;align-items:center;gap:14px;
+}
+.hero__scroll::after{
+  content:"";width:1px;height:58px;background:linear-gradient(180deg,rgba(255,255,255,.6),transparent);
+  animation:scrollHint 2.4s var(--ease) infinite;
+}
+@keyframes scrollHint{0%{transform:scaleY(.2);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}50.1%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* Bandeau de titre pour les pages intérieures */
+.pagehead{
+  padding-block:calc(var(--header-h) + clamp(56px,8vw,110px)) clamp(40px,5vw,68px);
+  border-bottom:1px solid var(--rule);
+}
+.pagehead__inner{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,64px);align-items:end}
+.pagehead__title{font-size:clamp(2.6rem,6vw,4.6rem)}
+.pagehead__lead{padding-bottom:.6em}
+.breadcrumb{display:flex;gap:.6em;align-items:center;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-ghost);margin-bottom:1.8em}
+.breadcrumb a{color:var(--ink-faint)}
+.breadcrumb a:hover{color:var(--petrol)}
+
+/* ---------- 10. Figures ---------- */
+.fig{position:relative;overflow:hidden;background:var(--paper-warm)}
+.fig img{width:100%;height:100%;object-fit:cover;display:block}
+.fig--portrait{aspect-ratio:4/5}
+.fig--square{aspect-ratio:1}
+.fig--land{aspect-ratio:3/2}
+.fig--wide{aspect-ratio:16/9}
+.fig--tall{aspect-ratio:3/4}
+/* Sans rapport imposé : l'image garde ses propres proportions. À utiliser
+   pour les portraits, qu'un cadre paysage amputerait. */
+.fig--libre{aspect-ratio:auto}
+.fig--libre img{height:auto}
+.fig__cap{
+  margin-top:14px;font-size:.78rem;line-height:1.55;color:var(--ink-faint);
+  max-width:38ch;padding-left:16px;border-left:1px solid var(--rule-strong);
+}
+.fig--bleed{margin-inline:calc(var(--gutter) * -1)}
+@media (min-width:900px){.fig--bleed{margin-inline:0}}
+
+/* révélation au scroll : volet qui se lève + léger zoom */
+.reveal-img{clip-path:inset(0 0 100% 0);transition:clip-path 1.05s var(--ease-out)}
+.reveal-img img{transform:scale(1.1);transition:transform 1.4s var(--ease-out)}
+.is-in .reveal-img,.reveal-img.is-in{clip-path:inset(0 0 0 0)}
+.is-in .reveal-img img,.reveal-img.is-in img{transform:scale(1)}
+
+/* ---------- 11. Listes éditoriales ---------- */
+.ilist{border-top:1px solid var(--rule)}
+.ilist li{
+  border-bottom:1px solid var(--rule);
+  padding:1.15em 0 1.15em 0;
+  display:grid;grid-template-columns:2.6em 1fr;gap:0 .4em;align-items:baseline;
+  transition:padding-left .4s var(--ease-out),color .3s var(--ease);
+}
+.ilist li:hover{padding-left:.6em}
+.ilist__n{
+  font-size:.68rem;letter-spacing:.14em;color:var(--petrol);
+  font-variant-numeric:tabular-nums;
+}
+.ilist__t{font-size:clamp(1rem,1.1vw,1.1rem)}
+
+/* liste à puces "filet" */
+.tlist li{
+  position:relative;padding:.62em 0 .62em 1.6em;
+  border-bottom:1px solid color-mix(in srgb,var(--rule) 70%,transparent);
+}
+.tlist li:last-child{border-bottom:0}
+.tlist li::before{
+  content:"";position:absolute;left:0;top:1.15em;
+  width:8px;height:1px;background:var(--petrol);
+}
+
+/* trois piliers de stress */
+.stress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--rule)}
+.stress__item{
+  padding:clamp(26px,3vw,44px) clamp(18px,2vw,34px) clamp(30px,3.5vw,52px);
+  border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);
+  position:relative;overflow:hidden;
+}
+.stress__item:last-child{border-right:0}
+.stress__item::after{
+  content:"";position:absolute;left:0;bottom:-1px;height:1px;width:100%;
+  background:var(--petrol);transform:scaleX(0);transform-origin:left;
+  transition:transform .6s var(--ease-out);
+}
+.stress__item:hover::after{transform:scaleX(1)}
+.stress__n{display:block;font-size:.68rem;letter-spacing:.16em;color:var(--petrol);margin-bottom:2.2em}
+.stress__t{
+  font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;margin-bottom:.95em;
+}
+.stress__d{font-size:.95rem;color:var(--ink-soft);line-height:1.62}
+
+/* ---------- 12. Citation ---------- */
+.quote{padding-block:clamp(56px,8vw,110px);text-align:center}
+.quote__mark{
+  width:34px;height:1px;background:var(--petrol);margin:0 auto clamp(26px,3vw,40px);
+}
+.quote blockquote{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(1.5rem,3.3vw,2.55rem);line-height:1.28;
+  max-width:19ch;margin-inline:auto;text-wrap:balance;
+}
+.quote--wide blockquote{max-width:26ch}
+.quote cite{
+  display:block;margin-top:clamp(22px,2.6vw,34px);
+  font-family:var(--sans);font-style:normal;font-size:.72rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);
+}
+.section--dark .quote cite{color:var(--petrol-light)}
+
+/* ---------- 13. Bandeau d'appel ---------- */
+.cta{position:relative;overflow:hidden;background:var(--petrol-darkest);color:#fff}
+.cta__inner{
+  padding-block:clamp(62px,8vw,120px);
+  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  gap:clamp(28px,4vw,64px);align-items:center;
+}
+.cta__title{font-size:clamp(2rem,4.4vw,3.4rem);color:#fff;max-width:16ch}
+.cta__text{margin-top:1em;color:#B9C6C4;max-width:36ch}
+.cta__side{justify-self:start}
+@media (min-width:900px){.cta__side{justify-self:end;text-align:right}}
+.cta__glyph{
+  position:absolute;right:-6%;top:50%;translate:0 -50%;
+  width:min(46%,620px);opacity:.055;pointer-events:none;
+  filter:brightness(0) invert(1);
+}
+
+/* ---------- 14. Avis ----------
+   La mosaïque en colonnes donnait un empilement irrégulier, chaque carte
+   s'arrêtant où bon lui semblait. On passe à une grille : le premier avis,
+   le plus complet, occupe toute la largeur et sert d'entrée en matière ;
+   les suivants s'alignent en deux colonnes de hauteur égale. */
+.reviews{
+  display:grid;grid-template-columns:1fr;
+  gap:clamp(18px,2vw,28px);
+}
+@media (min-width:760px){
+  .reviews{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .review--large{grid-column:1 / -1}
+}
+
+.review{
+  display:flex;flex-direction:column;
+  padding:clamp(24px,2.6vw,36px);
+  background:var(--paper-pure);
+  border:1px solid var(--rule);
+  transition:border-color .4s var(--ease);
+}
+.review:hover{border-color:var(--petrol-light)}
+
+.review__stars{display:flex;gap:3px;margin-bottom:1.1em}
+.review__stars svg{width:14px;height:14px;fill:var(--petrol)}
+
+.review__text{
+  font-size:.95rem;line-height:1.68;color:var(--ink-soft);
+  flex:1;
+}
+.review--large .review__text{
+  font-family:var(--serif);
+  font-size:clamp(1.15rem,1.55vw,1.42rem);
+  line-height:1.48;color:var(--ink);
+  max-width:60ch;
+}
+
+/* Sur la carte pleine largeur, la citation gardait une mesure de lecture
+   raisonnable — et laissait donc la moitié droite vide. On y place
+   l'attribution, comme une signature en marge. */
+@media (min-width:900px){
+  .review--large{
+    display:grid;
+    grid-template-columns:minmax(0,8fr) minmax(0,3fr);
+    gap:clamp(32px,4vw,72px);
+    align-items:start;
+  }
+  .review--large .review__stars{grid-column:1;grid-row:1}
+  .review--large .review__text{grid-column:1;grid-row:2;max-width:none}
+  .review--large .review__foot{
+    grid-column:2;grid-row:1 / span 2;
+    margin:0;padding:0;border-top:0;
+    align-self:center;flex-direction:column;align-items:flex-start;gap:.3em;
+  }
+  .review--large .review__name{font-size:1.3rem}
+}
+
+.review__foot{
+  margin-top:1.6em;padding-top:1.1em;
+  border-top:1px solid var(--rule);
+  display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;
+}
+.review__name{font-family:var(--serif);font-size:1.1rem}
+.review__meta{font-size:.72rem;letter-spacing:.06em;color:var(--ink-ghost)}
+.review__src{
+  display:block;margin-top:.5em;width:100%;
+  font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol);
+}
+
+/* ---------- 15. Tarifs ---------- */
+.price{
+  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:8px 24px;padding:1.5em 0;border-bottom:1px solid var(--rule);
+}
+.price:first-child{border-top:1px solid var(--rule)}
+.price__label{font-family:var(--serif);font-size:clamp(1.3rem,2vw,1.7rem)}
+.price__value{
+  font-family:var(--serif);font-size:clamp(1.9rem,3.6vw,2.9rem);
+  color:var(--petrol);font-variant-numeric:tabular-nums;
+}
+.meta-line{
+  display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;
+  font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);
+}
+.meta-line dt{color:var(--ink-ghost)}
+.meta-line dd{margin:0;color:var(--ink-soft)}
+
+/* ---------- 16. Horaires ---------- */
+.hours{border-top:1px solid var(--rule)}
+.hours__row{
+  display:flex;flex-wrap:wrap;gap:4px 20px;justify-content:space-between;align-items:baseline;
+  padding:.92em 0;border-bottom:1px solid var(--rule);
+}
+.hours__day{font-weight:500}
+.hours__time{color:var(--ink-soft);font-variant-numeric:tabular-nums;text-align:right}
+.hours__row--off .hours__day,.hours__row--off .hours__time{color:var(--ink-ghost)}
+.badge{
+  display:inline-flex;align-items:center;gap:.5em;
+  font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--petrol);background:var(--petrol-wash);
+  padding:.55em 1em;border-radius:999px;
+}
+
+/* ---------- 17. Formulaire ---------- */
+.form{display:grid;gap:clamp(18px,2.2vw,26px)}
+.field{display:grid;gap:.5em}
+.field label{
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);
+}
+.field .req{color:var(--petrol)}
+.field input,.field textarea{
+  width:100%;background:transparent;border:0;border-bottom:1px solid var(--rule-strong);
+  padding:.72em 0;font-size:1.02rem;border-radius:0;
+  transition:border-color .3s var(--ease);
+}
+.field input:hover,.field textarea:hover{border-bottom-color:var(--ink-ghost)}
+.field input:focus,.field textarea:focus{outline:0;border-bottom-color:var(--petrol)}
+.field textarea{resize:vertical;min-height:120px;line-height:1.6}
+.field--hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form__note{font-size:.8rem;color:var(--ink-faint);max-width:46ch;line-height:1.6}
+.form__status{font-size:.9rem;padding:1em 1.2em;border-left:2px solid var(--petrol);background:var(--petrol-veil)}
+.form__status[hidden]{display:none}
+.form__status--err{border-left-color:#A8433A;background:#FBF0EE}
+
+/* ---------- 18. Carte ---------- */
+.map{
+  position:relative;aspect-ratio:16/10;background:var(--paper-warm);
+  border:1px solid var(--rule);overflow:hidden;
+}
+@media (min-width:900px){.map{aspect-ratio:21/9}}
+.map iframe{width:100%;height:100%;border:0;filter:grayscale(.28) contrast(1.02)}
+
+/* ---------- 18b. Réservation ----------
+   PracticeHub n'envoie pas la hauteur de son contenu (pas de postMessage) et
+   l'iframe est cross-origin : impossible de la mesurer. On réserve donc une
+   hauteur généreuse, mesurée sur l'agenda réel (≈1650 px en desktop,
+   ≈2400 px en mobile), pour éviter une barre de défilement imbriquée —
+   la pire chose sur un parcours de prise de rendez-vous. */
+.booking{position:relative}
+.booking__frame{
+  position:relative;
+  border:1px solid var(--rule);
+  background:var(--paper-pure);
+  overflow:hidden;
+}
+/* Hauteur réservée d'après l'agenda réel (≈1650 px en desktop, ≈2400 px en
+   mobile) pour éviter une barre de défilement imbriquée — la pire chose sur un
+   parcours de prise de rendez-vous.
+   Note : on avait tenté de recadrer le haut de l'iframe pour masquer le logo
+   que PracticeHub réaffiche (doublon avec notre en-tête). Tout décalage
+   vertical empêche le rendu de l'iframe cross-origin : abandonné au profit
+   d'un affichage sûr. */
+.booking__frame{--ph-h:2600px}
+@media (min-width:600px){.booking__frame{--ph-h:2150px}}
+@media (min-width:900px){.booking__frame{--ph-h:1900px}}
+@media (min-width:1200px){.booking__frame{--ph-h:1780px}}
+.booking__frame iframe{
+  position:relative;z-index:1;
+  display:block;width:100%;border:0;
+  height:var(--ph-h);
+}
+
+.booking__loading{
+  position:absolute;inset:0;z-index:2;
+  display:flex;align-items:center;justify-content:center;gap:.8em;
+  background:var(--paper-pure);color:var(--ink-faint);
+  font-size:.86rem;letter-spacing:.06em;
+  transition:opacity .5s var(--ease),visibility .5s;
+}
+.booking.is-loaded .booking__loading{opacity:0;visibility:hidden}
+.booking__spinner{
+  width:15px;height:15px;border-radius:50%;
+  border:1.5px solid var(--rule-strong);border-top-color:var(--petrol);
+  animation:spin .9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(1turn)}}
+@media (prefers-reduced-motion:reduce){.booking__spinner{animation:none}}
+
+.booking.is-offline .booking__frame{display:none}
+.booking__offline{padding:clamp(34px,5vw,64px);max-width:56ch}
+.booking__offline[hidden]{display:none}
+.booking__offline-actions{display:flex;flex-wrap:wrap;gap:12px}
+
+.booking__aside{
+  margin-top:20px;font-size:.88rem;color:var(--ink-faint);
+  display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;
+}
+
+/* ---------- 19. FAQ ---------- */
+.faq{border-top:1px solid var(--rule)}
+.faq__item{border-bottom:1px solid var(--rule)}
+.faq__q{
+  width:100%;display:flex;gap:1.2em;align-items:baseline;justify-content:space-between;
+  padding:1.35em 0;text-align:left;font-family:var(--serif);
+  font-size:clamp(1.1rem,1.6vw,1.38rem);line-height:1.3;
+  transition:color .3s var(--ease);
+}
+.faq__q:hover{color:var(--petrol)}
+.faq__sign{position:relative;width:13px;height:13px;flex:none;margin-top:.45em}
+.faq__sign::before,.faq__sign::after{
+  content:"";position:absolute;inset:50% 0 auto 0;height:1px;background:currentColor;
+  transition:transform .4s var(--ease-out);
+}
+.faq__sign::after{transform:rotate(90deg)}
+.faq__q[aria-expanded="true"] .faq__sign::after{transform:rotate(0)}
+.faq__a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease-out)}
+.faq__item.is-open .faq__a{grid-template-rows:1fr}
+.faq__a > div{overflow:hidden}
+.faq__a p{padding-bottom:1.6em;color:var(--ink-soft);max-width:60ch}
+
+/* ---------- 20. Animations d'apparition ---------- */
+/* Rien n'est masqué tant que JS n'a pas pris la main : pas de contenu invisible
+   si le script échoue ou si l'utilisateur navigue sans JS. */
+.js [data-reveal]{opacity:0;transform:translateY(26px)}
+.js [data-reveal].is-in{
+  opacity:1;transform:none;
+  transition:opacity .85s var(--ease),transform .85s var(--ease-out);
+  transition-delay:var(--d,0s);
+}
+.d-1{--d:.08s}
+.d-2{--d:.16s}
+.d-3{--d:.24s}
+.d-4{--d:.35s}
+.js [data-reveal="fade"]{transform:none}
+
+/* titres révélés mot à mot */
+.js [data-words] .word{display:inline-block;overflow:hidden;vertical-align:top}
+.js [data-words] .word > span{
+  display:inline-block;transform:translateY(105%) rotateX(38deg);opacity:0;
+  transform-origin:top center;
+}
+.js [data-words].is-in .word > span{
+  transform:none;opacity:1;
+  transition:transform .78s var(--ease-out),opacity .55s ease;
+  transition-delay:calc(var(--wi) * .045s);
+}
+/* eyebrow révélé lettre à lettre */
+.js [data-chars] .ch{display:inline-block;overflow:hidden;vertical-align:top}
+.js [data-chars] .ch > span{display:inline-block;transform:translateY(105%)}
+.js [data-chars].is-in .ch > span{
+  transform:none;transition:transform .5s var(--ease-out);
+  transition-delay:calc(var(--ci) * .022s);
+}
+.js .eyebrow[data-chars]::before{transform:scaleX(0);transition:transform .6s var(--ease-out) .1s}
+.js .eyebrow[data-chars].is-in::before{transform:scaleX(1)}
+
+/* parallaxe douce du hero */
+.hero__img{will-change:transform}
+
+/* ---------- 21. Utilitaires ---------- */
+.mt-1{margin-top:clamp(10px,1.2vw,16px)}
+.mt-2{margin-top:clamp(18px,2.2vw,28px)}
+.mt-3{margin-top:clamp(26px,3.2vw,42px)}
+.mt-4{margin-top:clamp(36px,4.6vw,64px)}
+.mt-5{margin-top:clamp(48px,6.4vw,92px)}
+.mb-2{margin-bottom:clamp(18px,2.2vw,28px)}
+.mb-3{margin-bottom:clamp(26px,3.2vw,42px)}
+.mb-4{margin-bottom:clamp(36px,4.6vw,64px)}
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+.stack > * + *{margin-top:1.1em}
+
+/* ---------- 22. Responsive ---------- */
+/* Entre le menu burger (981px) et ~1400px, six entrées + la marque + le
+   bouton tiennent tout juste : on resserre par paliers plutôt que de laisser
+   le bouton déborder. */
+@media (max-width:1400px){
+  .site-header__inner{gap:clamp(12px,1.6vw,24px)}
+  .nav__list{gap:clamp(10px,1.25vw,18px)}
+  .nav__link{font-size:.78rem}
+}
+@media (max-width:1200px){
+  .site-header__inner{padding-inline:clamp(18px,3vw,40px)}
+  .nav__link{font-size:.745rem}
+      .site-header__actions .btn{padding:.78em 1.05em;font-size:.7rem}
+}
+@media (max-width:1060px){
+  .nav__list{gap:9px}
+}
+@media (max-width:980px){
+  :root{--header-h:76px;--header-h-stuck:62px}
+  .nav{display:none}
+  .burger{display:flex}
+    .site-header__actions .btn{display:none}
+  .site-header.is-over-hero .burger__bar{background:#fff}
+}
+@media (max-width:900px){
+  .ed{grid-template-columns:1fr;gap:clamp(18px,3vw,28px)}
+  .ed__aside{position:static}
+  .split__media,.split__text,
+  .split--7-5 .split__media,.split--7-5 .split__text,
+  .split--5-7 .split__media,.split--5-7 .split__text,
+  .split--4-8 .split__media,.split--4-8 .split__text{grid-column:1/-1}
+  .split--reverse .split__media{order:0}
+  .cols-2{grid-template-columns:1fr}
+  .pagehead__inner{grid-template-columns:1fr}
+  .pagehead__lead{padding-bottom:0}
+  .cta__inner{grid-template-columns:1fr}
+  .stress{grid-template-columns:1fr}
+  .stress__item{border-right:0}
+  .site-footer__top{grid-template-columns:1fr}
+  .site-footer__cols{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .site-footer__logo{width:190px}
+  .hero__scroll{display:none}
+}
+@media (max-width:560px){
+  .brand__full{height:42px}
+  .site-footer__cols{grid-template-columns:1fr;gap:34px}
+  .site-footer__bottom{flex-direction:column}
+  .quote blockquote{max-width:none}
+  .price{gap:2px}
+}
+
+/* ---------- 23. Préférences & impression ---------- */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important;
+  }
+  .js [data-reveal],.js [data-words] .word > span,.js [data-chars] .ch > span{
+    opacity:1!important;transform:none!important;
+  }
+  .reveal-img{clip-path:none!important}
+  .reveal-img img{transform:none!important}
+  .js .eyebrow[data-chars]::before{transform:scaleX(1)!important}
+}
+
+@media print{
+  .site-header,.drawer,.hero__scroll,.booking,.map,.btn,.skip{display:none!important}
+  body{background:#fff;color:#000;font-size:11pt}
+  .section{padding-block:18pt}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-size:8pt;color:#555}
+}
+
+/* ---------- 24. Réservation ---------- */
+.booking{display:flex;flex-direction:column;justify-content:center}
+.booking__mount{padding:clamp(16px,2.4vw,32px)}
+.booking__mount[hidden]{display:none}
+.booking.is-offline{min-height:0}
+.booking__offline{
+  padding:clamp(34px,5vw,64px);max-width:56ch;
+}
+.booking__offline[hidden]{display:none}
+.booking__offline-actions{display:flex;flex-wrap:wrap;gap:12px}
+
+/* ---------- 25. Compléments de mise en forme ---------- */
+
+/* Bandeau de titre : variante resserrée et variante « page officielle » */
+.pagehead--slim{padding-bottom:clamp(28px,3.5vw,44px)}
+.pagehead__inner--legal{align-items:center}
+.pagehead__logo{
+  width:min(210px,58%);height:auto;justify-self:end;
+  opacity:.9;
+}
+@media (max-width:900px){
+  .pagehead__logo{justify-self:start;margin-top:clamp(20px,4vw,32px);width:180px}
+}
+
+/* Pied de la page Avis */
+.reviews__foot{
+  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  gap:clamp(20px,3vw,48px);align-items:center;
+  padding-top:clamp(28px,3.5vw,44px);border-top:1px solid var(--rule);
+}
+.reviews__actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-start}
+@media (min-width:901px){.reviews__actions{justify-content:flex-end}}
+@media (max-width:900px){.reviews__foot{grid-template-columns:1fr}}
+
+/* Pagination éditoriale en bas de page */
+.pager{border-top:1px solid var(--rule);background:var(--paper)}
+.pager__link{
+  display:flex;align-items:baseline;gap:clamp(12px,2vw,28px);
+  width:100%;max-width:var(--wrap);margin-inline:auto;
+  padding:clamp(30px,4.5vw,58px) var(--gutter);
+  transition:background .5s var(--ease);
+}
+.pager__link:hover{background:var(--petrol-veil)}
+.pager__kicker{
+  font-size:.7rem;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--ink-ghost);flex:none;
+}
+.pager__title{
+  font-family:var(--serif);font-size:clamp(1.5rem,3.2vw,2.5rem);
+  line-height:1.1;margin-left:auto;text-align:right;
+}
+.pager__arrow{
+  font-family:var(--sans);font-size:1.3rem;color:var(--petrol);flex:none;
+  transition:transform .45s var(--ease-out);
+}
+.pager__link:hover .pager__arrow{transform:translateX(7px)}
+@media (max-width:640px){
+  .pager__link{flex-direction:column;align-items:flex-start;gap:.5em}
+  .pager__title{margin-left:0;text-align:left}
+}
+
+/* Bandeau d'informations pratiques (accueil) */
+.facts{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.facts__grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+}
+.facts__item{
+  padding:clamp(26px,3.4vw,46px) clamp(16px,2vw,32px);
+  border-right:1px solid var(--rule);
+}
+.facts__item:last-child{border-right:0}
+.facts__k{
+  display:block;font-size:.68rem;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--petrol);margin-bottom:1.1em;
+}
+.facts__v{font-family:var(--serif);font-size:clamp(1.05rem,1.5vw,1.3rem);line-height:1.35}
+.facts__v a{
+  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;
+  text-decoration-color:color-mix(in srgb,var(--ink) 22%,transparent);
+  transition:text-decoration-color .3s var(--ease),color .3s var(--ease);
+}
+.facts__v a:hover{color:var(--petrol);text-decoration-color:var(--petrol)}
+.facts__note{margin-top:.7em;font-size:.82rem;color:var(--ink-faint);line-height:1.5}
+@media (max-width:820px){
+  .facts__grid{grid-template-columns:1fr}
+  .facts__item{border-right:0;border-bottom:1px solid var(--rule)}
+  .facts__item:last-child{border-bottom:0}
+}
+
+/* ---------- 26. Bandeau de consentement ----------
+   Ne s'affiche que si un identifiant de pixel est réellement configuré
+   (voir static/js/site.js, section 11). Sans cela, le site ne dépose rien. */
+.consent{
+  position:fixed;left:0;right:0;bottom:0;z-index:120;
+  background:var(--paper-pure);
+  border-top:1px solid var(--rule);
+  box-shadow:0 -1px 24px rgba(27,37,35,.06);
+}
+.consent[hidden]{display:none}
+.consent__inner{
+  width:100%;max-width:var(--wrap);margin-inline:auto;
+  padding:clamp(16px,2vw,22px) var(--gutter);
+  display:flex;flex-wrap:wrap;gap:14px clamp(20px,3vw,44px);
+  align-items:center;justify-content:space-between;
+}
+.consent__text{
+  font-size:.86rem;line-height:1.55;color:var(--ink-soft);
+  max-width:74ch;margin:0;
+}
+.consent__text a{
+  color:var(--petrol);text-decoration:underline;
+  text-decoration-thickness:1px;text-underline-offset:3px;
+}
+.consent__actions{display:flex;gap:10px;flex:none}
+.site-footer__sep{margin-inline:.6em;opacity:.45}
+@media (max-width:620px){
+  .consent__inner{flex-direction:column;align-items:stretch}
+  .consent__actions{justify-content:stretch}
+  .consent__actions .btn{flex:1;justify-content:center}
+}
+
+/* ---------- 27. La scène des 3 stress ----------
+   Le défilement est « retenu » par position:sticky — pas par une interception
+   de la molette. Le navigateur garde donc la main : clavier, barre de
+   défilement, lecteurs d'écran et zoom continuent de fonctionner normalement.
+   L'épinglage n'est activé que lorsque le script tourne (.is-pinned), sinon
+   la section reste une section ordinaire, entièrement lisible. */
+.scene{position:relative}
+.scene__track{position:relative}
+.scene__pin{padding-block:var(--sp-section)}
+
+.scene.is-pinned .scene__track{height:320vh}
+.scene.is-pinned .scene__pin{
+  position:sticky;top:0;height:100vh;
+  display:flex;align-items:center;
+  padding-block:0;overflow:hidden;
+}
+
+.scene__grid{
+  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  gap:clamp(28px,5vw,80px);align-items:center;width:100%;
+}
+
+/* --- colonne de texte --- */
+.scene__steps{position:relative;margin-top:clamp(20px,3vw,34px)}
+.scene__step + .scene__step{margin-top:clamp(20px,3vw,32px)}
+
+.scene.is-pinned .scene__steps{min-height:13.5em}
+.scene.is-pinned .scene__step{
+  position:absolute;inset:0 0 auto 0;margin-top:0;
+  opacity:0;transform:translateY(14px);
+  transition:opacity .5s var(--ease),transform .6s var(--ease-out);
+  pointer-events:none;
+}
+.scene.is-pinned .scene__step.is-on{
+  opacity:1;transform:none;pointer-events:auto;
+}
+
+.scene__kicker{
+  display:flex;align-items:baseline;gap:.8em;
+  font-family:var(--sans);font-size:.78rem;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:.9em;
+}
+.scene__num{color:var(--petrol);font-size:.7rem;letter-spacing:.14em}
+
+.scene__hint{
+  margin-top:clamp(14px,2vw,22px);text-align:center;
+  font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-ghost);
+  opacity:0;transition:opacity .5s var(--ease);
+}
+.scene.is-pinned .scene__hint.is-on{opacity:1}
+
+/* --- le vase, à plat --- */
+.scene__art{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.vase{
+  width:min(280px,100%);height:auto;overflow:visible;
+  max-height:min(60vh,420px);
+  --n1:0;--n2:0;--n3:0;
+}
+
+/* Dessin au trait : pas de dégradé, pas de reflet, pas d'ombre portée.
+   Le volume était joli mais faisait illustration ; à plat, le vase rejoint
+   le reste du site, qui ne travaille qu'au filet et à l'aplat. */
+.vase__trait{
+  fill:none;stroke:var(--petrol);stroke-width:1.8;
+  stroke-linejoin:round;
+}
+
+/* Trois strates en aplat. Dessinées de la plus haute à la plus basse : chaque
+   rectangle recouvre le bas du précédent, et ne montre donc que sa bande. */
+.vase__eau{transition:transform .18s linear}
+.vase__eau--1{fill:#22423F;transform:translateY(calc(250px - var(--n1) * 150px))}
+.vase__eau--2{fill:#3F6E6C;transform:translateY(calc(250px - var(--n2) * 150px))}
+.vase__eau--3{fill:#6D9997;transform:translateY(calc(250px - var(--n3) * 150px))}
+
+/* --- les trois cascades, en aplat --- */
+.flux{
+  opacity:0;
+  transform:scaleY(0);transform-origin:50% 0;
+  transition:opacity .35s var(--ease),transform .55s var(--ease-out);
+}
+.flux.is-on{opacity:1;transform:scaleY(1)}
+.flux--1 .flux__corps{fill:#22423F}
+.flux--2 .flux__corps{fill:#3F6E6C}
+.flux--3 .flux__corps{fill:#6D9997}
+
+/* --- le débordement --- */
+.vase__debord{opacity:0;transition:opacity .5s var(--ease)}
+.vase.deborde .vase__debord{opacity:1}
+.debord__filet{
+  fill:none;stroke:var(--petrol);stroke-width:2.6;stroke-linecap:round;
+  stroke-dasharray:115;stroke-dashoffset:115;
+}
+.vase.deborde .debord__filet{animation:filet 2.2s var(--ease-out) forwards}
+.vase.deborde .debord__filet--d{animation-delay:.25s}
+@keyframes filet{to{stroke-dashoffset:12}}
+
+.debord__goutte{fill:var(--petrol);opacity:0;transform-box:fill-box;transform-origin:center}
+.vase.deborde .debord__goutte{animation:chute 2.4s var(--ease) .9s infinite}
+.vase.deborde .debord__goutte--2{animation-delay:1.7s}
+@keyframes chute{
+  0%  {opacity:0;transform:translateY(0) scale(.4)}
+  14% {opacity:.8;transform:translateY(3px) scale(1)}
+  72% {opacity:.7;transform:translateY(52px) scale(1)}
+  100%{opacity:0;transform:translateY(70px) scale(.7)}
+}
+
+/* --- petits écrans --- */
+@media (max-width:900px){
+  .scene__grid{grid-template-columns:1fr;gap:clamp(24px,5vw,40px)}
+  .scene__art{order:-1}
+  .vase{width:min(210px,62%);max-height:40vh}
+  .scene.is-pinned .scene__track{height:270vh}
+  .scene.is-pinned .scene__steps{min-height:15em}
+  .scene__hint{display:none}
+}
+
+/* --- sans script, ou mouvement réduit : tout est là, rien ne bouge --- */
+.scene:not(.is-pinned) .scene__step{opacity:1;transform:none}
+.scene:not(.is-pinned) .vase{--n1:.34;--n2:.67;--n3:1}
+.scene:not(.is-pinned) .flux{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .scene.is-pinned .scene__track{height:auto}
+  .scene.is-pinned .scene__pin{position:static;height:auto;padding-block:var(--sp-section)}
+  .scene.is-pinned .scene__steps{min-height:0}
+  .scene.is-pinned .scene__step{position:static;opacity:1;transform:none;margin-top:1.6em}
+  .flux__veine,.vase.deborde .debord__goutte,.vase.deborde .debord__filet{animation:none}
+  .debord__filet{stroke-dashoffset:0}
+  .vase__eau,.vase__surface{transition:none}
+}
+
+/* ---------- 28. Transitions entre pages ----------
+   API View Transitions : le navigateur fait un fondu entre l'ancienne et la
+   nouvelle page lors d'une navigation classique. Aucune bibliothèque, aucun
+   routeur JavaScript — les liens restent de vrais liens, et les navigateurs
+   qui ne connaissent pas cette règle l'ignorent simplement. */
+@view-transition{navigation:auto}
+
+::view-transition-old(root){
+  animation:pageSort .22s var(--ease) both;
+}
+::view-transition-new(root){
+  animation:pageEntre .38s var(--ease-out) both;
+}
+@keyframes pageSort{to{opacity:0}}
+@keyframes pageEntre{from{opacity:0;transform:translateY(8px)}}
+
+/* L'en-tête et le pied de page ne clignotent pas : ils sont communs aux
+   pages, on les fait donc persister d'un écran à l'autre. */
+.site-header{view-transition-name:entete}
+.site-footer{view-transition-name:pied}
+
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-old(root),
+  ::view-transition-new(root){animation:none}
+}
+
+/* ---------- 29. Détails de finition ---------- */
+::selection{background:var(--petrol-wash);color:var(--petrol-darkest)}
+
+/* La barre de défilement reprend les couleurs du site (Firefox + WebKit). */
+html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{
+  background:var(--rule-strong);border-radius:99px;
+  border:3px solid var(--paper);
+}
+::-webkit-scrollbar-thumb:hover{background:var(--ink-ghost)}
+
+/* Ancre atteinte depuis un lien : on laisse la place à l'en-tête fixe. */
+[id]{scroll-margin-top:calc(var(--header-h) + 24px)}
+
+/* ---------- 30. Motifs de consultation ----------
+   Dix entrées alignées en une seule colonne se lisaient comme un inventaire.
+   En deux colonnes, avec le libellé principal détaché de sa précision, l'œil
+   balaie et s'arrête sur ce qui le concerne. */
+.motifs{
+  display:grid;grid-template-columns:1fr;
+  border-top:1px solid var(--rule);
+}
+@media (min-width:720px){
+  .motifs{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(24px,3vw,56px)}
+  /* le filet du haut ne doit apparaître qu'une fois par colonne */
+  .motifs .motif:nth-child(2){border-top:0}
+}
+.motif{
+  display:grid;grid-template-columns:2.4em 1fr;
+  align-items:baseline;gap:0 .2em;
+  padding:1.05em 0;
+  border-bottom:1px solid var(--rule);
+  transition:padding-left .4s var(--ease-out);
+}
+.motif:hover{padding-left:.5em}
+.motif__n{
+  font-size:.66rem;letter-spacing:.14em;color:var(--petrol);
+  font-variant-numeric:tabular-nums;
+}
+.motif__t{font-size:clamp(.98rem,1.05vw,1.06rem);line-height:1.45}
+.motif__d{
+  display:block;margin-top:.2em;
+  font-size:.84rem;color:var(--ink-faint);line-height:1.5;
+}

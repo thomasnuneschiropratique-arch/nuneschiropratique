@@ -1,0 +1,5 @@
+# Les photos d'origine restent sur ton ordinateur et ne partent jamais en ligne :
+# seules les versions redimensionnées, dans static/img/photos, sont publiées.
+*
+!.gitignore
+!GLISSEZ*.txt
