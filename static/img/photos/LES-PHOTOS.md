@@ -3,6 +3,8 @@
 | Fichier | Page | Contenu |
 |---|---|---|
 | `accueil.jpg` | Accueil, image d'ouverture | la salle de soin, trois tables, cheminée |
+| `accueil-chiropratique.jpg` | Accueil, « Qu'est ce que la chiropratique ? » | ajustement cervical de profil |
+| `accueil-approche.jpg` | Accueil, « Mon approche » | ajustement cervical, pull marine |
 | `chiropratique-ajustement.jpg` | La chiropratique, « Le système nerveux » | ajustement cervical (portrait) |
 | `chiropratique-explication.jpg` | La chiropratique, « Pourquoi la chiropratique ? » | explication avec le modèle de colonne |
 | `a-propos-portrait.jpg` | A propos, « Qui suis-je ? » | portrait studio |
@@ -20,4 +22,4 @@ python3 import-photos.py --slot accueil ~/Desktop/nouvelle-photo.jpg
 python3 build.py
 ```
 
-Photos disponibles non utilisées : `ajustement.jpeg`, `ajustement first.jpeg`, `thomas-ajustement-cervical.jpg`.
+Photo disponible non utilisée : `ajustement first.jpeg` (vue large de la salle).

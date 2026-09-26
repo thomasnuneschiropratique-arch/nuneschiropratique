@@ -37,10 +37,20 @@ SLOTS = {
         "Accueil - grande image d'ouverture",
         ("salle", "cabinet"),
     ),
+    "accueil-chiropratique": (
+        "accueil-chiropratique.jpg",
+        "Accueil - « Qu'est ce que la chiropratique ? » (portrait)",
+        ("=ajustement",),
+    ),
+    "accueil-approche": (
+        "accueil-approche.jpg",
+        "Accueil - « Mon approche » (portrait)",
+        ("=thomas-ajustement-cervical",),
+    ),
     "chiropratique-ajustement": (
         "chiropratique-ajustement.jpg",
         "La chiropratique - à côté du « système nerveux » (portrait)",
-        ("droit",),
+        ("=ajustement droit",),
     ),
     "chiropratique-explication": (
         "chiropratique-explication.jpg",
@@ -110,10 +120,22 @@ def convert(src, dest):
 
 
 def deviner(nom_fichier):
-    """Devine l'emplacement d'après le nom du fichier source."""
+    """Devine l'emplacement d'après le nom du fichier source.
+
+    Un mot-clé préfixé de « = » demande une correspondance exacte. C'est
+    indispensable quand plusieurs fichiers se ressemblent : « ajustement »
+    est contenu dans « ajustement droit » et « thomas-ajustement-cervical »,
+    et raflerait le mauvais fichier.
+
+    Les correspondances exactes sont examinées avant les approchantes, pour
+    qu'un nom précis l'emporte toujours sur un simple fragment.
+    """
     nom = os.path.splitext(os.path.basename(nom_fichier))[0].lower()
     for cle, (_f, _d, mots) in SLOTS.items():
-        if any(mot in nom for mot in mots):
+        if any(m.startswith("=") and nom == m[1:] for m in mots):
+            return cle
+    for cle, (_f, _d, mots) in SLOTS.items():
+        if any(not m.startswith("=") and m in nom for m in mots):
             return cle
     return None
 

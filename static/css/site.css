@@ -141,6 +141,9 @@ em,.italic{font-style:italic}
 .section--wash{background:var(--petrol-veil)}
 .section--warm{background:var(--paper-warm)}
 .section--dark{background:var(--petrol-darkest);color:#EDF1F0}
+.section--petrole{background:var(--petrol-deep);color:#EDF1F0}
+.section--petrole .quote__mark{background:var(--petrol-light)}
+.section--petrole cite{color:var(--petrol-light)}
 .section--dark .eyebrow{color:var(--petrol-light)}
 .section--dark .eyebrow::before{background:var(--petrol-light)}
 .section--dark .lead{color:#B9C6C4}
@@ -176,6 +179,8 @@ em,.italic{font-style:italic}
    au format 2:3 fait près de 700 px de haut et écrase le texte à côté. */
 .split--4-8 .split__media{grid-column:span 4}
 .split--4-8 .split__text{grid-column:span 8}
+.split--8-4 .split__media{grid-column:span 4}
+.split--8-4 .split__text{grid-column:span 8}
 .split--top{align-items:start}
 
 /* ---------- 5. Boutons & liens ---------- */
@@ -880,7 +885,8 @@ em,.italic{font-style:italic}
   .split__media,.split__text,
   .split--7-5 .split__media,.split--7-5 .split__text,
   .split--5-7 .split__media,.split--5-7 .split__text,
-  .split--4-8 .split__media,.split--4-8 .split__text{grid-column:1/-1}
+  .split--4-8 .split__media,.split--4-8 .split__text,
+  .split--8-4 .split__media,.split--8-4 .split__text{grid-column:1/-1}
   .split--reverse .split__media{order:0}
   .cols-2{grid-template-columns:1fr}
   .pagehead__inner{grid-template-columns:1fr}
