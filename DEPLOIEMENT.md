@@ -22,8 +22,9 @@ faire à ta place, c'est ton compte.
 3. Menu **File → Add Local Repository**, choisis le dossier `Sitechiro`.
 4. Clique sur **Publish repository** (ou **Push origin**).
 
-C'est fini. Ensuite, pour chaque modification, tu pourras simplement
-double-cliquer sur **`Publier les modifications.command`** dans le dossier.
+C'est fini. Ensuite, pour chaque modification, double-clique sur
+**`Préparer la mise en ligne.command`** : il construit, contrôle et enregistre,
+puis ouvre GitHub Desktop, où il ne reste qu'à cliquer sur **Push origin**.
 
 ### Ou en ligne de commande
 
@@ -112,41 +113,60 @@ une barre de défilement peut apparaître dans le cadre : dis-le-moi, c'est une 
 
 ## 4. DNS - à faire en dernier
 
-Chez ton registrar (là où tu as acheté `nuneschiropratique.fr`), zone DNS.
+Ton domaine est géré chez **WordPress.com** (serveurs `ns1/2/3.wordpress.com`).
+C'est là qu'on modifie les enregistrements : WordPress.com, puis Domaines,
+`nuneschiropratique.fr`, Enregistrements DNS.
 
-**Supprime** les enregistrements A / CNAME existants qui pointent vers WordPress,
-puis ajoute :
+Aujourd'hui :
 
-| Type | Nom / Hôte | Valeur | TTL |
-|---|---|---|---|
-| A | `@` | `185.199.108.153` | 3600 |
-| A | `@` | `185.199.109.153` | 3600 |
-| A | `@` | `185.199.110.153` | 3600 |
-| A | `@` | `185.199.111.153` | 3600 |
-| CNAME | `www` | `thomasnuneschiropratique-arch.github.io.` | 3600 |
+| Type | Nom | Valeur |
+|---|---|---|
+| A | `@` | `192.0.78.24` |
+| A | `@` | `192.0.78.25` |
+| CNAME | `www` | `nuneschiropratique.fr` |
 
-(Adresses vérifiées le jour de la rédaction en interrogeant directement
-`thomasnuneschiropratique-arch.github.io`, pas recopiées d'une documentation.)
+Il n'y a rien d'autre sur ce domaine (ni mail, ni IPv6, ni vérification TXT) :
+ces trois lignes sont les seules à toucher.
 
-Aujourd'hui ton domaine pointe vers WordPress (`192.0.78.24` et `192.0.78.25`)
-et `www` est un alias vers le domaine principal. Ce sont ces enregistrements-là
-qu'il faut remplacer.
+**Avant de toucher aux DNS**, sur github.com : dépôt, Settings, Pages,
+**Custom domain**, saisis `nuneschiropratique.fr` et enregistre. Ton site actuel
+n'est pas affecté.
 
-Les quatre A sont obligatoires (GitHub répartit la charge). Selon le registrar,
-`@` peut s'appeler « racine », « vide » ou le nom de domaine complet.
+**Ensuite**, chez WordPress.com : supprime les deux A et le CNAME `www`, puis ajoute :
 
-Si tu préfères l'IPv6, ajoute aussi (facultatif) :
-`2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153` en AAAA.
+| Type | Nom | Valeur |
+|---|---|---|
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| CNAME | `www` | `thomasnuneschiropratique-arch.github.io.` |
 
-**Vérification** (quelques minutes à quelques heures de propagation) :
+Les quatre A sont obligatoires. Ces adresses ont été vérifiées en interrogeant
+directement `thomasnuneschiropratique-arch.github.io`.
+
+Durée de vie actuelle : 5 minutes. Le changement se voit donc très vite. En
+revanche, GitHub doit ensuite fabriquer le certificat HTTPS, ce qui peut prendre
+de quelques minutes à une heure : le site peut afficher un avertissement de
+sécurité pendant ce laps de temps. Dans Settings, Pages, coche **Enforce HTTPS**
+dès qu'elle devient disponible.
+
+**Le bon moment :** le week-end, le cabinet est fermé. Si tu as des publicités qui
+tournent, mets-les en pause pendant l'opération.
+
+**Pour revenir en arrière** en cas de problème, remets exactement les trois lignes
+d'origine ci-dessus. En 5 minutes tu retrouves l'ancien site.
+
+**Vérification** (depuis le Terminal, ou demande-moi de le faire) :
 
 ```bash
 dig +short nuneschiropratique.fr
 dig +short www.nuneschiropratique.fr
 ```
 
-Puis dans GitHub : **Settings → Pages**, le domaine doit passer au vert, et
-**Enforce HTTPS** devient cochable (certificat Let's Encrypt automatique).
+**Attention à l'échéance du domaine : il expire le 5 novembre 2026.** Vérifie
+dans WordPress.com que le renouvellement automatique est actif, et ne supprime
+pas l'abonnement au domaine en résiliant l'hébergement WordPress.
 
 ---
 

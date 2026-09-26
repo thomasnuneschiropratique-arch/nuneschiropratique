@@ -22,7 +22,7 @@ Trois fichiers à double-cliquer dans le Finder, sans passer par le Terminal :
 |---|---|
 | `Voir le site.command` | ouvre le site dans le navigateur, en local |
 | `Importer les photos.command` | importe les photos déposées dans `photos-a-importer` |
-| `Publier les modifications.command` | construit, contrôle, et met en ligne |
+| `Préparer la mise en ligne.command` | construit, contrôle, enregistre, puis ouvre GitHub Desktop pour le clic final |
 
 Ou en ligne de commande :
 
