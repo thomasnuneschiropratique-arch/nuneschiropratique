@@ -47,6 +47,11 @@ SLOTS = {
         "Accueil - « Mon approche » (portrait)",
         ("=thomas-ajustement-cervical",),
     ),
+    "accueil-cabinet": (
+        "accueil-cabinet.jpg",
+        "Accueil - collage de « Mon approche » (vue large de la salle)",
+        ("=ajustement first",),
+    ),
     "chiropratique-ajustement": (
         "chiropratique-ajustement.jpg",
         "La chiropratique - à côté du « système nerveux » (portrait)",

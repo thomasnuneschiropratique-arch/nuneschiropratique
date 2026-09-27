@@ -502,4 +502,227 @@
     update();
   })();
 
+
+  /* ---------------------------------------------------------------- 13. Accueil : le texte qui s'encre
+     Les mots passent du gris au noir à mesure que le paragraphe traverse
+     l'écran ; les photos glissées dans la phrase apparaissent à leur tour.
+     Mouvement réduit ou script absent : le texte est noir d'emblée. */
+  (function () {
+    var bloc = $('[data-ink]');
+    if (!bloc || reduced) return;
+
+    splitTextNodes(bloc, 'words');
+    // ordre du document : un soulignement précède ses propres mots
+    var jetons = $$('.word, .pill, .surligne', bloc);
+    bloc.classList.add('is-inking');
+
+    var dernier = -1, ticking = false;
+    function update() {
+      var r = bloc.getBoundingClientRect(), vh = window.innerHeight;
+      var p = (vh * 0.84 - r.top) / (r.height + vh * 0.3);
+      p = p < 0 ? 0 : (p > 1 ? 1 : p);
+      var n = Math.round(p * jetons.length);
+      if (n !== dernier) {
+        jetons.forEach(function (j, k) { j.classList.toggle('is-ink', k < n); });
+        dernier = n;
+      }
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
+
+
+  /* ---------------------------------------------------------------- 14. Parallaxe des photos
+     Chaque élément [data-parallax="x"] glisse de x fois son écart au centre
+     de l'écran. Deux vitesses différentes suffisent à décoller les calques. */
+  (function () {
+    var els = $$('[data-parallax]');
+    if (!els.length || reduced || coarse) return;
+    var ticking = false;
+    function update() {
+      var vh = window.innerHeight;
+      els.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        var ecart = (r.top + r.height / 2) - vh / 2;
+        var f = parseFloat(el.getAttribute('data-parallax')) || 0;
+        // on retire la translation déjà appliquée pour mesurer la position d'origine
+        var y = -(ecart - (el._py || 0)) * f;
+        el.style.transform = 'translate3d(0,' + y.toFixed(1) + 'px,0)';
+        el._py = y;
+      });
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
+
+
+  /* ---------------------------------------------------------------- 15. Le système nerveux
+     Les mots du texte et les légendes du dessin allument la partie qu'ils
+     nomment. Tant que personne ne survole, les trois parties s'allument à
+     tour de rôle, et seulement quand la section est à l'écran. */
+  (function () {
+    var art = $('[data-nerfs]');
+    if (!art) return;
+    var section = art.closest('section') || art;
+    var PARTIES = ['cerveau', 'colonne', 'corps'];
+    var declencheurs = $$('[data-part]', section);
+    var mots = $$('.nerfs__mot', section);
+    var tour = -1, minuterie = null, visible = false, main = false;
+
+    function allumer(partie) {
+      PARTIES.forEach(function (p) { art.classList.toggle('is-' + p, p === partie); });
+      mots.forEach(function (m) { m.classList.toggle('is-on', m.getAttribute('data-part') === partie); });
+    }
+    function suivant() {
+      tour = (tour + 1) % PARTIES.length;
+      allumer(PARTIES[tour]);
+    }
+    function relancer() {
+      clearInterval(minuterie);
+      minuterie = null;
+      if (visible && !main && !reduced) {
+        minuterie = setInterval(suivant, 2600);
+      }
+    }
+
+    declencheurs.forEach(function (el) {
+      el.addEventListener('mouseenter', function () {
+        main = true; relancer();
+        allumer(el.getAttribute('data-part'));
+      });
+      el.addEventListener('mouseleave', function () {
+        main = false; allumer(null); relancer();
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        // on laisse le dessin se tracer avant d'allumer quoi que ce soit
+        if (visible && tour === -1) setTimeout(function () { relancer(); }, 2400);
+        else relancer();
+        if (!visible) allumer(null);
+      }, { threshold: 0.35 }).observe(art);
+    }
+  })();
+
+
+  /* ---------------------------------------------------------------- 16. Le parcours de la première visite
+     La ligne se remplit au défilement ; chaque étape s'allume quand la
+     ligne l'atteint. Sans script : ligne pleine, toutes les étapes visibles. */
+  (function () {
+    var liste = $('[data-etapes]');
+    if (!liste || reduced) return;
+    var etapes = $$('.etape', liste);
+    liste.classList.add('is-suivi');
+    var ticking = false;
+
+    function update() {
+      var r = liste.getBoundingClientRect(), vh = window.innerHeight;
+      var vertical = window.innerWidth <= 900;
+      var p = vertical
+        ? (vh * 0.7 - r.top) / r.height
+        : (vh * 0.88 - r.top) / (vh * 0.5);
+      p = p < 0 ? 0 : (p > 1 ? 1 : p);
+      liste.style.setProperty('--prog', p.toFixed(3));
+      etapes.forEach(function (e, i) {
+        var seuil = vertical
+          ? (e.offsetTop / r.height)
+          : (i / etapes.length);
+        e.classList.toggle('is-on', p >= seuil + 0.01 || (i === 0 && p > 0));
+      });
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
+
+
+  /* ---------------------------------------------------------------- 17. Les avis, un à la fois
+     Défilement automatique toutes les 8 secondes, suspendu au survol, au
+     focus clavier et hors de l'écran. La barre montre le temps restant.
+     Mouvement réduit : pas de défilement automatique, les boutons restent. */
+  (function () {
+    var scene = $('[data-temoins]');
+    if (!scene) return;
+    var avis = $$('.temoin', scene);
+    var noms = $$('.nom');
+    var nav = $('[data-temoins-nav]');
+    var barre = $('[data-temoins-barre]');
+    var num = $('[data-temoins-num]');
+    var listeNoms = $('[data-temoins-noms]');
+    if (avis.length < 2) return;
+
+    var DUREE = 8000;
+    var courant = 0, ecoule = 0, avant = null, raf = null;
+    var visible = false, survol = false;
+
+    scene.classList.add('is-actif');
+    if (nav) nav.hidden = false;
+    if (listeNoms) listeNoms.hidden = false;
+
+    function montrer(i, parLeVisiteur) {
+      courant = (i + avis.length) % avis.length;
+      avis.forEach(function (a, k) {
+        a.classList.toggle('is-on', k === courant);
+        a.setAttribute('aria-hidden', String(k !== courant));
+      });
+      noms.forEach(function (n, k) {
+        if (k === courant) n.setAttribute('aria-current', 'true');
+        else n.removeAttribute('aria-current');
+      });
+      if (num) num.textContent = String(courant + 1);
+      // annoncé aux lecteurs d'écran seulement quand le visiteur a choisi
+      scene.setAttribute('aria-live', parLeVisiteur ? 'polite' : 'off');
+      ecoule = 0;
+    }
+
+    function boucle(t) {
+      if (avant !== null && visible && !survol) ecoule += t - avant;
+      avant = t;
+      if (barre) barre.style.transform = 'scaleX(' + Math.min(ecoule / DUREE, 1).toFixed(4) + ')';
+      if (ecoule >= DUREE) montrer(courant + 1, false);
+      raf = requestAnimationFrame(boucle);
+    }
+    function demarrer() { if (!raf && !reduced) { avant = null; raf = requestAnimationFrame(boucle); } }
+    function arreter() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+
+    $$('[data-sens]', scene).forEach(function (b) {
+      b.addEventListener('click', function () {
+        montrer(courant + parseInt(b.getAttribute('data-sens'), 10), true);
+      });
+    });
+    noms.forEach(function (n) {
+      n.addEventListener('click', function () {
+        montrer(parseInt(n.getAttribute('data-cible'), 10), true);
+      });
+    });
+
+    var zone = scene.closest('section') || scene;
+    zone.addEventListener('mouseenter', function () { survol = true; });
+    zone.addEventListener('mouseleave', function () { survol = false; });
+    zone.addEventListener('focusin', function () { survol = true; });
+    zone.addEventListener('focusout', function () { survol = false; });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        if (visible) demarrer(); else arreter();
+      }, { threshold: 0.3 }).observe(scene);
+    }
+    montrer(0, false);
+  })();
+
 })();
