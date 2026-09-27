@@ -505,15 +505,14 @@
 
   /* ---------------------------------------------------------------- 13. Accueil : le texte qui s'encre
      Les mots passent du gris au noir à mesure que le paragraphe traverse
-     l'écran ; les photos glissées dans la phrase apparaissent à leur tour.
-     Mouvement réduit ou script absent : le texte est noir d'emblée. */
+     l'écran. Mouvement réduit ou script absent : le texte est noir d'emblée. */
   (function () {
     var bloc = $('[data-ink]');
     if (!bloc || reduced) return;
 
     splitTextNodes(bloc, 'words');
     // ordre du document : un soulignement précède ses propres mots
-    var jetons = $$('.word, .pill, .surligne', bloc);
+    var jetons = $$('.word, .surligne', bloc);
     bloc.classList.add('is-inking');
 
     var dernier = -1, ticking = false;
@@ -538,7 +537,8 @@
 
   /* ---------------------------------------------------------------- 14. Parallaxe des photos
      Chaque élément [data-parallax="x"] glisse de x fois son écart au centre
-     de l'écran. Deux vitesses différentes suffisent à décoller les calques. */
+     de l'écran. Utilisé à l'intérieur d'un cadre fixe : c'est l'image qui
+     bouge, pas la mise en page. */
   (function () {
     var els = $$('[data-parallax]');
     if (!els.length || reduced || coarse) return;

@@ -1238,9 +1238,8 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 /* =========================================================================
    31. Page d'accueil
    Sous le hero et le bandeau pratique, la page alterne les matières :
-   papier, vert très sombre, beige, vert pétrole, papier, vert pâle, pétrole.
-   Chaque section porte un seul mouvement, lié au défilement ou au survol,
-   pour que la page vive sans devenir une démonstration.
+   papier, vert très sombre, beige, papier, vert pâle, pétrole.
+   Chaque section porte un seul mouvement, lié au défilement ou au survol.
    ========================================================================= */
 
 .link--clair{color:#DCE7E5}
@@ -1265,19 +1264,6 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .manif__txt .word{transition:color .5s var(--ease)}
 .manif__txt.is-inking .word{color:color-mix(in srgb,var(--ink) 15%,var(--paper))}
 .manif__txt.is-inking .word.is-ink{color:var(--ink)}
-
-/* photos glissées dans la phrase */
-.pill{
-  display:inline-block;vertical-align:-.06em;
-  width:2.1em;height:.9em;margin-inline:.04em;
-  border-radius:999px;overflow:hidden;background:var(--paper-warm);
-  transition:transform .8s var(--ease-out),opacity .5s var(--ease);
-}
-.pill img{width:100%;height:100%;object-fit:cover}
-.pill--1 img{object-position:50% 58%}
-.pill--2 img{object-position:56% 34%}
-.manif__txt.is-inking .pill{transform:scale(.3) rotate(-8deg);opacity:0}
-.manif__txt.is-inking .pill.is-ink{transform:none;opacity:1}
 
 /* les trois stress, soulignés aux trois couleurs du vase */
 .surligne{
@@ -1321,92 +1307,88 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .gain:hover{background:var(--petrol);color:#fff}
 .gain:hover::before{transform:rotate(90deg);color:#fff}
 
-/* ---------- 31b. Le système nerveux, dessiné ----------
-   Le symbole du logo, retracé au trait : il se dessine à l'arrivée dans
-   l'écran, puis des influx parcourent la colonne et les nerfs. Les mots
-   « cerveau », « colonne vertébrale » et « ensemble du corps » du texte
-   allument la partie correspondante du dessin. */
+/* ---------- 31b. Le système nerveux ----------
+   Une silhouette de face : le cerveau, la moelle dans sa colonne de
+   vertèbres, et les nerfs qui partent dans le tronc, les bras et les
+   jambes. Le dessin se trace à l'arrivée dans l'écran, puis un influx
+   descend du cerveau le long de la colonne et repart dans les membres.
+   Les mots « cerveau », « colonne vertébrale » et « ensemble du corps »
+   du texte allument la partie correspondante. */
 .nerfs{
   position:relative;overflow:hidden;
   background:var(--petrol-darkest);color:#EDF1F0;
   padding-block:clamp(84px,10vw,156px) clamp(64px,8vw,110px);
 }
 .nerfs__grid{
-  display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
   gap:clamp(36px,5vw,96px);align-items:center;
 }
 .nerfs .d-l{color:#fff}
 .nerfs .lead{color:#DCE7E5}
 .nerfs__p{color:#AFC0BD;max-width:46ch}
-.nerfs__art{position:relative;max-width:580px}
+.nerfs__art{position:relative;width:100%;max-width:470px}
 .nerfs__svg{width:100%;height:auto;overflow:visible}
 
 .nerf path{
-  fill:none;stroke:var(--petrol-light);stroke-width:1.7;stroke-linecap:round;
-  transition:stroke .5s var(--ease),stroke-width .5s var(--ease),opacity .5s var(--ease);
+  fill:none;stroke:var(--petrol-light);stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:stroke .5s var(--ease),stroke-width .5s var(--ease);
 }
-.nerf .nerf__axe{stroke-width:2.6}
-.nerf .nerf__cran{stroke-width:1.4;opacity:.8}
-.nerf--cerveau path{stroke:#9DBDBA}
+.nerf--silhouette path{stroke:rgba(237,241,240,.24);stroke-width:1.1}
+.nerf--cerveau path{stroke:#A9C6C3;stroke-width:1.6}
+.nerf .nerf__axe{stroke-width:2.4}
+.nerf .vertebres path{fill:var(--petrol-darkest);stroke:var(--petrol-light);stroke-width:1.1}
 
-/* tracé progressif : la colonne, puis la tête, puis les nerfs de haut en bas */
+/* tracé progressif : la silhouette, le cerveau, la moelle, puis les nerfs */
 .js .nerf path{stroke-dasharray:1;stroke-dashoffset:1}
+.js .nerf .vertebres path{stroke-dasharray:none;stroke-dashoffset:0}
 .js .nerfs__art.is-in .nerf path{
   stroke-dashoffset:0;
-  transition:stroke-dashoffset 1.4s var(--ease-out) var(--dl,0s),
+  transition:stroke-dashoffset var(--dt,1.3s) var(--ease-out) var(--dl,0s),
              stroke .5s var(--ease),stroke-width .5s var(--ease);
 }
-.nerf--colonne .nerf__axe{--dl:0s}
-.nerf--colonne .nerf__cran{--dl:.9s}
-.nerf--cerveau path{--dl:.5s}
-.nerf--corps g path:nth-child(1){--dl:.6s}
-.nerf--corps g path:nth-child(2){--dl:.7s}
-.nerf--corps g path:nth-child(3){--dl:.8s}
-.nerf--corps g path:nth-child(4){--dl:.95s}
-.nerf--corps g path:nth-child(5){--dl:1.05s}
-.nerf--corps g path:nth-child(6){--dl:1.15s}
-.nerf--corps g path:nth-child(7){--dl:1.25s}
-.nerf--corps g path:nth-child(8){--dl:1.35s}
-.nerf--corps g path:nth-child(9){--dl:1.45s}
-.nerf--corps g path:nth-child(10){--dl:1.55s}
+.nerf--silhouette path{--dl:0s;--dt:2s}
+.nerf--cerveau path{--dl:.3s}
+.nerf--colonne .nerf__axe{--dl:.7s;--dt:1.1s}
+.nerf--corps g path:nth-child(-n+6){--dl:1.1s}
+.nerf--corps g path:nth-child(n+7):nth-child(-n+12){--dl:1.3s;--dt:.9s}
+.nerf--corps g path:nth-child(n+13){--dl:1.5s}
+.js .vertebres{opacity:0;transition:opacity .9s var(--ease) .8s}
+.js .nerfs__art.is-in .vertebres{opacity:1}
 
 /* partie allumée, par le texte ou par le cycle automatique */
 .nerfs__art.is-cerveau .nerf--cerveau path,
-.nerfs__art.is-colonne .nerf--colonne path,
-.nerfs__art.is-corps .nerf--corps path{stroke:#F4F1EA;stroke-width:2.3}
-.nerfs__art.is-colonne .nerf--colonne .nerf__axe{stroke-width:3.4}
+.nerfs__art.is-colonne .nerf--colonne .nerf__axe,
+.nerfs__art.is-corps .nerf--corps path{stroke:#F4F1EA;stroke-width:2.1}
+.nerfs__art.is-colonne .nerf--colonne .nerf__axe{stroke-width:3.2}
+.nerfs__art.is-colonne .vertebres path{stroke:#F4F1EA}
 
-/* influx : un trait clair qui court le long de chaque nerf.
-   Motif de longueur 2 pour qu'aucune seconde copie n'apparaisse au bout. */
+/* influx : même période pour tous, départs décalés. Celui de la colonne
+   met 1,9 s à descendre ; ceux des bras et des jambes partent quand il
+   passe à leur hauteur, et le cycle reste calé d'un tour à l'autre. */
 .influx path{
-  fill:none;stroke:#F4F1EA;stroke-width:2.4;stroke-linecap:round;
-  stroke-dasharray:.08 2;stroke-dashoffset:.08;opacity:0;
-  animation-duration:3.2s;animation-timing-function:cubic-bezier(.45,0,.35,1);
-  animation-iteration-count:infinite;animation-delay:var(--sd,2s);
+  fill:none;stroke:#F4F1EA;stroke-width:2.2;stroke-linecap:round;
+  stroke-dasharray:.07 2;stroke-dashoffset:.07;opacity:0;
+  animation-duration:4.8s;animation-timing-function:linear;
+  animation-iteration-count:infinite;animation-delay:var(--sd,2.4s);
 }
-/* le nom de l'animation n'est posé qu'à l'arrivée dans l'écran : les
-   délais ci-dessous partent donc de ce moment, pas du chargement */
+/* le nom n'est posé qu'à l'arrivée dans l'écran : les délais partent de là */
 .nerfs__art.is-in .influx path{animation-name:influx}
-.influx > path{--sd:2s;animation-duration:2.6s}
-.influx g path:nth-child(1){--sd:2.9s}
-.influx g path:nth-child(2){--sd:3.2s}
-.influx g path:nth-child(3){--sd:3.5s}
-.influx g path:nth-child(4){--sd:3.8s}
-.influx g path:nth-child(5){--sd:4.1s}
-.influx g path:nth-child(6){--sd:4.4s}
-.influx g path:nth-child(7){--sd:4.7s}
-.influx g + g path{animation-duration:3.5s}
+.influx__axe{--sd:2.4s}
+.influx__bras path{--sd:2.92s}
+.influx__jambe path{--sd:4.23s}
 @keyframes influx{
-  0%  {stroke-dashoffset:.08;opacity:0}
-  12% {opacity:1}
-  80% {opacity:1}
+  0%  {stroke-dashoffset:.07;opacity:0}
+  3%  {opacity:1}
+  36% {opacity:1}
+  40% {stroke-dashoffset:-1;opacity:0}
   100%{stroke-dashoffset:-1;opacity:0}
 }
 
 /* repères et légendes */
 .repere{fill:none;stroke:rgba(237,241,240,.3);stroke-width:1;stroke-dasharray:2 4}
 .repere__pt{fill:var(--petrol-light)}
-.js .reperes{opacity:0;transition:opacity .8s var(--ease) 1.6s}
+.js .reperes{opacity:0;transition:opacity .8s var(--ease) 1.8s}
 .js .nerfs__art.is-in .reperes{opacity:1}
 .nerfs__art.is-cerveau .repere--cerveau,
 .nerfs__art.is-colonne .repere--colonne,
@@ -1415,14 +1397,14 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .nerfs__art.is-colonne circle.repere--colonne,
 .nerfs__art.is-corps circle.repere--corps{stroke:none}
 .nerfs__label{
-  position:absolute;left:73.4%;transform:translateY(-50%);
+  position:absolute;left:70.8%;transform:translateY(-50%);
   max-width:9em;line-height:1.35;
   font-size:.66rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
   color:#8FA09E;transition:color .4s var(--ease);
 }
-.nerfs__label--cerveau{top:5.4%}
-.nerfs__label--colonne{top:38%}
-.nerfs__label--corps{top:67.6%}
+.nerfs__label--cerveau{top:6%}
+.nerfs__label--colonne{top:16.8%}
+.nerfs__label--corps{top:57.5%}
 .nerfs__art.is-cerveau .nerfs__label--cerveau,
 .nerfs__art.is-colonne .nerfs__label--colonne,
 .nerfs__art.is-corps .nerfs__label--corps{color:#fff}
@@ -1450,119 +1432,42 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   color:var(--petrol-light);
 }
 
-/* ---------- 31c. Mon approche : le collage ---------- */
-.approche{background:var(--paper-warm);padding-block:clamp(84px,10vw,156px);overflow:hidden}
-.approche__grid{
-  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
-  gap:clamp(40px,6vw,112px);align-items:center;
+/* ---------- 31c. Mon approche ----------
+   Deux photos rectangulaires, alignées, de même hauteur. Le mouvement est
+   à l'intérieur des cadres : l'image glisse légèrement au défilement,
+   le cadre, lui, ne bouge pas. */
+.approche{background:var(--paper-warm);padding-block:clamp(84px,10vw,150px)}
+.approche__tete{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(24px,5vw,96px);align-items:start;
 }
-.collage{position:relative;aspect-ratio:1/1.04;isolation:isolate}
-.collage__a{position:absolute;top:0;right:0;width:80%;z-index:1}
-.collage__a .fig{aspect-ratio:3/2}
-.collage__b{
-  position:absolute;left:0;bottom:0;width:44%;z-index:2;
-  padding:clamp(6px,.8vw,10px);background:var(--paper-warm);
-  border-radius:999px 999px 0 0;
+.approche__p{color:var(--ink-soft);max-width:56ch}
+.approche__photos{
+  margin-top:clamp(48px,6vw,88px);
+  display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);
+  gap:clamp(12px,1.6vw,24px);
 }
-.collage__b .fig{aspect-ratio:2/3;border-radius:999px 999px 0 0}
-/* cadre décalé : l'arche a son ombre au trait plutôt qu'une ombre portée */
-.collage__b::before{
-  content:"";position:absolute;z-index:-1;
-  inset:clamp(-22px,-1.8vw,-12px) clamp(12px,1.8vw,22px) clamp(12px,1.8vw,22px) clamp(-22px,-1.8vw,-12px);
-  border:1px solid var(--petrol);border-radius:999px 999px 0 0;
+.approche__photos figure{min-width:0}
+.approche__grande .fig{aspect-ratio:3/2}
+.approche__petite .fig{height:100%}
+.approche__cadre{position:absolute;inset:-7% 0}
+.engagements{
+  margin-top:clamp(36px,4.5vw,64px);
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(20px,3vw,48px);
 }
-.collage::after{ /* aplat vert derrière la grande photo */
-  content:"";position:absolute;z-index:0;
-  right:-6%;top:12%;width:44%;height:62%;
-  background:var(--petrol-wash);
-}
-[data-parallax]{will-change:transform}
-/* la seconde photo se dévoile juste après la première */
-.collage__b .reveal-img,.collage__b .reveal-img img{transition-delay:.3s}
-
-/* pastille tournante */
-.rond{
-  position:absolute;z-index:3;left:38%;top:42%;
-  width:clamp(104px,10.5vw,142px);aspect-ratio:1;border-radius:50%;
-  background:var(--petrol);display:grid;place-items:center;
-  transition:transform .6s var(--ease-out),background .4s var(--ease);
-}
-.rond:hover,.rond:focus-visible{transform:scale(1.07);background:var(--petrol-darkest)}
-.rond__texte{position:absolute;inset:0;width:100%;height:100%;animation:tourne 24s linear infinite}
-.rond__texte text{font-family:var(--sans);font-size:8.6px;font-weight:500;fill:#fff}
-.rond__glyphe{width:42%;height:auto;filter:brightness(0) invert(1);transition:transform .6s var(--ease-out)}
-.rond:hover .rond__glyphe{transform:translateY(-3px)}
-.rond:hover .rond__texte{animation-duration:9s}
-@keyframes tourne{to{transform:rotate(1turn)}}
-
-.approche__p{color:var(--ink-soft);max-width:48ch}
-.engagements{margin-top:clamp(28px,3.4vw,44px);border-top:1px solid var(--rule-strong)}
 .engagement{
-  position:relative;display:grid;gap:.2em;
-  padding:1.05em 0 1.1em;border-bottom:1px solid var(--rule-strong);
-  transition:padding-left .45s var(--ease-out);
+  position:relative;display:grid;align-content:start;gap:.4em;
+  padding-top:1.1em;border-top:1px solid var(--rule-strong);
 }
 .engagement::after{
-  content:"";position:absolute;left:0;bottom:-1px;height:1px;width:100%;
+  content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;
   background:var(--petrol);transform:scaleX(0);transform-origin:left;
   transition:transform .6s var(--ease-out);
 }
-.engagement:hover{padding-left:.6em}
 .engagement:hover::after{transform:scaleX(1)}
-.engagement__t{font-family:var(--serif);font-size:clamp(1.2rem,1.7vw,1.45rem);line-height:1.25}
-.engagement__d{font-size:.9rem;color:var(--ink-faint)}
-
-/* ---------- 31d. Motifs : le bandeau qui défile ----------
-   La liste complète est lue par les lecteurs d'écran (.sr-only) ; le
-   défilement, purement visuel, leur est masqué. */
-.bandeau-motifs{
-  background:var(--petrol);color:#fff;overflow:hidden;
-  padding-block:clamp(80px,10vw,144px);
-}
-.bandeau-motifs__tete{
-  display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);
-  gap:clamp(20px,4vw,72px);align-items:end;
-}
-.bandeau-motifs .d-l{color:#fff}
-.bandeau-motifs .lead{color:rgba(255,255,255,.8)}
-.defile{
-  margin-block:clamp(48px,6vw,92px);
-  display:grid;gap:clamp(4px,.8vw,12px);
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
-          mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
-}
-.defile__piste{display:flex;width:max-content;animation:defile 70s linear infinite}
-.defile__rang--inverse .defile__piste{animation-direction:reverse;animation-duration:80s}
-.defile__piste span{
-  display:flex;align-items:center;gap:.5em;padding-right:.5em;
-  font-family:var(--serif);font-size:clamp(2.1rem,5.8vw,5.2rem);
-  line-height:1.12;letter-spacing:-.015em;white-space:nowrap;
-}
-.defile__piste span::after{
-  content:"";flex:none;width:.16em;height:.16em;border-radius:50%;
-  border:1.5px solid currentColor;opacity:.55;
-}
-.defile__rang--inverse span{
-  font-style:italic;color:transparent;
-  -webkit-text-stroke:1px rgba(255,255,255,.62);
-}
-.defile__rang--inverse span::after{border-color:rgba(255,255,255,.62)}
-.defile:hover .defile__piste{animation-play-state:paused}
-@keyframes defile{to{transform:translateX(-50%)}}
-
-.pas-mal{
-  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);
-  gap:clamp(24px,5vw,96px);align-items:start;
-  padding-top:clamp(30px,3.6vw,48px);border-top:1px solid rgba(255,255,255,.2);
-}
-.pas-mal__q{font-family:var(--serif);font-size:clamp(1.45rem,2.4vw,2.05rem);line-height:1.2;max-width:16ch}
-.pas-mal__r{
-  font-family:var(--serif);font-style:italic;
-  font-size:clamp(4rem,10vw,8.5rem);line-height:.9;letter-spacing:-.03em;
-  margin-top:.12em;color:#fff;
-}
-.pas-mal .lead{color:#fff}
-.pas-mal p:not(.lead){color:rgba(255,255,255,.76);max-width:46ch}
+.engagement__t{font-family:var(--serif);font-size:clamp(1.25rem,1.8vw,1.55rem);line-height:1.2}
+.engagement__d{font-size:.92rem;color:var(--ink-faint)}
 
 /* ---------- 31e. La première visite ---------- */
 .parcours{padding-block:clamp(84px,10vw,150px)}
@@ -1629,7 +1534,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
    celle du plus long, la page ne saute donc pas au changement. */
 .temoignages{
   background:var(--petrol-veil);
-  padding-block:clamp(84px,10vw,150px) clamp(150px,16vw,250px);
+  padding-block:clamp(84px,10vw,150px);
 }
 .temoignages__grille{
   display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);
@@ -1639,18 +1544,13 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .noms{margin-top:clamp(28px,3.4vw,44px);border-top:1px solid var(--rule-strong)}
 .noms[hidden]{display:none}
 .nom{
-  position:relative;display:block;width:100%;text-align:left;
+  display:block;width:100%;text-align:left;
   padding:.72em 0;border-bottom:1px solid var(--rule-strong);
   font-family:var(--serif);font-size:1.18rem;color:var(--ink-ghost);
-  transition:color .35s var(--ease),padding-left .45s var(--ease-out);
-}
-.nom::before{
-  content:"";position:absolute;left:0;top:50%;width:0;height:1px;background:var(--petrol);
-  transition:width .45s var(--ease-out);
+  transition:color .35s var(--ease);
 }
 .nom:hover{color:var(--ink)}
-.nom[aria-current="true"]{color:var(--petrol-darkest);padding-left:1.6em}
-.nom[aria-current="true"]::before{width:1em}
+.nom[aria-current="true"]{color:var(--petrol);font-style:italic}
 
 .temoins{position:relative}
 /* le guillemet suit chaque citation, quelle que soit sa hauteur */
@@ -1670,10 +1570,8 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 .temoin figcaption{margin-top:1.1em}
 .temoin__nom{
-  display:inline-flex;align-items:center;gap:.8em;
   font-size:.74rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--petrol);
 }
-.temoin__nom::before{content:"";width:26px;height:1px;background:currentColor}
 
 .temoins.is-actif .temoins__pile{gap:0}
 .temoins.is-actif .temoin{
@@ -1698,13 +1596,12 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .temoins__barre span{position:absolute;inset:0;background:var(--petrol);transform:scaleX(0);transform-origin:left}
 .temoins__compte{font-size:.8rem;letter-spacing:.08em;color:var(--ink-faint);font-variant-numeric:tabular-nums}
 
-/* ---------- 31g. Dernier appel : la photo en arche ----------
-   L'arche reprend les hautes fenêtres du cabinet. Elle dépasse dans la
-   section précédente : c'est ce débord qui relie les deux blocs. */
+/* ---------- 31g. Dernier appel ----------
+   La photo occupe toute la hauteur de la bande, bord à bord. */
 .fin{position:relative;background:var(--petrol-deep);color:#fff}
 .fin__grille{
   display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
-  gap:clamp(32px,6vw,110px);align-items:end;
+  gap:clamp(32px,6vw,110px);
 }
 .fin__texte{padding-block:clamp(72px,9vw,136px)}
 .fin .eyebrow{color:var(--petrol-light)}
@@ -1718,14 +1615,13 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   transition:border-color .3s var(--ease);
 }
 .fin__tel:hover{border-color:#fff}
-/* L'arche est posée en absolu : la hauteur de la bande est celle du texte,
-   et la photo la dépasse vers le haut d'une valeur fixe, quelle que soit
-   la largeur de l'écran. */
-.fin__media{position:relative;z-index:1;align-self:stretch}
-.fin__media .fig{
-  position:absolute;left:0;right:0;bottom:0;top:clamp(-150px,-10vw,-70px);
-  border-radius:999px 999px 0 0;
+/* la photo file jusqu'au bord droit de l'écran, au-delà de la colonne */
+.fin__media{
+  position:relative;
+  margin-right:calc(0px - var(--gutter) - max(0px, (100vw - var(--wrap)) / 2));
 }
+.fin__media .fig{position:absolute;inset:0}
+.fin__media img{object-position:50% 40%}
 
 /* ---------- 31h. Petits écrans ---------- */
 @media (max-width:1100px){
@@ -1734,34 +1630,31 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .chiffres{grid-template-columns:1fr 1fr}
 }
 @media (max-width:900px){
-  .manif__suite,.nerfs__grid,.approche__grid,.bandeau-motifs__tete,.pas-mal,
+  .manif__suite,.nerfs__grid,.approche__tete,
   .parcours__tete,.temoignages__grille,.fin__grille{grid-template-columns:1fr}
-  .nerfs__art{max-width:520px}
-  .collage{max-width:620px}
+  .nerfs__art{max-width:420px}
+  .approche__photos{grid-template-columns:1fr}
+  .approche__petite .fig{height:auto;aspect-ratio:1}
+  .engagements{grid-template-columns:1fr;gap:0}
+  .engagement{padding-block:1em}
   .etapes{grid-template-columns:1fr;padding-top:0;padding-left:38px;gap:30px}
   .etapes::before,.etapes::after{left:6px;right:auto;top:6px;bottom:6px;width:1px;height:auto}
   .etapes::after{width:2px;left:5.5px;transform:scaleY(var(--prog));transform-origin:top}
   .etape::before{left:-38px;top:.15em}
-  .temoignages{padding-bottom:clamp(84px,10vw,150px)}
   /* sur téléphone, les flèches suffisent : la liste des noms repoussait
      la citation d'un écran entier */
   .noms:not([hidden]){display:none}
-  .fin__texte{padding-bottom:clamp(36px,6vw,56px)}
-  .fin__media{width:min(72%,340px);aspect-ratio:2/3;justify-self:center}
-  .fin__media .fig{top:0}
+  .fin__texte{padding-bottom:clamp(40px,7vw,60px)}
+  .fin__media{aspect-ratio:4/5;margin-inline:calc(var(--gutter) * -1)}
 }
 @media (max-width:560px){
   .manif__txt{font-size:clamp(1.7rem,7.4vw,2.2rem)}
-  .nerfs__label{font-size:.56rem;letter-spacing:.12em;left:72%}
+  .nerfs__label{font-size:.56rem;letter-spacing:.12em}
   .chiffres{grid-template-columns:1fr}
-  .rond{left:auto;right:4%;top:auto;bottom:6%}
   .temoins__btn{width:44px;height:44px}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .defile__piste{animation:none;flex-wrap:wrap;width:auto}
-  .defile__piste span:nth-child(n+9){display:none}
-  .rond__texte{animation:none}
   .influx{display:none}
   .js .nerf path{stroke-dashoffset:0}
 }
