@@ -533,27 +533,6 @@ em,.italic{font-style:italic}
   width:8px;height:1px;background:var(--petrol);
 }
 
-/* trois piliers de stress */
-.stress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--rule)}
-.stress__item{
-  padding:clamp(26px,3vw,44px) clamp(18px,2vw,34px) clamp(30px,3.5vw,52px);
-  border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);
-  position:relative;overflow:hidden;
-}
-.stress__item:last-child{border-right:0}
-.stress__item::after{
-  content:"";position:absolute;left:0;bottom:-1px;height:1px;width:100%;
-  background:var(--petrol);transform:scaleX(0);transform-origin:left;
-  transition:transform .6s var(--ease-out);
-}
-.stress__item:hover::after{transform:scaleX(1)}
-.stress__n{display:block;font-size:.68rem;letter-spacing:.16em;color:var(--petrol);margin-bottom:2.2em}
-.stress__t{
-  font-family:var(--sans);font-size:.78rem;font-weight:600;letter-spacing:.15em;
-  text-transform:uppercase;margin-bottom:.95em;
-}
-.stress__d{font-size:.95rem;color:var(--ink-soft);line-height:1.62}
-
 /* ---------- 12. Citation ---------- */
 .quote{padding-block:clamp(56px,8vw,110px);text-align:center}
 .quote__mark{
@@ -871,8 +850,6 @@ em,.italic{font-style:italic}
   .cols-2{grid-template-columns:1fr}
   .pagehead__inner{grid-template-columns:1fr}
   .pagehead__lead{padding-bottom:0}
-  .stress{grid-template-columns:1fr}
-  .stress__item{border-right:0}
   .site-footer__top{grid-template-columns:1fr}
   .site-footer__cols{grid-template-columns:repeat(2,minmax(0,1fr))}
   .site-footer__logo{width:190px}
@@ -1085,27 +1062,29 @@ em,.italic{font-style:italic}
 /* --- le vase, à plat --- */
 .scene__art{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .vase{
-  width:min(280px,100%);height:auto;overflow:visible;
-  max-height:min(60vh,420px);
+  width:min(320px,100%);height:auto;overflow:visible;
+  max-height:min(64vh,500px);
   --n1:0;--n2:0;--n3:0;
 }
 
-/* Dessin au trait : pas de dégradé, pas de reflet, pas d'ombre portée.
-   Le volume était joli mais faisait illustration ; à plat, le vase rejoint
-   le reste du site, qui ne travaille qu'au filet et à l'aplat. */
-.vase__trait{
-  fill:none;stroke:var(--petrol);stroke-width:1.8;
-  stroke-linejoin:round;
-}
+/* Dessiné dans le style du logo (tools/dessin-vase.py) : contour plein
+   qui s'épaissit au galbe et s'affine au col, intérieur clair et nuancé,
+   filets tressés comme les nerfs du logo. */
+.vase__contour{fill:var(--petrol)}
 
-/* Trois strates en aplat. Dessinées de la plus haute à la plus basse : chaque
-   rectangle recouvre le bas du précédent, et ne montre donc que sa bande. */
+/* Trois strates. Dessinées de la plus haute à la plus basse : chacune
+   recouvre le bas de la précédente, et ne montre donc que sa bande. Leur
+   surface ondule doucement, chacune à son rythme. */
 .vase__eau{transition:transform .18s linear}
+.vase__vague{animation:houle 5s linear infinite}
+.vase__eau--2 .vase__vague{animation-duration:6.5s;animation-direction:reverse}
+.vase__eau--3 .vase__vague{animation-duration:8s}
+@keyframes houle{to{transform:translateX(-36px)}}
 .vase__eau--1{fill:#22423F;transform:translateY(calc(250px - var(--n1) * 150px))}
 .vase__eau--2{fill:#3F6E6C;transform:translateY(calc(250px - var(--n2) * 150px))}
 .vase__eau--3{fill:#6D9997;transform:translateY(calc(250px - var(--n3) * 150px))}
 
-/* --- les trois cascades, en aplat --- */
+/* --- les trois filets tressés --- */
 .flux{
   opacity:0;
   transform:scaleY(0);transform-origin:50% 0;
@@ -1115,12 +1094,18 @@ em,.italic{font-style:italic}
 .flux--1 .flux__corps{fill:#22423F}
 .flux--2 .flux__corps{fill:#3F6E6C}
 .flux--3 .flux__corps{fill:#6D9997}
+/* le courant : de petits reflets qui descendent le long du filet */
+.flux__courant{
+  fill:none;stroke:rgba(255,255,255,.75);stroke-width:.7;stroke-linecap:round;
+  stroke-dasharray:.03 .09;animation:courant 1.1s linear infinite;
+}
+@keyframes courant{to{stroke-dashoffset:-.12}}
 
 /* --- le débordement --- */
 .vase__debord{opacity:0;transition:opacity .5s var(--ease)}
 .vase.deborde .vase__debord{opacity:1}
 .debord__filet{
-  fill:none;stroke:var(--petrol);stroke-width:2.6;stroke-linecap:round;
+  fill:none;stroke:var(--petrol);stroke-width:1.5;stroke-linecap:round;
   stroke-dasharray:115;stroke-dashoffset:115;
 }
 .vase.deborde .debord__filet{animation:filet 2.2s var(--ease-out) forwards}
@@ -1157,7 +1142,7 @@ em,.italic{font-style:italic}
   .scene.is-pinned .scene__pin{position:static;height:auto;padding-block:var(--sp-section)}
   .scene.is-pinned .scene__steps{min-height:0}
   .scene.is-pinned .scene__step{position:static;opacity:1;transform:none;margin-top:1.6em}
-  .flux__veine,.vase.deborde .debord__goutte,.vase.deborde .debord__filet{animation:none}
+  .vase__vague,.flux__courant,.vase.deborde .debord__goutte,.vase.deborde .debord__filet{animation:none}
   .debord__filet{stroke-dashoffset:0}
   .vase__eau,.vase__surface{transition:none}
 }
@@ -1204,37 +1189,6 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 /* Ancre atteinte depuis un lien : on laisse la place à l'en-tête fixe. */
 [id]{scroll-margin-top:calc(var(--header-h) + 24px)}
 
-/* ---------- 30. Motifs de consultation ----------
-   Dix entrées alignées en une seule colonne se lisaient comme un inventaire.
-   En deux colonnes, avec le libellé principal détaché de sa précision, l'œil
-   balaie et s'arrête sur ce qui le concerne. */
-.motifs{
-  display:grid;grid-template-columns:1fr;
-  border-top:1px solid var(--rule);
-}
-@media (min-width:720px){
-  .motifs{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(24px,3vw,56px)}
-  /* le filet du haut ne doit apparaître qu'une fois par colonne */
-  .motifs .motif:nth-child(2){border-top:0}
-}
-.motif{
-  display:grid;grid-template-columns:2.4em 1fr;
-  align-items:baseline;gap:0 .2em;
-  padding:1.05em 0;
-  border-bottom:1px solid var(--rule);
-  transition:padding-left .4s var(--ease-out);
-}
-.motif:hover{padding-left:.5em}
-.motif__n{
-  font-size:.66rem;letter-spacing:.14em;color:var(--petrol);
-  font-variant-numeric:tabular-nums;
-}
-.motif__t{font-size:clamp(.98rem,1.05vw,1.06rem);line-height:1.45}
-.motif__d{
-  display:block;margin-top:.2em;
-  font-size:.84rem;color:var(--ink-faint);line-height:1.5;
-}
-
 /* =========================================================================
    31. Page d'accueil
    Sous le hero et le bandeau pratique, la page alterne les matières :
@@ -1261,9 +1215,11 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   line-height:1.13;letter-spacing:-.018em;
   max-width:19em;text-wrap:pretty;
 }
-.manif__txt .word{transition:color .5s var(--ease)}
-.manif__txt.is-inking .word{color:color-mix(in srgb,var(--ink) 15%,var(--paper))}
-.manif__txt.is-inking .word.is-ink{color:var(--ink)}
+/* Texte qui s'encre : valable pour tout [data-ink]. Les couleurs de départ
+   et d'arrivée se règlent par --encre-off / --encre-on (fond sombre…). */
+[data-ink] .word{transition:color .5s var(--ease)}
+[data-ink].is-inking .word{color:var(--encre-off,color-mix(in srgb,var(--ink) 15%,var(--paper)))}
+[data-ink].is-inking .word.is-ink{color:var(--encre-on,var(--ink))}
 
 /* les trois stress, soulignés aux trois couleurs du vase */
 .surligne{
@@ -1308,77 +1264,76 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .gain:hover::before{transform:rotate(90deg);color:#fff}
 
 /* ---------- 31b. Le système nerveux ----------
-   Une silhouette de face : le cerveau, la moelle dans sa colonne de
-   vertèbres, et les nerfs qui partent dans le tronc, les bras et les
-   jambes. Le dessin se trace à l'arrivée dans l'écran, puis un influx
-   descend du cerveau le long de la colonne et repart dans les membres.
-   Les mots « cerveau », « colonne vertébrale » et « ensemble du corps »
-   du texte allument la partie correspondante. */
+   Dessiné dans le style du logo : vert pétrole sur fond clair, traits
+   pleins qui s'effilent, cerveau clair et nuancé, côtes en boucles.
+   (Le dessin est généré par tools/dessin-nerfs.py.)
+   Il pousse à l'arrivée dans l'écran : le cerveau, la colonne qui
+   descend, puis les nerfs qui s'ouvrent. Un influx descend ensuite du
+   cerveau et repart dans les bras et les jambes. Les mots « cerveau »,
+   « colonne vertébrale » et « ensemble du corps » font ressortir la partie
+   qu'ils nomment. */
 .nerfs{
   position:relative;overflow:hidden;
-  background:var(--petrol-darkest);color:#EDF1F0;
+  background:var(--petrol-veil);color:var(--ink);
   padding-block:clamp(84px,10vw,156px) clamp(64px,8vw,110px);
 }
 .nerfs__grid{
   display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
   gap:clamp(36px,5vw,96px);align-items:center;
 }
-.nerfs .d-l{color:#fff}
-.nerfs .lead{color:#DCE7E5}
-.nerfs__p{color:#AFC0BD;max-width:46ch}
-.nerfs__art{position:relative;width:100%;max-width:470px}
+.nerfs__p{color:var(--ink-soft);max-width:46ch}
+.nerfs__art{position:relative;width:100%;max-width:500px}
 .nerfs__svg{width:100%;height:auto;overflow:visible}
 
-.nerf path{
-  fill:none;stroke:var(--petrol-light);stroke-width:1.5;
-  stroke-linecap:round;stroke-linejoin:round;
-  transition:stroke .5s var(--ease),stroke-width .5s var(--ease);
+.nerf{fill:var(--petrol);transition:opacity .6s var(--ease),fill .6s var(--ease)}
+
+/* pousse : chaque partie part de son point d'attache ([data-pousse]) */
+.nerf{transform-box:view-box}
+.nerf--cerveau{transform-origin:200px 64px}
+.nerf--colonne{transform-origin:200px 62px}
+.nerf--bras,.nerf--cotes{transform-origin:200px 150px}
+.nerf--jambes{transform-origin:200px 330px}
+.js [data-pousse] .nerf{opacity:0}
+.js [data-pousse] .nerf--cerveau{transform:scale(.7)}
+.js [data-pousse] .nerf--colonne{transform:scaleY(0)}
+.js [data-pousse] .nerf--bras,.js [data-pousse] .nerf--cotes{transform:scaleX(.15)}
+.js [data-pousse] .nerf--jambes{transform:scaleY(.2)}
+.js [data-pousse].is-in .nerf{
+  opacity:1;transform:none;
+  transition:opacity .9s var(--ease) var(--dl,0s),transform 1.4s var(--ease-out) var(--dl,0s),fill .6s var(--ease);
 }
-.nerf--silhouette path{stroke:rgba(237,241,240,.24);stroke-width:1.1}
-.nerf--cerveau path{stroke:#A9C6C3;stroke-width:1.6}
-.nerf .nerf__axe{stroke-width:2.4}
-.nerf .vertebres path{fill:var(--petrol-darkest);stroke:var(--petrol-light);stroke-width:1.1}
+.nerf--cerveau{--dl:0s}
+.nerf--colonne{--dl:.25s}
+.nerf--cotes{--dl:.7s}
+.nerf--bras{--dl:.9s}
+.nerf--jambes{--dl:1.1s}
 
-/* tracé progressif : la silhouette, le cerveau, la moelle, puis les nerfs */
-.js .nerf path{stroke-dasharray:1;stroke-dashoffset:1}
-.js .nerf .vertebres path{stroke-dasharray:none;stroke-dashoffset:0}
-.js .nerfs__art.is-in .nerf path{
-  stroke-dashoffset:0;
-  transition:stroke-dashoffset var(--dt,1.3s) var(--ease-out) var(--dl,0s),
-             stroke .5s var(--ease),stroke-width .5s var(--ease);
-}
-.nerf--silhouette path{--dl:0s;--dt:2s}
-.nerf--cerveau path{--dl:.3s}
-.nerf--colonne .nerf__axe{--dl:.7s;--dt:1.1s}
-.nerf--corps g path:nth-child(-n+6){--dl:1.1s}
-.nerf--corps g path:nth-child(n+7):nth-child(-n+12){--dl:1.3s;--dt:.9s}
-.nerf--corps g path:nth-child(n+13){--dl:1.5s}
-.js .vertebres{opacity:0;transition:opacity .9s var(--ease) .8s}
-.js .nerfs__art.is-in .vertebres{opacity:1}
+/* une partie nommée ressort, les autres s'effacent un peu */
+.nerfs__art.is-cerveau .nerf:not(.nerf--cerveau),
+.nerfs__art.is-colonne .nerf:not(.nerf--colonne),
+.nerfs__art.is-corps .nerf.nerf--cerveau,
+.nerfs__art.is-corps .nerf.nerf--colonne{opacity:.28}
+.nerfs__art.is-colonne .nerf--colonne,
+.nerfs__art.is-corps .nerf--bras,
+.nerfs__art.is-corps .nerf--cotes,
+.nerfs__art.is-corps .nerf--jambes{fill:var(--petrol-deep)}
 
-/* partie allumée, par le texte ou par le cycle automatique */
-.nerfs__art.is-cerveau .nerf--cerveau path,
-.nerfs__art.is-colonne .nerf--colonne .nerf__axe,
-.nerfs__art.is-corps .nerf--corps path{stroke:#F4F1EA;stroke-width:2.1}
-.nerfs__art.is-colonne .nerf--colonne .nerf__axe{stroke-width:3.2}
-.nerfs__art.is-colonne .vertebres path{stroke:#F4F1EA}
-
-/* influx : même période pour tous, départs décalés. Celui de la colonne
-   met 1,9 s à descendre ; ceux des bras et des jambes partent quand il
-   passe à leur hauteur, et le cycle reste calé d'un tour à l'autre. */
+/* influx : un point clair qui court le long de la colonne puis des membres.
+   Même période pour tous, départs décalés : le cycle reste calé. */
 .influx path{
-  fill:none;stroke:#F4F1EA;stroke-width:2.2;stroke-linecap:round;
-  stroke-dasharray:.07 2;stroke-dashoffset:.07;opacity:0;
-  animation-duration:4.8s;animation-timing-function:linear;
-  animation-iteration-count:infinite;animation-delay:var(--sd,2.4s);
+  fill:none;stroke:#E4F1EF;stroke-width:2.6;stroke-linecap:round;
+  stroke-dasharray:.06 2;stroke-dashoffset:.06;opacity:0;
+  animation-duration:5s;animation-timing-function:linear;
+  animation-iteration-count:infinite;animation-delay:var(--sd,2.6s);
 }
+.influx .influx__bras,.influx .influx__jambe{stroke:#8DBDB8;stroke-width:3.2}
 /* le nom n'est posé qu'à l'arrivée dans l'écran : les délais partent de là */
-.nerfs__art.is-in .influx path{animation-name:influx}
-.influx__axe{--sd:2.4s}
-.influx__bras path{--sd:2.92s}
-.influx__jambe path{--sd:4.23s}
+[data-pousse].is-in .influx path{animation-name:influx}
+.influx__axe{--sd:2.6s}
+.influx__bras{--sd:2.9s}
+.influx__jambe{--sd:4.35s}
 @keyframes influx{
-  0%  {stroke-dashoffset:.07;opacity:0}
+  0%  {stroke-dashoffset:.06;opacity:0}
   3%  {opacity:1}
   36% {opacity:1}
   40% {stroke-dashoffset:-1;opacity:0}
@@ -1386,50 +1341,44 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 
 /* repères et légendes */
-.repere{fill:none;stroke:rgba(237,241,240,.3);stroke-width:1;stroke-dasharray:2 4}
-.repere__pt{fill:var(--petrol-light)}
-.js .reperes{opacity:0;transition:opacity .8s var(--ease) 1.8s}
+.repere{fill:none;stroke:var(--petrol-light);stroke-width:1;stroke-dasharray:2 4;opacity:.8}
+.repere__pt{fill:var(--petrol)}
+.js .reperes{opacity:0;transition:opacity .8s var(--ease) 1.9s}
 .js .nerfs__art.is-in .reperes{opacity:1}
-.nerfs__art.is-cerveau .repere--cerveau,
-.nerfs__art.is-colonne .repere--colonne,
-.nerfs__art.is-corps .repere--corps{stroke:#F4F1EA;fill:#F4F1EA}
-.nerfs__art.is-cerveau circle.repere--cerveau,
-.nerfs__art.is-colonne circle.repere--colonne,
-.nerfs__art.is-corps circle.repere--corps{stroke:none}
 .nerfs__label{
-  position:absolute;left:70.8%;transform:translateY(-50%);
+  position:absolute;left:73.6%;transform:translateY(-50%);
   max-width:9em;line-height:1.35;
   font-size:.66rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
-  color:#8FA09E;transition:color .4s var(--ease);
+  color:var(--ink-faint);transition:color .4s var(--ease);
 }
-.nerfs__label--cerveau{top:6%}
-.nerfs__label--colonne{top:16.8%}
-.nerfs__label--corps{top:57.5%}
+.nerfs__label--cerveau{top:5.6%}
+.nerfs__label--colonne{top:12.5%}
+.nerfs__label--corps{top:56.9%}
 .nerfs__art.is-cerveau .nerfs__label--cerveau,
 .nerfs__art.is-colonne .nerfs__label--colonne,
-.nerfs__art.is-corps .nerfs__label--corps{color:#fff}
+.nerfs__art.is-corps .nerfs__label--corps{color:var(--petrol)}
 
 .nerfs__mot{
-  color:#EDF1F0;cursor:default;
-  background-image:linear-gradient(currentColor,currentColor);
+  color:var(--ink);cursor:default;
+  background-image:linear-gradient(var(--petrol),var(--petrol));
   background-repeat:no-repeat;background-position:0 100%;background-size:0 1px;
   transition:background-size .6s var(--ease-out),color .4s var(--ease);
 }
-.nerfs__mot.is-on{color:#fff;background-size:100% 1px}
+.nerfs__mot.is-on{color:var(--petrol);background-size:100% 1px}
 
 .nerfs__citation{
   margin-top:clamp(64px,8vw,120px);padding-top:clamp(30px,4vw,50px);
-  border-top:1px solid rgba(255,255,255,.12);
+  border-top:1px solid var(--rule-strong);
   display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px 40px;
 }
 .nerfs__citation blockquote{
   font-family:var(--serif);font-style:italic;
   font-size:clamp(1.9rem,4.8vw,4.2rem);line-height:1.06;letter-spacing:-.015em;
-  max-width:17ch;color:#EDF1F0;
+  max-width:17ch;color:var(--petrol-darkest);
 }
 .nerfs__citation cite{
   font-style:normal;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--petrol-light);
+  color:var(--petrol);
 }
 
 /* ---------- 31c. Mon approche ----------
@@ -1450,7 +1399,8 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .approche__photos figure{min-width:0}
 .approche__grande .fig{aspect-ratio:3/2}
 .approche__petite .fig{height:100%}
-.approche__cadre{position:absolute;inset:-7% 0}
+/* cadre fixe, image un peu plus haute qui glisse dedans (data-parallax) */
+.cadre{position:absolute;inset:-7% 0}
 .engagements{
   margin-top:clamp(36px,4.5vw,64px);
   display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
@@ -1533,7 +1483,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
    ils se superposent dans la même case et se relaient ; la hauteur est
    celle du plus long, la page ne saute donc pas au changement. */
 .temoignages{
-  background:var(--petrol-veil);
+  background:var(--petrol-wash);
   padding-block:clamp(84px,10vw,150px);
 }
 .temoignages__grille{
@@ -1656,5 +1606,223 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 
 @media (prefers-reduced-motion:reduce){
   .influx{display:none}
-  .js .nerf path{stroke-dashoffset:0}
+  .js [data-pousse] .nerf{opacity:1;transform:none}
+}
+
+
+/* =========================================================================
+   32. Pages La chiropratique et A propos
+   Même vocabulaire que l'accueil : texte qui s'encre, photos qui glissent
+   dans leur cadre, colonnes où l'image reste en place pendant la lecture,
+   et les dessins dans le style du logo.
+   ========================================================================= */
+
+.surtitre{
+  font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(1.2rem,1.8vw,1.55rem);line-height:1.3;color:var(--petrol);
+}
+
+/* ---------- 32a. Pourquoi la chiropratique ---------- */
+.pourquoi{padding-block:clamp(84px,10vw,150px)}
+.pourquoi__grille{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(36px,6vw,110px);align-items:start;
+}
+.pourquoi__tete{position:sticky;top:calc(var(--header-h-stuck) + 40px)}
+.pourquoi__intro{color:var(--ink-soft)}
+.bienfait{
+  position:relative;padding-block:clamp(24px,3vw,42px);
+  border-top:1px solid var(--rule-strong);
+}
+.bienfait:last-child{border-bottom:1px solid var(--rule-strong)}
+.bienfait::before{
+  content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;
+  background:var(--petrol);transform:scaleX(0);transform-origin:left;
+  transition:transform 1.3s var(--ease-out) .15s;
+}
+.bienfait.is-in::before{transform:scaleX(1)}
+.bienfait__t{
+  display:block;font-family:var(--serif);
+  font-size:clamp(1.8rem,3.6vw,3.2rem);line-height:1.1;letter-spacing:-.015em;
+}
+.pourquoi__photo{margin-top:clamp(56px,7vw,110px)}
+.pourquoi__photo .fig{aspect-ratio:2/1}
+.pourquoi__photo img{object-position:50% 22%}
+
+/* ---------- 32b. La carte des motifs ----------
+   Chaque motif allume la zone du corps qu'il concerne. Sans survol, les
+   motifs défilent seuls tant que la section est à l'écran. */
+.carte{background:var(--petrol-veil);padding-block:clamp(84px,10vw,150px)}
+.carte__grille{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(36px,6vw,110px);align-items:start;
+}
+.carte__art{position:sticky;top:calc(var(--header-h-stuck) + 28px);display:flex;justify-content:center}
+.carte__svg{
+  width:auto;height:min(calc(100vh - var(--header-h-stuck) - 72px),640px);
+  aspect-ratio:400/640;max-width:100%;overflow:visible;
+}
+.carte__liste{border-top:1px solid var(--rule-strong)}
+.motif-bt{
+  position:relative;display:flex;flex-wrap:wrap;align-items:baseline;gap:.15em .7em;
+  width:100%;text-align:left;padding:1em 0 1em 0;
+  border-bottom:1px solid var(--rule-strong);
+  transition:padding-left .45s var(--ease-out),color .35s var(--ease);
+}
+.motif-bt::before{
+  content:"";position:absolute;left:0;top:50%;width:8px;height:8px;margin-top:-4px;
+  border-radius:50%;background:var(--petrol);transform:scale(0);
+  transition:transform .4s var(--ease-out);
+}
+.motif-bt__t{font-family:var(--serif);font-size:clamp(1.18rem,1.7vw,1.5rem);line-height:1.25}
+.motif-bt__d{font-size:.86rem;color:var(--ink-faint)}
+.motif-bt:hover,.motif-bt.is-on{padding-left:1.4em;color:var(--petrol)}
+.motif-bt:hover::before,.motif-bt.is-on::before{transform:scale(1)}
+
+.zone{opacity:0;transition:opacity .5s var(--ease)}
+.zone.is-on{opacity:1}
+.zone__disque{fill:#6D9997;fill-opacity:.3;stroke:var(--petrol);stroke-width:1.6}
+.zone__onde{fill:none;stroke:var(--petrol);stroke-width:1.6;transform-box:fill-box;transform-origin:center;opacity:0}
+.zone.is-on .zone__onde{animation:onde 2.2s var(--ease-out) infinite}
+@keyframes onde{0%{transform:scale(1);opacity:.7}100%{transform:scale(2);opacity:0}}
+
+/* ---------- 32c. Au delà des symptômes ---------- */
+.au-dela{background:var(--petrol-darkest);color:#EDF1F0;padding-block:clamp(84px,10vw,156px)}
+.au-dela__phrase{
+  font-family:var(--serif);font-size:clamp(2.2rem,5.6vw,5rem);
+  line-height:1.05;letter-spacing:-.02em;max-width:15ch;
+  --encre-on:#fff;--encre-off:rgba(237,241,240,.16);
+}
+.au-dela__grille{
+  margin-top:clamp(56px,7vw,110px);
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(36px,6vw,110px);align-items:start;
+}
+.au-dela__photo{position:sticky;top:calc(var(--header-h-stuck) + 30px)}
+.au-dela__photo .fig{aspect-ratio:4/5;background:var(--petrol-deep)}
+.au-dela .d-m{color:#fff}
+.au-dela .lead{color:#DCE7E5}
+.au-dela__texte p{color:#AFC0BD;max-width:56ch}
+.au-dela__texte p + p{margin-top:1em}
+.au-dela__bloc + .au-dela__bloc{
+  margin-top:clamp(56px,7vw,100px);padding-top:clamp(40px,5vw,64px);
+  border-top:1px solid rgba(255,255,255,.14);
+}
+.au-dela .duo{
+  font-family:var(--serif);font-size:clamp(1.5rem,2.6vw,2.2rem);line-height:1.25;color:#EDF1F0;
+}
+.au-dela .duo + .duo{margin-top:.2em}
+.duo__mot{font-style:italic;color:var(--petrol-light)}
+
+/* ---------- 32d. Citation finale, sous le logo ---------- */
+.envoi{padding-block:clamp(84px,10vw,150px);text-align:center}
+.envoi__logo{width:min(340px,72%);height:auto;margin:0 auto clamp(34px,4vw,56px)}
+/* le logo s'ouvre depuis la colonne, comme les nerfs qui partent du centre.
+   Le déclencheur est sur le conteneur : un élément entièrement rogné n'est
+   jamais vu « à l'écran » par le navigateur. */
+.js .envoi__logo{clip-path:inset(0 50% 0 50%);transition:clip-path 1.8s var(--ease-out) .1s}
+.js .envoi__marque.is-in .envoi__logo{clip-path:inset(0 0 0 0)}
+.envoi__citation{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(2rem,4.8vw,4rem);line-height:1.08;letter-spacing:-.015em;
+  max-width:20ch;margin-inline:auto;color:var(--petrol-darkest);
+}
+.envoi cite{
+  display:block;margin-top:clamp(22px,2.6vw,34px);
+  font-style:normal;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--petrol);
+}
+
+/* ---------- 32e. A propos : qui suis-je ---------- */
+.qui{padding-block:clamp(72px,9vw,130px)}
+.qui__grille{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(36px,6vw,110px);align-items:center;
+}
+.qui__photo .fig{aspect-ratio:4/5}
+.qui__intro{
+  margin-top:clamp(16px,2vw,26px);
+  font-family:var(--serif);font-size:clamp(1.9rem,3.8vw,3.3rem);
+  line-height:1.1;letter-spacing:-.015em;
+}
+.qui__texte [data-reveal] p{color:var(--ink-soft);max-width:52ch;margin-top:1em}
+.qui__texte [data-reveal]{margin-top:clamp(18px,2.4vw,32px)}
+
+/* ---------- 32f. A propos : le parcours ---------- */
+.trajet{background:var(--petrol);color:#fff;padding-block:clamp(84px,10vw,150px);overflow:hidden}
+.trajet__grille{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(36px,6vw,110px);align-items:center;
+}
+.annees{display:flex;align-items:flex-end;gap:.5em}
+.annees__n{
+  font-family:var(--serif);font-size:clamp(9rem,22vw,19rem);line-height:.78;
+  letter-spacing:-.04em;color:#fff;font-variant-numeric:lining-nums;
+}
+.annees__l{
+  padding-bottom:1.1em;max-width:12ch;line-height:1.5;
+  font-size:.78rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.78);
+}
+.trajet .d-m{color:#fff}
+.trajet .lead{color:#fff}
+.trajet p:not(.lead):not(.annees){color:rgba(255,255,255,.8)}
+
+/* ---------- 32g. A propos : philosophie ---------- */
+.philo{background:var(--paper-warm);padding-block:clamp(84px,10vw,150px)}
+.philo__tete{
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
+  gap:clamp(24px,5vw,96px);align-items:start;
+}
+.philo__intro{color:var(--ink-soft)}
+.philo__envoi{
+  margin-top:clamp(64px,8vw,120px);
+  font-family:var(--serif);font-size:clamp(1.9rem,4.2vw,3.6rem);
+  line-height:1.12;letter-spacing:-.015em;max-width:21em;
+}
+.philo__envoi em{font-style:italic}
+.philo__envoi.is-inking em .word.is-ink,.philo__envoi:not(.is-inking) em{color:var(--petrol)}
+
+/* ---------- 32h. A propos : au cabinet ---------- */
+.cabinet{padding-block:clamp(84px,10vw,150px)}
+.cabinet__grille{
+  display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);
+  gap:clamp(36px,6vw,110px);align-items:start;
+}
+.cabinet__media{position:sticky;top:calc(var(--header-h-stuck) + 30px)}
+.cabinet__media .fig{aspect-ratio:4/5}
+.promesses{margin-top:clamp(36px,4.5vw,64px)}
+.promesse{
+  position:relative;padding-block:clamp(28px,4vw,56px);
+  border-top:1px solid var(--rule-strong);
+}
+.promesse::before{
+  content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;
+  background:var(--petrol);transform:scaleX(0);transform-origin:left;
+  transition:transform 1.3s var(--ease-out) .15s;
+}
+.promesse.is-in::before{transform:scaleX(1)}
+.promesse h3{font-size:clamp(1.6rem,2.8vw,2.4rem);line-height:1.12}
+.promesse p{margin-top:.6em;color:var(--ink-soft)}
+.cabinet__envoi{
+  padding-top:clamp(28px,3.4vw,44px);border-top:1px solid var(--rule-strong);
+  font-family:var(--serif);font-size:clamp(1.3rem,2vw,1.7rem);line-height:1.35;
+  color:var(--petrol-darkest);
+}
+
+/* ---------- 32i. Petits écrans ---------- */
+@media (max-width:900px){
+  .pourquoi__grille,.carte__grille,.au-dela__grille,.qui__grille,
+  .trajet__grille,.philo__tete,.cabinet__grille{grid-template-columns:1fr}
+  .pourquoi__tete,.au-dela__photo,.cabinet__media{position:static}
+  .pourquoi__photo .fig{aspect-ratio:3/2}
+  /* la silhouette reste en haut de l'écran pendant qu'on parcourt la liste,
+     sinon on ne verrait jamais la zone s'allumer */
+  .carte__art{top:0;z-index:2;padding-block:10px;background:var(--petrol-veil)}
+  .carte__svg{height:30vh}
+  .au-dela__photo .fig,.qui__photo .fig,.cabinet__media .fig{aspect-ratio:4/3}
+  .annees__n{font-size:clamp(7rem,34vw,11rem)}
+}
+@media (prefers-reduced-motion:reduce){
+  .js .envoi__logo{clip-path:none}
+  .zone.is-on .zone__onde{animation:none}
 }

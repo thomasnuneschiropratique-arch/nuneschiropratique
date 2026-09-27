@@ -503,28 +503,35 @@
   })();
 
 
-  /* ---------------------------------------------------------------- 13. Accueil : le texte qui s'encre
-     Les mots passent du gris au noir à mesure que le paragraphe traverse
-     l'écran. Mouvement réduit ou script absent : le texte est noir d'emblée. */
+  /* ---------------------------------------------------------------- 13. Le texte qui s'encre
+     Les mots passent du gris à leur couleur à mesure que le paragraphe
+     traverse l'écran. Vaut pour chaque [data-ink] de la page.
+     Mouvement réduit ou script absent : le texte est encré d'emblée. */
   (function () {
-    var bloc = $('[data-ink]');
-    if (!bloc || reduced) return;
+    var blocs = $$('[data-ink]');
+    if (!blocs.length || reduced) return;
 
-    splitTextNodes(bloc, 'words');
-    // ordre du document : un soulignement précède ses propres mots
-    var jetons = $$('.word, .surligne', bloc);
-    bloc.classList.add('is-inking');
+    var suivis = blocs.map(function (bloc) {
+      splitTextNodes(bloc, 'words');
+      bloc.classList.add('is-inking');
+      // ordre du document : un soulignement précède ses propres mots
+      return { bloc: bloc, jetons: $$('.word, .surligne', bloc), dernier: -1 };
+    });
 
-    var dernier = -1, ticking = false;
+    var ticking = false;
     function update() {
-      var r = bloc.getBoundingClientRect(), vh = window.innerHeight;
-      var p = (vh * 0.84 - r.top) / (r.height + vh * 0.3);
-      p = p < 0 ? 0 : (p > 1 ? 1 : p);
-      var n = Math.round(p * jetons.length);
-      if (n !== dernier) {
-        jetons.forEach(function (j, k) { j.classList.toggle('is-ink', k < n); });
-        dernier = n;
-      }
+      var vh = window.innerHeight;
+      suivis.forEach(function (s) {
+        var r = s.bloc.getBoundingClientRect();
+        if (r.bottom < -vh || r.top > vh * 2) return;
+        var p = (vh * 0.84 - r.top) / (r.height + vh * 0.3);
+        p = p < 0 ? 0 : (p > 1 ? 1 : p);
+        var n = Math.round(p * s.jetons.length);
+        if (n !== s.dernier) {
+          s.jetons.forEach(function (j, k) { j.classList.toggle('is-ink', k < n); });
+          s.dernier = n;
+        }
+      });
       ticking = false;
     }
     window.addEventListener('scroll', function () {
@@ -723,6 +730,82 @@
       }, { threshold: 0.3 }).observe(scene);
     }
     montrer(0, false);
+  })();
+
+  /* ---------------------------------------------------------------- 18. La carte des motifs
+     Chaque motif allume la zone du corps qu'il concerne. Au survol ou au
+     clavier, on suit le visiteur ; sinon, les motifs défilent seuls tant que
+     la carte est à l'écran. Un clic fige le choix. */
+  (function () {
+    var carte = $('[data-carte]');
+    if (!carte) return;
+    var boutons = $$('.motif-bt', carte);
+    var zones = $$('.zone', carte);
+    var tour = -1, minuterie = null, visible = false, main = false, fige = false;
+
+    function allumer(bouton) {
+      var z = bouton ? bouton.getAttribute('data-zone') : null;
+      zones.forEach(function (c) {
+        c.classList.toggle('is-on', z === 'tout' || c.getAttribute('data-zone') === z);
+      });
+      boutons.forEach(function (b) {
+        var on = b === bouton;
+        b.classList.toggle('is-on', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+    }
+    function suivant() {
+      tour = (tour + 1) % boutons.length;
+      allumer(boutons[tour]);
+    }
+    function relancer() {
+      clearInterval(minuterie);
+      minuterie = null;
+      if (visible && !main && !fige && !reduced) minuterie = setInterval(suivant, 2600);
+    }
+
+    boutons.forEach(function (b, i) {
+      function entrer() { main = true; tour = i; allumer(b); relancer(); }
+      function sortir() { main = false; if (!fige) relancer(); }
+      b.addEventListener('mouseenter', entrer);
+      b.addEventListener('focus', entrer);
+      b.addEventListener('mouseleave', sortir);
+      b.addEventListener('blur', sortir);
+      b.addEventListener('click', function () { fige = true; tour = i; allumer(b); relancer(); });
+    });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+        if (visible && tour === -1) { suivant(); }
+        relancer();
+      }, { threshold: 0.25 }).observe(carte);
+    }
+  })();
+
+
+  /* ---------------------------------------------------------------- 19. Compteur
+     [data-compte="5"] : le nombre monte jusqu'à sa valeur à l'apparition.
+     Le HTML contient déjà la valeur finale : sans script, rien ne change. */
+  (function () {
+    var els = $$('[data-compte]');
+    if (!els.length || reduced || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        var el = e.target, fin = parseInt(el.getAttribute('data-compte'), 10), debut = null;
+        function pas(t) {
+          if (debut === null) debut = t;
+          var p = Math.min((t - debut) / 1400, 1);
+          p = 1 - Math.pow(1 - p, 3);
+          el.textContent = String(Math.max(1, Math.round(p * fin)));
+          if (p < 1) requestAnimationFrame(pas);
+        }
+        requestAnimationFrame(pas);
+      });
+    }, { threshold: 0.5 });
+    els.forEach(function (el) { io.observe(el); });
   })();
 
 })();

@@ -5,9 +5,9 @@
 | `accueil.jpg` | Accueil, image d'ouverture | la salle de soin, trois tables, cheminée |
 | `accueil-chiropratique.jpg` | Accueil, « Et si vous commenciez aujourd'hui ? » | ajustement cervical de profil |
 | `accueil-cabinet.jpg` | Accueil, grande photo de « Mon approche » | vue large de la salle, ajustement |
-| `accueil-approche.jpg` | aucune pour l'instant (non publiée) | ajustement cervical, pull marine |
+| `accueil-approche.jpg` | La chiropratique, « Au delà des symptômes » | ajustement cervical, pull marine |
 | `chiropratique-ajustement.jpg` | La chiropratique, « Le système nerveux » | ajustement cervical (portrait) |
-| `chiropratique-explication.jpg` | La chiropratique, « Pourquoi la chiropratique ? » ; Accueil, « Votre première visite » | explication avec le modèle de colonne |
+| `chiropratique-explication.jpg` | La chiropratique, sous « Pourquoi la chiropratique ? » ; Accueil, « Votre première visite » | explication avec le modèle de colonne |
 | `a-propos-portrait.jpg` | A propos, « Qui suis-je ? » ; Accueil, « Mon approche » | portrait studio |
 | `a-propos-examen.jpg` | A propos, « Ce que vous trouverez au cabinet » | examen postural debout |
 
@@ -25,5 +25,17 @@ python3 import-photos.py --slot accueil ~/Desktop/nouvelle-photo.jpg
 python3 build.py
 ```
 
-Photo disponible non utilisée : `accueil-approche.jpg` (pull marine). Une photo
-qu'aucune page n'affiche n'est pas publiée.
+Les huit photos sont toutes utilisées. Une photo qu'aucune page n'affiche
+n'est pas publiée.
+
+## Les dessins
+
+Le système nerveux (accueil, et la carte des motifs de La chiropratique) et
+le vase des 3 stress sont générés par `tools/dessin-nerfs.py` et
+`tools/dessin-vase.py`, dans le style du logo. Après une retouche :
+
+```bash
+python3 tools/dessin-nerfs.py
+python3 tools/dessin-vase.py
+python3 build.py
+```
