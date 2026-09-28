@@ -172,8 +172,11 @@ pas l'abonnement au domaine en résiliant l'hébergement WordPress.
 
 ## 5. Après la bascule
 
-- [ ] **Google Search Console** : ajouter la propriété `nuneschiropratique.fr`,
-      soumettre `https://nuneschiropratique.fr/sitemap.xml`.
+- [x] DNS basculés vers GitHub Pages - fait le 27 septembre 2026, propagation
+      immédiate, certificat HTTPS actif le jour même.
+- [x] **Google Search Console** : propriété `nuneschiropratique.fr` validée
+      (domaine, via l'enregistrement TXT), sitemap soumis - fait le
+      28 septembre 2026.
 - [ ] **Fiche Google Business** : vérifier que le site déclaré est bien
       `https://nuneschiropratique.fr`. (Le bouton « Voir tous les avis » de la page
       Avis pointe déjà vers ta fiche.)
