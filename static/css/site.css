@@ -1970,58 +1970,37 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .coord__mail{color:var(--ink-soft);overflow-wrap:anywhere;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--rule-strong)}
 .coord__mail:hover{color:var(--petrol);text-decoration-color:var(--petrol)}
 
-/* La semaine en un coup d'œil : une colonne par jour, de 10 h à 20 h, les
-   créneaux ouverts en vert. La liste lue par les lecteurs d'écran est à part. */
-.semaine{
-  --haut:clamp(150px,20vw,220px);
-  margin-top:clamp(18px,2.2vw,28px);
-  display:grid;grid-template-columns:auto repeat(7,minmax(0,1fr));
-  grid-template-rows:auto var(--haut) auto;
-  gap:8px clamp(4px,.8vw,10px);
+/* Les horaires : seulement les jours ouverts, chaque créneau en pastille.
+   On montre ce qui est ouvert, pas ce qui est fermé. */
+.horaires{margin-top:clamp(18px,2.2vw,28px);border-top:1px solid var(--rule-strong)}
+.horaires__jour{
+  display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:1em;
+  align-items:center;padding:.9em 0;border-bottom:1px solid var(--rule);
 }
-/* Une seule grille pour les sept jours : les pistes partagent la même
-   ligne, et l'axe des heures leur correspond exactement. */
-.semaine__jour{display:contents;text-align:center}
-.semaine__axe{grid-column:1;grid-row:2}
-.semaine__nom{grid-row:1}
-.semaine__piste{grid-row:2}
-.semaine__h{grid-row:3}
-.semaine__jour:nth-child(2) > *{grid-column:2}
-.semaine__jour:nth-child(3) > *{grid-column:3}
-.semaine__jour:nth-child(4) > *{grid-column:4}
-.semaine__jour:nth-child(5) > *{grid-column:5}
-.semaine__jour:nth-child(6) > *{grid-column:6}
-.semaine__jour:nth-child(7) > *{grid-column:7}
-.semaine__jour:nth-child(8) > *{grid-column:8}
-.semaine__axe{
-  display:flex;flex-direction:column;justify-content:space-between;
-  padding-right:6px;transform:translateY(-.5em);
-  font-size:.62rem;letter-spacing:.06em;color:var(--ink-ghost);text-align:right;
-  font-variant-numeric:tabular-nums;
+.horaires__nom{font-family:var(--serif);font-size:clamp(1.1rem,1.5vw,1.3rem)}
+.horaires__creneaux{display:flex;flex-wrap:wrap;gap:8px}
+.horaires__creneau{
+  font-size:.8rem;letter-spacing:.04em;font-variant-numeric:tabular-nums;
+  color:var(--petrol);background:var(--petrol-wash);
+  padding:.42em .9em;border-radius:999px;
+  opacity:0;transform:scale(.92);
+  transition:opacity .5s var(--ease) var(--sd,0s),transform .6s var(--ease-out) var(--sd,0s);
 }
-.semaine__nom{font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);text-align:center}
-.semaine__h{text-align:center}
-.semaine__piste{
-  position:relative;border-radius:3px;
-  background:var(--paper-warm);border:1px solid var(--rule);
+.horaires.is-in .horaires__creneau{opacity:1;transform:none}
+.horaires__jour:nth-child(1) .horaires__creneau:nth-child(1){--sd:.05s}
+.horaires__jour:nth-child(1) .horaires__creneau:nth-child(2){--sd:.12s}
+.horaires__jour:nth-child(2) .horaires__creneau:nth-child(1){--sd:.19s}
+.horaires__jour:nth-child(2) .horaires__creneau:nth-child(2){--sd:.26s}
+.horaires__jour:nth-child(3) .horaires__creneau:nth-child(1){--sd:.33s}
+.horaires__jour:nth-child(4) .horaires__creneau:nth-child(1){--sd:.40s}
+.horaires__jour:nth-child(4) .horaires__creneau:nth-child(2){--sd:.47s}
+.horaires__jour.is-aujourdhui .horaires__nom{color:var(--petrol)}
+.horaires__jour.is-aujourdhui .horaires__nom::after{
+  content:"aujourd’hui";display:inline-block;margin-left:.8em;vertical-align:.25em;
+  font-family:var(--sans);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
 }
-.semaine__jour--ferme .semaine__piste{
-  background:repeating-linear-gradient(135deg,transparent 0 6px,var(--rule) 6px 7px);
-}
-.semaine__bloc{
-  position:absolute;left:0;right:0;border-radius:2px;background:var(--petrol);
-  transform:scaleY(0);transform-origin:top;
-  transition:transform .9s var(--ease-out) var(--sd,.2s);
-}
-.semaine.is-in .semaine__bloc{transform:scaleY(1)}
-.semaine__bloc--10-12{top:0;height:20%;--sd:.2s}
-.semaine__bloc--11-14{top:10%;height:30%;--sd:.25s}
-.semaine__bloc--17-20{top:70%;height:30%;--sd:.55s}
-.semaine__h{font-size:.66rem;line-height:1.45;color:var(--ink-faint);font-variant-numeric:tabular-nums}
-.semaine__jour--ferme .semaine__h{color:var(--ink-ghost)}
-.semaine__jour.is-aujourdhui .semaine__nom{color:var(--petrol)}
-.semaine__jour.is-aujourdhui .semaine__piste{border-color:var(--petrol)}
-.semaine__jour.is-aujourdhui .semaine__h{color:var(--ink)}
+.horaires__jour.is-aujourdhui .horaires__creneau{background:var(--petrol);color:#fff}
+.horaires__ferme{margin-top:1em;font-size:.88rem;color:var(--ink-faint)}
 
 .venir{background:var(--petrol);color:#fff;padding-block:clamp(84px,10vw,150px)}
 .venir .d-l{color:#fff}
@@ -2067,6 +2046,4 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .avis__cote{position:static}
   .venir__modes{grid-template-columns:1fr;gap:0}
   .venir__mode{padding-block:1em}
-  .semaine{--haut:150px;gap:6px 3px}
-  .semaine__h{font-size:.58rem}
 }

@@ -36,52 +36,25 @@ priority: 0.9
       <div class="coord__bloc">
         <h3 class="surtitre" data-reveal>Horaires</h3>
 
-        <div class="semaine" data-semaine data-reveal aria-hidden="true">
-          <div class="semaine__axe"><span>10h</span><span>12h</span><span>14h</span><span>16h</span><span>18h</span><span>20h</span></div>
-          <div class="semaine__jour" data-jour="1">
-            <span class="semaine__nom">Lun</span>
-            <div class="semaine__piste"><span class="semaine__bloc semaine__bloc--11-14"></span><span class="semaine__bloc semaine__bloc--17-20"></span></div>
-            <span class="semaine__h">11h-14h<br>17h-20h</span>
+        <div class="horaires" data-semaine data-reveal>
+          <div class="horaires__jour" data-jour="1">
+            <span class="horaires__nom">Lundi</span>
+            <span class="horaires__creneaux"><span class="horaires__creneau">11h - 14h</span><span class="horaires__creneau">17h - 20h</span></span>
           </div>
-          <div class="semaine__jour" data-jour="2">
-            <span class="semaine__nom">Mar</span>
-            <div class="semaine__piste"><span class="semaine__bloc semaine__bloc--11-14"></span><span class="semaine__bloc semaine__bloc--17-20"></span></div>
-            <span class="semaine__h">11h-14h<br>17h-20h</span>
+          <div class="horaires__jour" data-jour="2">
+            <span class="horaires__nom">Mardi</span>
+            <span class="horaires__creneaux"><span class="horaires__creneau">11h - 14h</span><span class="horaires__creneau">17h - 20h</span></span>
           </div>
-          <div class="semaine__jour" data-jour="3">
-            <span class="semaine__nom">Mer</span>
-            <div class="semaine__piste"><span class="semaine__bloc semaine__bloc--10-12"></span></div>
-            <span class="semaine__h">10h-12h</span>
+          <div class="horaires__jour" data-jour="3">
+            <span class="horaires__nom">Mercredi</span>
+            <span class="horaires__creneaux"><span class="horaires__creneau">10h - 12h</span></span>
           </div>
-          <div class="semaine__jour" data-jour="4">
-            <span class="semaine__nom">Jeu</span>
-            <div class="semaine__piste"><span class="semaine__bloc semaine__bloc--11-14"></span><span class="semaine__bloc semaine__bloc--17-20"></span></div>
-            <span class="semaine__h">11h-14h<br>17h-20h</span>
-          </div>
-          <div class="semaine__jour semaine__jour--ferme" data-jour="5">
-            <span class="semaine__nom">Ven</span>
-            <div class="semaine__piste"></div>
-            <span class="semaine__h">Fermé</span>
-          </div>
-          <div class="semaine__jour semaine__jour--ferme" data-jour="6">
-            <span class="semaine__nom">Sam</span>
-            <div class="semaine__piste"></div>
-            <span class="semaine__h">Fermé</span>
-          </div>
-          <div class="semaine__jour semaine__jour--ferme" data-jour="0">
-            <span class="semaine__nom">Dim</span>
-            <div class="semaine__piste"></div>
-            <span class="semaine__h">Fermé</span>
+          <div class="horaires__jour" data-jour="4">
+            <span class="horaires__nom">Jeudi</span>
+            <span class="horaires__creneaux"><span class="horaires__creneau">11h - 14h</span><span class="horaires__creneau">17h - 20h</span></span>
           </div>
         </div>
-
-        <ul class="sr-only">
-          <li>Lundi : 11h à 14h et 17h à 20h</li>
-          <li>Mardi : 11h à 14h et 17h à 20h</li>
-          <li>Mercredi : 10h à 12h</li>
-          <li>Jeudi : 11h à 14h et 17h à 20h</li>
-          <li>Vendredi, samedi et dimanche : fermé</li>
-        </ul>
+        <p class="horaires__ferme" data-reveal>Fermé le vendredi et le week-end.</p>
 
         <p class="badge mt-3" data-reveal>Consultations à domicile possibles</p>
         <p class="form__note mt-1" data-reveal>Des consultations à domicile peuvent être proposées aux personnes à mobilité réduite ne pouvant se rendre au cabinet.</p>
