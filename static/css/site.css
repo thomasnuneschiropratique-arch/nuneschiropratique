@@ -2044,6 +2044,9 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .prix__n{font-size:clamp(6rem,30vw,9rem)}
   .prix__meta div{grid-template-columns:1fr;gap:.2em}
   .avis__cote{position:static}
+  /* sur téléphone, les créneaux passent sous le nom du jour : la mention
+     « aujourd'hui » ne coupe plus la ligne en deux */
+  .horaires__jour{grid-template-columns:1fr;gap:.5em;padding-block:1em}
   .venir__modes{grid-template-columns:1fr;gap:0}
   .venir__mode{padding-block:1em}
 }
