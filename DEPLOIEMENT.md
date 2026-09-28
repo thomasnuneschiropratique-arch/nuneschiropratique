@@ -177,9 +177,8 @@ pas l'abonnement au domaine en résiliant l'hébergement WordPress.
 - [x] **Google Search Console** : propriété `nuneschiropratique.fr` validée
       (domaine, via l'enregistrement TXT), sitemap soumis - fait le
       28 septembre 2026.
-- [ ] **Fiche Google Business** : vérifier que le site déclaré est bien
-      `https://nuneschiropratique.fr`. (Le bouton « Voir tous les avis » de la page
-      Avis pointe déjà vers ta fiche.)
+- [x] **Fiche Google Business** : le domaine n'a pas changé (seule sa
+      destination technique a changé), donc rien à modifier sur la fiche.
 - [ ] Parcourir le site sur ton téléphone.
 - [ ] Coller le lien du site dans un message (WhatsApp, LinkedIn) pour voir
       l'aperçu : c'est l'image `static/img/og.png`, le logo sur fond papier.
