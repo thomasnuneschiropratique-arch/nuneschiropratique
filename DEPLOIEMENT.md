@@ -179,12 +179,16 @@ pas l'abonnement au domaine en résiliant l'hébergement WordPress.
       28 septembre 2026.
 - [x] **Fiche Google Business** : le domaine n'a pas changé (seule sa
       destination technique a changé), donc rien à modifier sur la fiche.
-- [ ] Parcourir le site sur ton téléphone.
-- [ ] Coller le lien du site dans un message (WhatsApp, LinkedIn) pour voir
+- [x] Parcourir le site sur ton téléphone.
+- [x] Coller le lien du site dans un message (WhatsApp, LinkedIn) pour voir
       l'aperçu : c'est l'image `static/img/og.png`, le logo sur fond papier.
       Pour la refaire après un changement de logo : `python3 tools/make-og.py`.
-- [ ] Envoyer un message test via le formulaire.
-- [ ] Ne ferme le site WordPress qu'une fois tout vérifié.
+- [x] Envoyer un message test via le formulaire - vérifié le 28 septembre 2026,
+      depuis le vrai domaine en ligne.
+
+Toute la liste est faite. Le site est vérifié de bout en bout ; tu peux fermer
+le site WordPress quand tu le souhaites (voir « Fiche Google Business » plus
+haut : ne résilie que l'hébergement, jamais l'abonnement au domaine).
 
 ---
 
