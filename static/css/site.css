@@ -1377,23 +1377,76 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 
 /* ---------- 31c. Mon approche ----------
-   Deux photos rectangulaires, alignées, de même hauteur. Le mouvement est
-   à l'intérieur des cadres : l'image glisse légèrement au défilement,
-   le cadre, lui, ne bouge pas. */
+   Un parcours en trois temps. À gauche, une photo reste en place et change
+   à chaque engagement. À droite, une colonne se remplit au défilement,
+   comme celle du logo ; de chaque engagement part un rameau de nerfs
+   (tools/dessin-rameau.py) qui pousse quand on l'atteint. */
 .approche{background:var(--paper-warm);padding-block:clamp(84px,10vw,150px)}
-.approche__tete{
+.defs-svg{position:absolute;width:0;height:0;overflow:hidden}
+.approche__grille{
   display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
-  gap:clamp(24px,5vw,96px);align-items:start;
+  gap:clamp(40px,6vw,120px);align-items:start;
 }
-.approche__p{color:var(--ink-soft);max-width:56ch}
-.approche__photos{
-  margin-top:clamp(48px,6vw,88px);
-  display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);
-  gap:clamp(12px,1.6vw,24px);
+.approche__media{position:sticky;top:calc(var(--header-h-stuck) + 32px)}
+.approche__cadre{
+  position:relative;overflow:hidden;aspect-ratio:4/5;
+  background:var(--paper);
 }
-.approche__photos figure{min-width:0}
-.approche__grande .fig{aspect-ratio:3/2}
-.approche__petite .fig{height:100%}
+.approche__img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transform:scale(1.07);
+  transition:opacity .9s var(--ease),transform 1.8s var(--ease-out);
+}
+.approche__img.is-on{opacity:1;transform:none}
+.approche__img[data-pas="0"]{object-position:64% 50%}
+.approche__img[data-pas="1"]{object-position:58% 40%}
+.approche__img[data-pas="3"]{object-position:50% 30%}
+
+.approche__p{color:var(--ink-soft);max-width:52ch}
+
+/* la colonne : un fil fin, et par-dessus le trait pétrole qui se remplit */
+.voie{
+  --prog:1;--retrait:clamp(76px,8.5vw,128px);
+  position:relative;margin-top:clamp(56px,7vw,110px);
+  padding-left:var(--retrait);
+}
+.voie::before,.voie::after{
+  content:"";position:absolute;left:0;top:0;bottom:0;
+  width:1px;background:var(--rule-strong);
+}
+.voie::after{
+  width:4px;left:-1.5px;border-radius:4px;background:var(--petrol);
+  transform:scaleY(var(--prog));transform-origin:top;
+}
+.voie__pas{
+  position:relative;
+  padding-block:clamp(40px,9vh,110px);
+  transition:opacity .6s var(--ease);
+}
+.voie__pas:first-child{padding-top:0}
+.voie__rameau{
+  position:absolute;left:calc(0px - var(--retrait));top:calc(var(--haut,0px) - .1em);
+  width:calc(var(--retrait) + 10px);height:auto;overflow:visible;
+  fill:var(--petrol);
+  transition:clip-path 1.2s var(--ease-out) .1s;
+}
+.voie__pas:first-child .voie__rameau{--haut:0px}
+.voie__pas:not(:first-child) .voie__rameau{--haut:clamp(40px,9vh,110px)}
+.voie__t{
+  font-size:clamp(1.9rem,3.4vw,3rem);line-height:1.08;letter-spacing:-.015em;
+}
+.voie__d{
+  margin-top:.7em;max-width:34ch;
+  font-size:clamp(1.05rem,1.3vw,1.25rem);line-height:1.5;color:var(--ink-soft);
+}
+
+/* avec script : les étapes à venir restent en retrait, le rameau n'a pas
+   encore poussé ; celles qu'on a dépassées gardent leur rameau */
+.approche.is-suivi .voie__pas{opacity:.26}
+.approche.is-suivi .voie__pas.is-on{opacity:1}
+.approche.is-suivi .voie__rameau{clip-path:inset(0 100% 0 0)}
+.approche.is-suivi .voie__pas.est-passe .voie__rameau{clip-path:inset(0 0 0 0)}
+
 /* cadre fixe, image un peu plus haute qui glisse dedans (data-parallax) */
 .cadre{position:absolute;inset:-7% 0}
 .engagements{
@@ -1575,11 +1628,14 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .chiffres{grid-template-columns:1fr 1fr}
 }
 @media (max-width:900px){
-  .manif__suite,.nerfs__grid,.approche__tete,
+  .manif__suite,.nerfs__grid,.approche__grille,
   .parcours__tete,.temoignages__grille,.fin__grille{grid-template-columns:1fr}
   .nerfs__art{max-width:420px}
-  .approche__photos{grid-template-columns:1fr}
-  .approche__petite .fig{height:auto;aspect-ratio:1}
+  /* la photo reste en haut de l'écran pendant qu'on lit les étapes */
+  .approche__media{top:0;z-index:2;margin-inline:calc(var(--gutter) * -1)}
+  .approche__cadre{aspect-ratio:auto;height:36vh}
+  .voie__pas{padding-block:clamp(32px,7vh,64px)}
+  .voie__pas:not(:first-child) .voie__rameau{--haut:clamp(32px,7vh,64px)}
   .engagements{grid-template-columns:1fr;gap:0}
   .engagement{padding-block:1em}
   .etapes{grid-template-columns:1fr;padding-top:0;padding-left:38px;gap:30px}

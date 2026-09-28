@@ -808,4 +808,47 @@
     els.forEach(function (el) { io.observe(el); });
   })();
 
+  /* ---------------------------------------------------------------- 20. Mon approche (accueil)
+     L'étape active est la dernière dont le haut a passé le milieu de
+     l'écran. Elle s'éclaire, son rameau pousse, la photo de gauche change
+     et la colonne se remplit jusqu'à elle. Sans script : tout est visible,
+     la première photo reste affichée. */
+  (function () {
+    var sec = $('[data-approche]');
+    if (!sec) return;
+    var pas = $$('.voie__pas', sec);
+    var imgs = $$('.approche__img', sec);
+    var voie = $('.voie', sec);
+    if (!pas.length || !voie) return;
+    sec.classList.add('is-suivi');
+
+    var dernier = -1, ticking = false;
+    function update() {
+      var milieu = window.innerHeight * 0.58, actif = 0;
+      pas.forEach(function (p, i) {
+        if (p.getBoundingClientRect().top < milieu) actif = i + 1;
+      });
+      if (actif !== dernier) {
+        pas.forEach(function (p, i) {
+          p.classList.toggle('is-on', i + 1 === actif);
+          p.classList.toggle('est-passe', i + 1 <= actif);
+        });
+        imgs.forEach(function (im) {
+          im.classList.toggle('is-on', parseInt(im.getAttribute('data-pas'), 10) === actif);
+        });
+        dernier = actif;
+      }
+      var r = voie.getBoundingClientRect();
+      var prog = (milieu - r.top) / r.height;
+      prog = prog < 0 ? 0 : (prog > 1 ? 1 : prog);
+      voie.style.setProperty('--prog', prog.toFixed(3));
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
+
 })();
