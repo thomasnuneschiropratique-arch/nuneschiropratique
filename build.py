@@ -33,7 +33,7 @@ CITY = "Toulouse"
 NAV = [
     ("/", "Accueil"),
     ("/la-chiropratique/", "La chiropratique"),
-    ("/a-propos/", "A propos de moi"),
+    ("/a-propos/", "À propos de moi"),
     ("/avis/", "Avis"),
     ("/contact-et-acces/", "Contact et Accès"),
     ("/tarifs-et-remboursements/", "Tarifs et remboursements"),

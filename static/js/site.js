@@ -851,4 +851,14 @@
     update();
   })();
 
+  /* ---------------------------------------------------------------- 21. Horaires : le jour d'aujourd'hui
+     La colonne du jour courant est simplement soulignée. Rien d'autre :
+     on n'affiche pas « ouvert maintenant », un jour férié rendrait ça faux. */
+  (function () {
+    var semaine = $('[data-semaine]');
+    if (!semaine) return;
+    var jour = semaine.querySelector('[data-jour="' + new Date().getDay() + '"]');
+    if (jour) jour.classList.add('is-aujourdhui');
+  })();
+
 })();

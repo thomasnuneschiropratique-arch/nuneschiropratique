@@ -18,52 +18,90 @@ priority: 0.8
 </header>
 
 
-<section class="section" aria-labelledby="tarifs">
+<section class="tarif" aria-labelledby="tarifs">
   <div class="wrap">
-    <div class="ed">
-      <div class="ed__body">
-        <h2 class="d-m sr-only" id="tarifs">Tarifs consultation</h2>
+    <h2 class="sr-only" id="tarifs">Le tarif</h2>
+    <p class="tarif__phrase" data-ink>Prendre soin de son corps n’est pas une dépense, c’est un investissement pour votre avenir.</p>
+  </div>
+</section>
 
-        <div data-reveal>
-          <div class="price">
-            <span class="price__label">Consultation</span>
-            <span class="price__value">60&nbsp;€</span>
-          </div>
-        </div>
 
-        <dl class="meta-line mt-3" data-reveal>
-          <dt>Moyens de paiement</dt>
-          <dd>Carte bancaire, chèques, espèces</dd>
+<section class="prix" aria-labelledby="tarif-unique">
+  <div class="wrap">
+    <div class="prix__grille">
+
+      <p class="prix__montant" data-reveal>
+        <span class="prix__n">60&nbsp;€</span>
+        <span class="prix__l">la consultation</span>
+      </p>
+
+      <div class="prix__texte">
+        <h2 class="d-l" id="tarif-unique" data-words>Un tarif unique</h2>
+        <p class="lead mt-3" data-reveal>Première visite, deuxième visite ou suivi&nbsp;: le même tarif, pour toute consultation.</p>
+        <dl class="prix__meta" data-reveal>
+          <div><dt>Durée</dt><dd>Environ 30 minutes</dd></div>
+          <div><dt>Paiement</dt><dd>Carte bancaire, chèque, espèces</dd></div>
+          <div><dt>Après chaque rendez-vous</dt><dd>Une attestation de soins vous est remise</dd></div>
         </dl>
+        <p class="mt-3" data-reveal>
+          <a class="link link--clair" href="/questions-frequentes/">Comment se déroule la première consultation <span class="link__arrow" aria-hidden="true">→</span></a>
+        </p>
       </div>
+
     </div>
   </div>
 </section>
 
 
-
-<section class="section section--warm" aria-labelledby="remboursements">
+<section class="rembours" aria-labelledby="remboursements">
   <div class="wrap">
-    <div class="ed">
-      <div class="ed__body prose">
-        <h2 class="d-m" id="remboursements" data-words>Remboursements</h2>
-        <div class="mt-3" data-reveal>
-          <p class="lead">La Sécurité Sociale ne rembourse pas encore la chiropratique.</p>
-          <p class="mt-2">En revanche, de nombreuses mutuelles proposent une prise en charge partielle ou totale des séances (entre 150 et 300&nbsp;€/an en général). Une attestation de soins vous sera remise après chaque rendez-vous afin de faciliter vos démarches auprès de votre complémentaire santé.</p>
-          <p>Pour savoir si votre mutuelle rembourse la chiropratique, consultez votre contrat ou contactez directement votre conseiller.</p>
-          <p class="mt-3"><a class="btn btn--solid" href="/prendre-rendez-vous/"><span class="btn__label">Prendre rendez-vous</span></a></p>
+    <div class="rembours__tete">
+      <div>
+        <h2 class="d-l" id="remboursements" data-words>Remboursements</h2>
+        <p class="lead mt-3" data-reveal>La Sécurité Sociale ne rembourse pas encore la chiropratique. En revanche, de nombreuses mutuelles proposent une prise en charge partielle ou totale des séances.</p>
+      </div>
+      <dl class="chiffres chiffres--seul" data-reveal>
+        <div class="chiffre">
+          <dt class="chiffre__l">Pris en charge par de nombreuses mutuelles, par an en général</dt>
+          <dd class="chiffre__v">150 à 300&nbsp;€</dd>
         </div>
-      </div>
+      </dl>
     </div>
+
+    <ol class="etapes etapes--3" data-etapes>
+      <li class="etape">
+        <span class="etape__quand">Au cabinet</span>
+        <h3>Vous réglez la consultation</h3>
+        <p>60&nbsp;€, par carte bancaire, chèque ou espèces.</p>
+      </li>
+      <li class="etape">
+        <span class="etape__quand">Après chaque rendez-vous</span>
+        <h3>Une attestation de soins vous est remise</h3>
+        <p>Elle facilite vos démarches auprès de votre complémentaire santé.</p>
+      </li>
+      <li class="etape">
+        <span class="etape__quand">Auprès de votre mutuelle</span>
+        <h3>Vous transmettez l’attestation</h3>
+        <p>La prise en charge dépend de votre contrat&nbsp;: entre 150 et 300&nbsp;€ par an en général.</p>
+      </li>
+    </ol>
+
+    <p class="rembours__note" data-reveal>Pour savoir si votre mutuelle rembourse la chiropratique, consultez votre contrat ou contactez directement votre conseiller.</p>
   </div>
 </section>
 
 
-<section class="quote section--tight" aria-label="Citation">
+<section class="aparte" aria-labelledby="bon-a-savoir">
   <div class="wrap">
-    <div class="quote__mark" data-reveal="fade"></div>
-    <figure>
-      <blockquote class="quote--wide" data-reveal>Prendre soin de son corps n’est pas une dépense, c’est un investissement pour votre avenir.</blockquote>
-    </figure>
+    <div class="aparte__grille">
+      <div>
+        <h2 class="surtitre" id="bon-a-savoir" data-reveal>Bon à savoir</h2>
+        <p class="aparte__p" data-reveal>Des consultations à domicile peuvent être proposées aux personnes à mobilité réduite ne pouvant se rendre au cabinet.</p>
+      </div>
+      <div class="aparte__actions" data-reveal>
+        <a class="btn btn--solid btn--lg" href="/prendre-rendez-vous/"><span class="btn__label">Prendre rendez-vous</span></a>
+        <a class="link" href="/questions-frequentes/">Questions fréquentes <span class="link__arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
   </div>
 </section>

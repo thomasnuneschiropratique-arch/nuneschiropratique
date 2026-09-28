@@ -18,75 +18,73 @@ priority: 0.9
 </header>
 
 
-
-<section class="section" aria-labelledby="infos">
+<section class="coord" aria-labelledby="infos">
   <div class="wrap">
-    <h2 class="sr-only" id="infos">Coordonnées, horaires et accès</h2>
+    <h2 class="sr-only" id="infos">Coordonnées et horaires</h2>
+    <div class="coord__grille">
 
-    <div class="cols-2">
-
-      <div>
-        <div data-reveal>
-          <h3 class="d-s">Adresse</h3>
-          <address class="mt-1 prose">
-            <p>56 boulevard de Strasbourg<br>31000 Toulouse<br>1<sup>er</sup> étage</p>
-          </address>
-
-          <h3 class="d-s mt-3">Contact</h3>
-          <div class="mt-1 prose">
-            <p>
-              Téléphone&nbsp;: <a href="tel:+33688755452">06 88 75 54 52</a><br>
-              Email&nbsp;: <a href="mailto:thomasnunes.chiropratique@gmail.com">thomasnunes.chiropratique@gmail.com</a>
-            </p>
-          </div>
-
-          <h3 class="d-s mt-3">Accès au cabinet</h3>
-          <ul class="tlist mt-1">
-            <li><strong>Métro&nbsp;:</strong> Ligne B - Station Jeanne d’Arc</li>
-            <li><strong>Bus&nbsp;:</strong> Lignes 23, 15, 29, 39, 45 - arrêt Jeanne d’Arc</li>
-            <li><strong>En voiture&nbsp;:</strong> Parkings publics à proximité (Jeanne d’Arc, Capitole, Jean-Jaurès) + places payantes aux alentours</li>
-          </ul>
+      <div class="coord__bloc">
+        <h3 class="surtitre" data-reveal>Le cabinet</h3>
+        <address class="coord__adresse" data-words>56 boulevard de Strasbourg<br>31000 Toulouse<br>1<sup>er</sup> étage</address>
+        <div class="coord__contact" data-reveal>
+          <a class="coord__tel" href="tel:+33688755452">06 88 75 54 52</a>
+          <a class="coord__mail" href="mailto:thomasnunes.chiropratique@gmail.com">thomasnunes.chiropratique@gmail.com</a>
         </div>
+        <p class="mt-3" data-reveal><a class="btn btn--solid" href="/prendre-rendez-vous/"><span class="btn__label">Prendre rendez-vous</span></a></p>
       </div>
 
-      <div>
-        <div data-reveal>
-          <div class="hours">
-            <div class="hours__row">
-              <span class="hours__day">Lundi</span>
-              <span class="hours__time">11h - 14h&nbsp;&nbsp;/&nbsp;&nbsp;17h - 20h</span>
-            </div>
-            <div class="hours__row">
-              <span class="hours__day">Mardi</span>
-              <span class="hours__time">11h - 14h&nbsp;&nbsp;/&nbsp;&nbsp;17h - 20h</span>
-            </div>
-            <div class="hours__row">
-              <span class="hours__day">Mercredi</span>
-              <span class="hours__time">10h - 12h</span>
-            </div>
-            <div class="hours__row">
-              <span class="hours__day">Jeudi</span>
-              <span class="hours__time">11h - 14h&nbsp;&nbsp;/&nbsp;&nbsp;17h - 20h</span>
-            </div>
-            <div class="hours__row hours__row--off">
-              <span class="hours__day">Vendredi</span>
-              <span class="hours__time">Fermé</span>
-            </div>
-            <div class="hours__row hours__row--off">
-              <span class="hours__day">Samedi</span>
-              <span class="hours__time">Fermé</span>
-            </div>
-            <div class="hours__row hours__row--off">
-              <span class="hours__day">Dimanche</span>
-              <span class="hours__time">Fermé</span>
-            </div>
+      <div class="coord__bloc">
+        <h3 class="surtitre" data-reveal>Horaires</h3>
+
+        <div class="semaine" data-semaine data-reveal aria-hidden="true">
+          <div class="semaine__axe"><span>10h</span><span>12h</span><span>14h</span><span>16h</span><span>18h</span><span>20h</span></div>
+          <div class="semaine__jour" data-jour="1">
+            <span class="semaine__nom">Lun</span>
+            <div class="semaine__piste"><span class="semaine__bloc semaine__bloc--11-14"></span><span class="semaine__bloc semaine__bloc--17-20"></span></div>
+            <span class="semaine__h">11h-14h<br>17h-20h</span>
           </div>
-
-          <p class="badge mt-3">Consultations à domicile possibles</p>
-          <p class="form__note mt-1">Des consultations à domicile peuvent être proposées aux personnes à mobilité réduite ne pouvant se rendre au cabinet.</p>
-
-          <p class="mt-3"><a class="btn btn--solid" href="/prendre-rendez-vous/"><span class="btn__label">Prendre rendez-vous</span></a></p>
+          <div class="semaine__jour" data-jour="2">
+            <span class="semaine__nom">Mar</span>
+            <div class="semaine__piste"><span class="semaine__bloc semaine__bloc--11-14"></span><span class="semaine__bloc semaine__bloc--17-20"></span></div>
+            <span class="semaine__h">11h-14h<br>17h-20h</span>
+          </div>
+          <div class="semaine__jour" data-jour="3">
+            <span class="semaine__nom">Mer</span>
+            <div class="semaine__piste"><span class="semaine__bloc semaine__bloc--10-12"></span></div>
+            <span class="semaine__h">10h-12h</span>
+          </div>
+          <div class="semaine__jour" data-jour="4">
+            <span class="semaine__nom">Jeu</span>
+            <div class="semaine__piste"><span class="semaine__bloc semaine__bloc--11-14"></span><span class="semaine__bloc semaine__bloc--17-20"></span></div>
+            <span class="semaine__h">11h-14h<br>17h-20h</span>
+          </div>
+          <div class="semaine__jour semaine__jour--ferme" data-jour="5">
+            <span class="semaine__nom">Ven</span>
+            <div class="semaine__piste"></div>
+            <span class="semaine__h">Fermé</span>
+          </div>
+          <div class="semaine__jour semaine__jour--ferme" data-jour="6">
+            <span class="semaine__nom">Sam</span>
+            <div class="semaine__piste"></div>
+            <span class="semaine__h">Fermé</span>
+          </div>
+          <div class="semaine__jour semaine__jour--ferme" data-jour="0">
+            <span class="semaine__nom">Dim</span>
+            <div class="semaine__piste"></div>
+            <span class="semaine__h">Fermé</span>
+          </div>
         </div>
+
+        <ul class="sr-only">
+          <li>Lundi : 11h à 14h et 17h à 20h</li>
+          <li>Mardi : 11h à 14h et 17h à 20h</li>
+          <li>Mercredi : 10h à 12h</li>
+          <li>Jeudi : 11h à 14h et 17h à 20h</li>
+          <li>Vendredi, samedi et dimanche : fermé</li>
+        </ul>
+
+        <p class="badge mt-3" data-reveal>Consultations à domicile possibles</p>
+        <p class="form__note mt-1" data-reveal>Des consultations à domicile peuvent être proposées aux personnes à mobilité réduite ne pouvant se rendre au cabinet.</p>
       </div>
 
     </div>
@@ -94,60 +92,29 @@ priority: 0.9
 </section>
 
 
-<section class="section section--warm" aria-labelledby="ecrire">
+<section class="venir" aria-labelledby="acces">
   <div class="wrap">
-    <div class="ed">
-      <div class="ed__body">
-        <h2 class="d-m" id="ecrire" data-words>Une question&nbsp;?</h2>
+    <h2 class="d-l" id="acces" data-words>Venir au cabinet</h2>
 
-        <div class="mt-3" data-reveal>
-          <p class="form__status" data-form-status hidden></p>
+    <ul class="venir__modes">
+      <li class="venir__mode" data-reveal>
+        <span class="venir__k">Métro</span>
+        <span class="venir__t">Ligne B</span>
+        <span class="venir__d">Station Jeanne d’Arc</span>
+      </li>
+      <li class="venir__mode d-1" data-reveal>
+        <span class="venir__k">Bus</span>
+        <span class="venir__t">Lignes 23, 15, 29, 39, 45</span>
+        <span class="venir__d">Arrêt Jeanne d’Arc</span>
+      </li>
+      <li class="venir__mode d-2" data-reveal>
+        <span class="venir__k">En voiture</span>
+        <span class="venir__t">Parkings Jeanne d’Arc, Capitole, Jean-Jaurès</span>
+        <span class="venir__d">Et places payantes aux alentours</span>
+      </li>
+    </ul>
 
-          <!-- Pour activer l'envoi : remplacer VOTRE_ID par l'identifiant du
-               formulaire Formspree (voir DEPLOIEMENT.md, étape « Formulaire »). -->
-          <form class="form mt-2" data-contact-form
-                action="https://formspree.io/f/xoevkrwl"
-                method="POST">
-
-            <div class="field">
-              <label for="f-nom">Nom <span class="req" aria-hidden="true">*</span></label>
-              <input id="f-nom" name="nom" type="text" autocomplete="name" required>
-            </div>
-
-            <div class="field">
-              <label for="f-email">E-mail <span class="req" aria-hidden="true">*</span></label>
-              <input id="f-email" name="email" type="email" autocomplete="email" required>
-            </div>
-
-            <div class="field">
-              <label for="f-message">Message</label>
-              <textarea id="f-message" name="message" rows="5"></textarea>
-            </div>
-
-            <div class="field--hp" aria-hidden="true">
-              <label for="f-gotcha">Ne remplissez pas ce champ</label>
-              <input id="f-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
-            </div>
-
-            <input type="hidden" name="_subject" value="Message depuis nuneschiropratique.fr">
-
-            <div>
-              <button class="btn btn--solid" type="submit"><span class="btn__label">Contactez-nous</span></button>
-            </div>
-
-            <p class="form__note">Les champs marqués d’un astérisque sont obligatoires. Vos informations servent uniquement à répondre à votre demande, voir les <a href="/mentions-legales/">mentions légales</a>.</p>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<section class="section section--tight" aria-labelledby="carte">
-  <div class="wrap">
-    <h2 class="sr-only" id="carte">Localisation du cabinet</h2>
-    <div class="map" data-reveal="fade">
+    <div class="map venir__map" data-reveal="fade">
       <iframe
         src="https://www.google.com/maps?q=56%20boulevard%20de%20Strasbourg%2C%2031000%20Toulouse&amp;output=embed&amp;hl=fr"
         title="Carte : Cabinet chiropratique Thomas Nunes, 56 boulevard de Strasbourg, 31000 Toulouse"
@@ -158,11 +125,52 @@ priority: 0.9
 </section>
 
 
-<section class="quote section--tight section--wash" aria-label="Citation">
+<section class="ecrire" aria-labelledby="ecrire-titre">
   <div class="wrap">
-    <div class="quote__mark" data-reveal="fade"></div>
-    <figure>
-      <blockquote data-reveal>The body achieves what the mind believes.</blockquote>
-    </figure>
+    <div class="ecrire__grille">
+
+      <div>
+        <h2 class="d-l" id="ecrire-titre" data-words>Une question&nbsp;?</h2>
+        <p class="lead mt-3" data-reveal>Écrivez-moi, j’y réponds directement.</p>
+      </div>
+
+      <div data-reveal>
+        <p class="form__status" data-form-status hidden></p>
+
+        <form class="form form--clair" data-contact-form
+              action="https://formspree.io/f/xoevkrwl"
+              method="POST">
+
+          <div class="field">
+            <label for="f-nom">Nom <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-nom" name="nom" type="text" autocomplete="name" required>
+          </div>
+
+          <div class="field">
+            <label for="f-email">E-mail <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required>
+          </div>
+
+          <div class="field">
+            <label for="f-message">Message</label>
+            <textarea id="f-message" name="message" rows="5"></textarea>
+          </div>
+
+          <div class="field--hp" aria-hidden="true">
+            <label for="f-gotcha">Ne remplissez pas ce champ</label>
+            <input id="f-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <input type="hidden" name="_subject" value="Message depuis nuneschiropratique.fr">
+
+          <div>
+            <button class="btn btn--light" type="submit"><span class="btn__label">Envoyer</span></button>
+          </div>
+
+          <p class="form__note">Les champs marqués d’un astérisque sont obligatoires. Vos informations servent uniquement à répondre à votre demande, voir les <a href="/mentions-legales/">mentions légales</a>.</p>
+        </form>
+      </div>
+
+    </div>
   </div>
 </section>
