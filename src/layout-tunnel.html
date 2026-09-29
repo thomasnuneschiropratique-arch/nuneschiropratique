@@ -26,6 +26,7 @@
 <link rel="preload" as="font" type="font/woff2" href="/fonts/ebgaramond-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/instrumentsans-latin.woff2" crossorigin>
 <link rel="stylesheet" href="/css/fonts.css">
+<link rel="preconnect" href="https://thomasnuneschiropratique.neptune.practicehub.io">
 
 <script>document.documentElement.className+=" js";</script>
 <link rel="stylesheet" href="/css/site.css">
@@ -34,6 +35,23 @@
 <body class="tunnel {{BODY_CLASS}}"{{BODY_ATTRS}}>
 
 <a class="skip" href="#contenu">Aller au contenu principal</a>
+
+<!-- Bandeau de consentement. Placé tôt dans la page pour le clavier et les
+     lecteurs d'écran ; son affichage est fixe, en bas d'écran. Court sur
+     téléphone, pour laisser voir le bouton de réservation. -->
+<div class="consent consent--tunnel" role="region" aria-label="Cookies et mesure publicitaire" data-consent hidden>
+  <div class="consent__inner">
+    <p class="consent__text">
+      Avec votre accord, le pixel Meta mesure nos publicités et aide Meta à les montrer à des
+      personnes intéressées&nbsp;; Meta (coresponsable) peut relier cette visite à votre compte.
+      Modifiable à tout moment. <a href="/mentions-legales/#pixel">En savoir plus</a>
+    </p>
+    <div class="consent__actions">
+      <button class="btn btn--sm consent__btn" type="button" data-consent-no><span class="btn__label">Refuser</span></button>
+      <button class="btn btn--sm consent__btn" type="button" data-consent-yes><span class="btn__label">Accepter</span></button>
+    </div>
+  </div>
+</div>
 
 <!-- Page de publicité : aucune navigation vers le reste du site. Le logo
      n'est pas un lien, pour ne pas faire sortir le visiteur du parcours. -->
@@ -58,29 +76,15 @@
       <span aria-hidden="true">·</span>
       <a href="/mentions-legales/">Mentions légales et confidentialité</a>
       <span aria-hidden="true">·</span>
-      <a href="#" data-consent-open>Gérer les cookies</a>
+      <button class="pied__btn" type="button" data-consent-open>Gérer les cookies</button>
     </p>
   </div>
 </footer>
 
 <!-- Barre fixe en bas d'écran, sur téléphone : là où tombe le pouce. -->
 <div class="barre" data-barre hidden>
-  <a class="btn btn--solid barre__principal" href="#agenda"><span class="btn__label">Voir les créneaux</span></a>
+  <a class="btn btn--solid barre__principal" href="#agenda"><span class="btn__label">Réserver</span></a>
   <a class="btn btn--ghost barre__tel" href="tel:{{PHONE_E164}}"><span class="btn__label">Appeler</span></a>
-</div>
-
-<div class="consent" data-consent hidden>
-  <div class="consent__inner">
-    <p class="consent__text">
-      Avec votre accord, cette page utilise le pixel Meta (Facebook, Instagram) pour mesurer
-      l’efficacité de nos publicités et les proposer à des personnes susceptibles d’être intéressées.
-      Sans votre accord, rien n’est déposé. <a href="/mentions-legales/#cookies">En savoir plus</a>
-    </p>
-    <div class="consent__actions">
-      <button class="btn btn--sm consent__btn" type="button" data-consent-no><span class="btn__label">Refuser</span></button>
-      <button class="btn btn--sm consent__btn" type="button" data-consent-yes><span class="btn__label">Accepter</span></button>
-    </div>
-  </div>
 </div>
 
 <script src="/js/site.js" defer></script>

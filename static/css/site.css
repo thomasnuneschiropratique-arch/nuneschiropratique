@@ -387,6 +387,9 @@ em,.italic{font-style:italic}
 }
 .site-footer a{transition:color .25s var(--ease)}
 .site-footer a:hover{color:#fff}
+/* « Gérer les cookies » est un bouton (il ouvre un panneau), habillé comme les liens voisins */
+.pied__btn{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left;transition:color .25s var(--ease)}
+.pied__btn:hover{color:#fff}
 .site-footer__top{
   display:grid;grid-template-columns:minmax(0,3fr) minmax(0,9fr);
   gap:clamp(36px,5vw,72px);align-items:start;
@@ -974,7 +977,9 @@ em,.italic{font-style:italic}
 .consent__actions{display:flex;gap:10px;flex:none}
 .site-footer__sep{margin-inline:.6em;opacity:.45}
 @media (max-width:620px){
-  .consent__inner{flex-direction:column;align-items:stretch}
+  /* compact : le bouton de réservation doit rester visible au-dessus */
+  .consent__inner{flex-direction:column;align-items:stretch;padding-block:12px;gap:10px}
+  .consent__text{font-size:.8rem;line-height:1.45}
   .consent__actions{justify-content:stretch}
   .consent__actions .btn{flex:1;justify-content:center}
 }
@@ -2058,11 +2063,12 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
    en bas pour réserver ou appeler à tout moment.
    ========================================================================= */
 .tunnel{padding-bottom:0}
+.tunnel [id]{scroll-margin-top:72px}
 
 /* en-tête minimal */
 .tete{
   position:sticky;top:0;z-index:50;
-  background:color-mix(in srgb,var(--paper) 94%,transparent);
+  background:rgba(251,250,247,.94);
   backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);
   border-bottom:1px solid var(--rule);
 }
@@ -2077,6 +2083,8 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .ouv{position:relative;isolation:isolate;color:#fff}
 .ouv__media{position:absolute;inset:0;z-index:-1;overflow:hidden;background:var(--petrol-darkest)}
 .ouv__img{width:100%;height:100%;object-fit:cover;object-position:62% 40%}
+.ouv__media picture{display:block;width:100%;height:100%}
+@media (max-width:700px){.ouv__img{object-position:60% 50%}}
 .ouv__media::after{
   content:"";position:absolute;inset:0;
   background:
@@ -2107,6 +2115,9 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .ouv__note{margin-top:clamp(16px,2vw,24px);display:inline-flex;align-items:center;gap:.6em;font-size:.9rem;color:#fff}
 .ouv__etoiles{color:#F2C14E;letter-spacing:.1em}
 
+/* contour de focus visible sur les fonds sombres */
+.ouv :focus-visible,.t-fin :focus-visible,.pied :focus-visible{outline-color:#fff}
+
 /* titres communs */
 .t-titre{font-size:clamp(1.8rem,3.6vw,3rem);line-height:1.08}
 
@@ -2123,11 +2134,16 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .t-avis__item blockquote{font-family:var(--serif);font-size:clamp(1.15rem,1.6vw,1.4rem);line-height:1.35}
 .t-avis__item figcaption{font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol)}
 .t-avis__item figcaption::before{content:"★★★★★";display:block;margin-bottom:.5em;color:var(--petrol);letter-spacing:.12em}
+.t-avis__source{font-weight:400;letter-spacing:.06em;text-transform:none;color:var(--ink-faint)}
 .t-avis__src{margin-top:clamp(16px,2vw,24px);display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;font-size:.86rem;color:var(--ink-faint)}
 
 /* vous vous reconnaissez */
 .t-signal{background:var(--petrol-veil);padding-block:clamp(48px,7vw,104px)}
-.t-signal__grille{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,80px);align-items:start}
+.t-signal__grille{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(20px,3vw,40px) clamp(24px,5vw,80px);align-items:start}
+.t-signal__titre{grid-column:1;grid-row:1}
+.t-signal__note{grid-column:1;grid-row:2}
+.t-signal__note .t-signal__p:first-child{margin-top:0}
+.t-signal__liste{grid-column:2;grid-row:1/span 2}
 .t-signal__p{margin-top:1em;color:var(--ink-soft);max-width:46ch}
 .t-signal__liste{border-top:1px solid var(--rule-strong)}
 .t-signal__liste li{padding:1em 0;border-bottom:1px solid var(--rule-strong);color:var(--ink-soft);line-height:1.5}
@@ -2146,7 +2162,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .t-etape p{font-size:.94rem;color:var(--ink-soft);line-height:1.6}
 .t-tarif{
   margin-top:clamp(32px,4vw,56px);padding:clamp(18px,2.4vw,30px);
-  display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:clamp(16px,3vw,48px);
+  display:grid;grid-template-columns:auto auto auto minmax(0,1fr);gap:clamp(16px,3vw,48px);
   background:var(--paper-warm);
 }
 .t-tarif dt{font-size:.7rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol)}
@@ -2156,8 +2172,10 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 /* agenda */
 .t-agenda{background:var(--petrol-veil);padding-block:clamp(48px,7vw,104px)}
 .t-agenda__aide{margin-top:.8em;color:var(--ink-soft);max-width:60ch}
-.t-agenda__cadre{margin-top:clamp(20px,2.6vw,32px)}
-.t-agenda__secours{margin-top:1em;font-size:.88rem;color:var(--ink-soft)}
+.t-agenda__cadre{margin-top:clamp(16px,2vw,24px)}
+.t-agenda .booking__loading{align-items:flex-start;padding-top:96px}
+html:not(.js) .t-agenda .booking{display:none}
+.t-agenda__secours{margin-top:.6em;font-size:.88rem;color:var(--ink-soft)}
 .t-agenda__secours a{color:var(--petrol);text-decoration:underline;text-underline-offset:3px}
 
 /* Thomas */
@@ -2200,7 +2218,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
     position:fixed;left:0;right:0;bottom:0;z-index:60;
     display:grid;grid-template-columns:1fr auto;gap:10px;
     padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
-    background:color-mix(in srgb,var(--paper) 96%,transparent);
+    background:rgba(251,250,247,.96);
     backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
     border-top:1px solid var(--rule);
     transform:translateY(0);transition:transform .35s var(--ease-out);
@@ -2218,13 +2236,14 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 /* petits écrans */
 @media (max-width:900px){
   .t-avis__grille,.t-signal__grille,.t-etapes,.t-thomas__grille,.t-fin__grille{grid-template-columns:1fr}
+  .t-signal__titre,.t-signal__note,.t-signal__liste{grid-column:auto;grid-row:auto}
   .t-tarif{grid-template-columns:1fr 1fr}
-  .t-tarif div:last-child{grid-column:1/-1}
+  .t-tarif div:nth-child(n+3){grid-column:1/-1}
   .t-thomas__photo{max-width:320px}
 }
 @media (max-width:480px){
   .tete__marque img{height:38px}
-  .ouv__titre{font-size:2.15rem}
+  .ouv__titre{font-size:2.15rem;max-width:none}
   .ouv__sous{font-size:.98rem}
   .ouv__faits li{font-size:.74rem}
   .ouv__cta{padding-inline:1.6em}

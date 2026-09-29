@@ -141,23 +141,26 @@
       <p>
         <a href="/mentions-legales/">Mentions légales et politique de confidentialité</a>
         <span class="site-footer__sep" aria-hidden="true">·</span>
-        <a href="#" data-consent-open>Gérer les cookies</a>
+        <button class="pied__btn" type="button" data-consent-open>Gérer les cookies</button>
       </p>
     </div>
 
   </div>
 </footer>
 
-<div class="consent" data-consent hidden>
+<!-- « Gérer les cookies » : ce site ne dépose aucun traceur. Seule la page
+     de publicité peut charger le pixel Meta, avec un accord demandé sur
+     place. Ici, on peut seulement refuser ou retirer cet accord. -->
+<div class="consent" role="region" aria-label="Cookies et mesure publicitaire" data-consent hidden>
   <div class="consent__inner">
     <p class="consent__text">
-      Ce site peut déposer un cookie de mesure publicitaire (Meta) afin d’évaluer
-      les campagnes du cabinet. Rien n’est déposé sans votre accord, et vos données
-      ne servent à rien d’autre. <a href="/mentions-legales/">En savoir plus</a>
+      Ce site ne dépose aucun traceur publicitaire. Seule la page qui accueille les visiteurs de nos
+      publicités peut utiliser le pixel Meta, et uniquement avec votre accord, demandé sur cette page.
+      Vous pouvez le refuser ou le retirer ici. <a href="/mentions-legales/#pixel">En savoir plus</a>
     </p>
     <div class="consent__actions">
-      <button class="btn btn--ghost btn--sm" type="button" data-consent-no><span class="btn__label">Refuser</span></button>
-      <button class="btn btn--solid btn--sm" type="button" data-consent-yes><span class="btn__label">Accepter</span></button>
+      <button class="btn btn--sm consent__btn" type="button" data-consent-no><span class="btn__label">Refuser le pixel Meta</span></button>
+      <button class="btn btn--sm consent__btn" type="button" data-consent-close><span class="btn__label">Fermer</span></button>
     </div>
   </div>
 </div>

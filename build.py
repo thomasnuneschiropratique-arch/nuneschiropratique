@@ -239,7 +239,11 @@ def politique_securite(page_html):
         ("img-src", "'self' data:" + fb_envoi),
         ("font-src", "'self'"),
         ("connect-src", "'self' " + FORMSPREE + fb_envoi + fb_script),
-        ("frame-src", PRACTICEHUB + " https://www.google.com https://maps.google.com"),
+        # 'self' : après une réservation, PracticeHub redirige son cadre vers
+        # /reservation-confirmee/ (notre site). Sans 'self', le navigateur
+        # bloque cette page dans le cadre et le patient ne voit aucune
+        # confirmation.
+        ("frame-src", "'self' " + PRACTICEHUB + " https://www.google.com https://maps.google.com"),
         ("form-action", "'self' " + FORMSPREE),
         ("base-uri", "'self'"),
         ("manifest-src", "'self'"),
@@ -368,8 +372,11 @@ def injecter_srcset(html):
             d = dimensions_jpeg(chemin)
             if not d or d[0] in vues:
                 continue
-            # une variante agrandie ne sert à rien : on l'écarte
+            # une variante agrandie ne sert à rien : on l'écarte, de même
+            # qu'une variante plus lourde que l'original, plus grand
             if suffixe and dim and d[0] >= dim[0]:
+                continue
+            if suffixe and os.path.getsize(chemin) >= os.path.getsize(original):
                 continue
             vues.add(d[0])
             entrees.append("/img/photos/%s%s.jpg %dw" % (base, suffixe, d[0]))

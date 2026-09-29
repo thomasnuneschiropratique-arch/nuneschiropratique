@@ -160,6 +160,25 @@ for p in pages:
         errors.append(f"{name}: lien vers le tunnel /bilan/ (il doit rester caché)")
     if a_pixel and name.startswith("reservation-confirmee"):
         errors.append(f"{name}: pixel sur la page de confirmation (elle reçoit des données patient)")
+    # l'accord au pixel ne se donne que sur la page de publicité, dans son bandeau
+    if not a_pixel and "data-consent-yes" in t:
+        errors.append(f"{name}: bouton « Accepter » le pixel sur une page sans pixel")
+    # PracticeHub redirige son cadre vers /reservation-confirmee/ (notre site) :
+    # sans 'self' dans frame-src, le patient ne verrait aucune confirmation
+    if "data-booking-frame" in t and csp:
+        fs = re.search(r"frame-src ([^;\"]+)", html.unescape(csp.group(1)))
+        if not fs or "'self'" not in fs.group(1):
+            errors.append(f"{name}: agenda en cadre sans 'self' dans frame-src (confirmation bloquée)")
+
+# Meta ne doit recevoir que la visite de page : aucun événement lié au
+# rendez-vous, à l'agenda ou aux appels (santé, conditions de Meta).
+js = open(os.path.join(DIST, "js", "site.js"), encoding="utf-8").read()
+for ev in re.findall(r"fbq\(\s*'track'\s*,\s*'([^']+)'", js):
+    if ev != "PageView":
+        errors.append(f"site.js : événement Meta « {ev} » (seul PageView est permis)")
+if re.search(r"fbq\(\s*'track'\s*,\s*[^'\s]", js):
+    errors.append("site.js : événement Meta au nom calculé (seul PageView est permis)")
+
 if not os.path.exists(os.path.join(DIST, "bilan", "index.html")):
     errors.append("tunnel /bilan/ absent")
 if "/bilan/" in open(os.path.join(DIST, "sitemap.xml"), encoding="utf-8").read():
