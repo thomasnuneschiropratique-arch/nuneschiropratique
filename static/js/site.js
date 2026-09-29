@@ -6,6 +6,28 @@
 (function () {
   'use strict';
 
+  /* ---------------------------------------------------------------- 0. Confirmation de réservation
+     Après une réservation, PracticeHub redirige vers /reservation-confirmee/
+     en ajoutant à l'adresse des données du patient. Cette redirection se fait
+     dans le cadre de l'agenda. Si la page qui contient ce cadre est sur notre
+     site, on lui passe la main (le tunnel y compte le rendez-vous, sans
+     aucune donnée patient), sinon on affiche la confirmation en pleine page,
+     à une adresse nettoyée de ces données. */
+  (function () {
+    if (!/^\/reservation-confirmee/.test(location.pathname) || window.top === window.self) return;
+    var memeSite = false;
+    try { memeSite = window.parent.location.origin === location.origin; } catch (e) { /* autre site */ }
+    if (!memeSite) return;
+    var propre = location.pathname;
+    try {
+      if (typeof window.parent.ncReservationConfirmee === 'function') {
+        window.parent.ncReservationConfirmee(propre);
+        return;
+      }
+    } catch (e) { /* on retombe sur l'affichage en pleine page */ }
+    try { window.top.location.replace(propre); } catch (e) {}
+  })();
+
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
   var $ = function (s, c) { return (c || document).querySelector(s); };
@@ -290,7 +312,19 @@
       }
     }
 
-    var timer = setTimeout(function () { settled(false); }, DEADLINE);
+    // Un cadre en chargement différé (loading="lazy") ne commence à charger
+    // qu'à l'approche de l'écran : le délai de secours part à ce moment-là,
+    // sinon le secours s'afficherait avant même que l'agenda soit demandé.
+    var timer = null;
+    function armer() { if (!timer && !done) timer = setTimeout(function () { settled(false); }, DEADLINE); }
+    if (frame.getAttribute('loading') === 'lazy' && 'IntersectionObserver' in window) {
+      var guet = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { armer(); guet.disconnect(); }
+      }, { rootMargin: '600px 0px' });
+      guet.observe(host);
+    } else {
+      armer();
+    }
     frame.addEventListener('load', function () { settled(true); });
     frame.addEventListener('error', function () { settled(false); });
 
@@ -306,28 +340,50 @@
 
 
   /* ---------------------------------------------------------------- 11. Mesure publicitaire
-     Pixel Meta, chargé UNIQUEMENT après accord explicite du visiteur.
-     Tant que PIXEL_ID vaut le texte d'attente, rien n'est chargé et le bandeau
-     ne s'affiche pas : le site reste sans aucun traceur.
+     Pixel Meta, seulement sur les pages de publicité (attribut data-pixel,
+     posé par build.py) et seulement après l'accord du visiteur : le script
+     de Meta n'est même pas téléchargé avant. Le reste du site n'a aucun
+     traceur. Le choix est gardé 6 mois, puis redemandé.
 
-     Pour activer : remplacer la valeur ci-dessous par l'identifiant du pixel
-     (Gestionnaire d'événements Meta -> Sources de données -> ton pixel).  */
-  var PIXEL_ID = 'VOTRE_ID_PIXEL_META';
-
+     Événements, chacun une fois par visite et sans aucun paramètre :
+       Lead     : intention de réserver (bouton « Voir les créneaux », ou
+                  agenda regardé 3 secondes). Même nom que sur l'ancien
+                  tunnel, pour ne pas perturber les campagnes qui l'utilisent.
+       Contact  : clic sur un numéro de téléphone.
+       Schedule : rendez-vous réellement pris (voir section 0). */
   (function () {
-    var KEY = 'nc-consent-pub';
+    var corps = document.body;
+    var PIXEL_ID = corps.getAttribute('data-pixel');
+    var MODE = corps.getAttribute('data-pixel-mode');
     var banner = $('[data-consent]');
-    var configured = PIXEL_ID && PIXEL_ID.indexOf('VOTRE_ID') === -1;
+    var CLE = 'nc-consent-pub';
+    var SIX_MOIS = 182 * 24 * 3600 * 1000;
+    var actif = false;
 
-    function stored() {
-      try { return localStorage.getItem(KEY); } catch (e) { return null; }
+    function lire() {
+      try {
+        var v = JSON.parse(localStorage.getItem(CLE) || 'null');
+        if (!v || (v.choix !== 'oui' && v.choix !== 'non')) return null;
+        if (Date.now() - v.date > SIX_MOIS) return null;
+        return v.choix;
+      } catch (e) { return null; }
     }
-    function remember(value) {
-      try { localStorage.setItem(KEY, value); } catch (e) { /* navigation privée */ }
+    function ecrire(choix) {
+      try { localStorage.setItem(CLE, JSON.stringify({ choix: choix, date: Date.now() })); } catch (e) { /* navigation privée */ }
     }
 
-    function loadPixel() {
-      if (!configured || window.fbq) return;
+    function envoyer(nom) {
+      if (!actif || !window.fbq) return;
+      try {
+        if (sessionStorage.getItem('nc-ev-' + nom)) return;
+        sessionStorage.setItem('nc-ev-' + nom, '1');
+      } catch (e) { /* sans stockage : on envoie quand même, une fois */ }
+      window.fbq('track', nom);
+    }
+
+    function charger() {
+      if (!PIXEL_ID) return;
+      if (window.fbq) { window.fbq('consent', 'grant'); actif = true; return; }
 
       /* extrait officiel Meta, recopié tel quel */
       !function (f, b, e, v, n, t, s) {
@@ -339,47 +395,94 @@
         s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
       }(window, document, 'script', 'https://connect.facebook.net/fr_FR/fbevents.js');
 
+      // Pas de collecte automatique (clics, texte des boutons, champs) : Meta
+      // ne reçoit que les événements ci-dessus.
+      window.fbq('set', 'autoConfig', false, PIXEL_ID);
       window.fbq('init', PIXEL_ID);
       window.fbq('track', 'PageView');
-
-      // La page de réservation est l'intention d'achat : on la remonte comme
-      // « Lead ». C'est l'équivalent du suivi qui était posé sur le bouton,
-      // en plus fiable — le bouton mène désormais à une page du site.
-      if (location.pathname.indexOf('/prendre-rendez-vous') === 0) {
-        window.fbq('track', 'Lead');
-      }
+      actif = true;
     }
 
-    function show() { if (banner) banner.hidden = false; }
-    function hide() { if (banner) banner.hidden = true; }
-
-    function decide(value) {
-      remember(value);
-      hide();
-      if (value === 'oui') loadPixel();
+    function revoquer() {
+      actif = false;
+      if (window.fbq) window.fbq('consent', 'revoke');
+      // effacer les cookies Meta déjà déposés
+      var h = location.hostname;
+      ['_fbp', '_fbc'].forEach(function (nom) {
+        [h, '.' + h, '.' + h.replace(/^www\./, '')].forEach(function (dom) {
+          document.cookie = nom + '=; Max-Age=0; path=/; domain=' + dom;
+        });
+        document.cookie = nom + '=; Max-Age=0; path=/';
+      });
     }
 
-    if (!configured) { hide(); return; }
-
-    var choice = stored();
-    if (choice === 'oui') loadPixel();
-    else if (choice !== 'non') show();
+    function montrer() {
+      if (!banner) return;
+      banner.hidden = false;
+      corps.classList.add('consent-ouvert');
+    }
+    function cacher() {
+      if (!banner) return;
+      banner.hidden = true;
+      corps.classList.remove('consent-ouvert');
+    }
+    function decider(choix) {
+      ecrire(choix);
+      cacher();
+      if (choix === 'oui') charger(); else revoquer();
+    }
 
     if (banner) {
-      var yes = banner.querySelector('[data-consent-yes]');
-      var no = banner.querySelector('[data-consent-no]');
-      if (yes) yes.addEventListener('click', function () { decide('oui'); });
-      if (no) no.addEventListener('click', function () { decide('non'); });
+      var oui = banner.querySelector('[data-consent-yes]');
+      var non = banner.querySelector('[data-consent-no]');
+      if (oui) oui.addEventListener('click', function () { decider('oui'); });
+      if (non) non.addEventListener('click', function () { decider('non'); });
     }
-
-    // « Gérer les cookies » en pied de page : permet de revenir sur son choix
-    $$('[data-consent-open]').forEach(function (link) {
-      link.addEventListener('click', function (e) {
+    // « Gérer les cookies », en pied de page : revenir sur son choix à tout moment
+    $$('[data-consent-open]').forEach(function (lien) {
+      lien.addEventListener('click', function (e) {
         e.preventDefault();
-        show();
-        if (banner) banner.scrollIntoView({ block: 'nearest' });
+        montrer();
       });
     });
+
+    if (!PIXEL_ID) { cacher(); return; }
+
+    var choix = lire();
+    if (choix === 'oui') charger();
+    else if (choix !== 'non') montrer();
+
+    if (MODE !== 'tunnel') return;
+
+    // Lead : clic sur un bouton qui mène à l'agenda...
+    $$('a[href="#agenda"]').forEach(function (a) {
+      a.addEventListener('click', function () { envoyer('Lead'); });
+    });
+    // ... ou agenda au milieu de l'écran pendant 3 secondes
+    var agenda = $('[data-agenda]');
+    if (agenda && 'IntersectionObserver' in window) {
+      var attente = null;
+      new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) {
+          if (!attente) attente = setTimeout(function () { envoyer('Lead'); }, 3000);
+        } else {
+          clearTimeout(attente); attente = null;
+        }
+      }, { rootMargin: '-40% 0px -40% 0px' }).observe(agenda);
+    }
+
+    // Contact : clic sur un numéro de téléphone
+    $$('a[href^="tel:"]').forEach(function (a) {
+      a.addEventListener('click', function () { envoyer('Contact'); });
+    });
+
+    // Schedule : la page de confirmation, chargée dans le cadre de l'agenda,
+    // appelle cette fonction (section 0). On compte le rendez-vous, puis on
+    // affiche la confirmation en pleine page, à une adresse sans paramètres.
+    window.ncReservationConfirmee = function (chemin) {
+      envoyer('Schedule');
+      setTimeout(function () { location.assign(chemin || '/reservation-confirmee/'); }, actif ? 700 : 0);
+    };
   })();
 
 
@@ -859,6 +962,50 @@
     if (!semaine) return;
     var jour = semaine.querySelector('[data-jour="' + new Date().getDay() + '"]');
     if (jour) jour.classList.add('is-aujourdhui');
+  })();
+
+  /* ---------------------------------------------------------------- 23. Tunnel : origine des réservations
+     Les paramètres de campagne de l'annonce (utm_source, utm_campaign...)
+     sont transmis à l'agenda PracticeHub, qui les enregistre avec chaque
+     réservation. On sait ainsi quelles réservations viennent de Meta, même
+     pour les visiteurs qui ont refusé le pixel. Seuls les utm_ passent :
+     aucun identifiant de clic ni aucune donnée personnelle. */
+  (function () {
+    if (document.body.getAttribute('data-pixel-mode') !== 'tunnel') return;
+    var cadre = $('[data-booking-frame]');
+    if (!cadre || !window.URLSearchParams) return;
+    var ici = new URLSearchParams(location.search), utm = [];
+    ici.forEach(function (valeur, cle) {
+      if (/^utm_[a-z]+$/.test(cle) && valeur.length < 120) utm.push([cle, valeur]);
+    });
+    if (!utm.length) return;
+    var url = new URL(cadre.getAttribute('src'));
+    utm.forEach(function (p) { url.searchParams.set(p[0], p[1]); });
+    cadre.setAttribute('src', url.toString());
+  })();
+
+
+  /* ---------------------------------------------------------------- 22. Tunnel : barre fixe en bas d'écran
+     Elle apparaît une fois le bouton du haut sorti de l'écran, et s'efface
+     quand l'agenda occupe l'écran (inutile, et il faut de la place pour
+     réserver) ou quand le bandeau de consentement est ouvert. */
+  (function () {
+    var barre = $('[data-barre]');
+    var cta = $('[data-cta-ouverture]');
+    if (!barre || !cta || !('IntersectionObserver' in window)) return;
+    var agenda = $('[data-agenda]');
+    var ctaVisible = true, agendaVisible = false;
+
+    function maj() {
+      var consent = document.body.classList.contains('consent-ouvert');
+      barre.hidden = ctaVisible || agendaVisible || consent;
+    }
+    new IntersectionObserver(function (e) { ctaVisible = e[0].isIntersecting; maj(); }).observe(cta);
+    if (agenda) {
+      new IntersectionObserver(function (e) { agendaVisible = e[0].isIntersecting; maj(); },
+        { rootMargin: '-30% 0px -30% 0px' }).observe(agenda);
+    }
+    new MutationObserver(maj).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   })();
 
 })();

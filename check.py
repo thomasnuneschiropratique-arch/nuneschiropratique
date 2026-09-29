@@ -144,6 +144,27 @@ for p in pages:
             errors.append(f"{name}: script en ligne non couvert par le CSP "
                           f"(empreinte attendue sha256-{h})")
 
+# --- pages de publicité : cachées, et seules à parler à Meta ---
+# Le tunnel ne doit être relié par aucune page du site, ni indexé par Google.
+# Les domaines de Meta ne doivent être ouverts que sur les pages à pixel.
+for p in pages:
+    t = open(p, encoding="utf-8").read()
+    name = rel(p)
+    a_pixel = 'data-pixel="' in t
+    csp = re.search(r'<meta http-equiv="Content-Security-Policy" content="([^"]+)"', t)
+    if csp and "facebook" in csp.group(1) and not a_pixel:
+        errors.append(f"{name}: CSP ouvert à Meta sur une page sans pixel")
+    if a_pixel and 'content="noindex"' not in t:
+        errors.append(f"{name}: page à pixel Meta sans noindex")
+    if not a_pixel and re.search(r'href="/bilan/?"', t):
+        errors.append(f"{name}: lien vers le tunnel /bilan/ (il doit rester caché)")
+    if a_pixel and name.startswith("reservation-confirmee"):
+        errors.append(f"{name}: pixel sur la page de confirmation (elle reçoit des données patient)")
+if not os.path.exists(os.path.join(DIST, "bilan", "index.html")):
+    errors.append("tunnel /bilan/ absent")
+if "/bilan/" in open(os.path.join(DIST, "sitemap.xml"), encoding="utf-8").read():
+    errors.append("le tunnel /bilan/ figure dans le sitemap")
+
 # --- srcset : chaque largeur annoncée doit correspondre au fichier réel ---
 def _jpeg_w(chemin):
     try:

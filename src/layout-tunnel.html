@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--CSP-->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<link rel="canonical" href="{{CANONICAL}}">
+<meta name="theme-color" content="#305A59">
+<meta name="format-detection" content="telephone=no">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cabinet chiropratique Thomas Nunes">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:url" content="{{CANONICAL}}">
+<meta property="og:image" content="{{OG_IMAGE}}">
+
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+<link rel="preload" as="font" type="font/woff2" href="/fonts/ebgaramond-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/instrumentsans-latin.woff2" crossorigin>
+<link rel="stylesheet" href="/css/fonts.css">
+
+<script>document.documentElement.className+=" js";</script>
+<link rel="stylesheet" href="/css/site.css">
+{{EXTRA_HEAD}}
+</head>
+<body class="tunnel {{BODY_CLASS}}"{{BODY_ATTRS}}>
+
+<a class="skip" href="#contenu">Aller au contenu principal</a>
+
+<!-- Page de publicité : aucune navigation vers le reste du site. Le logo
+     n'est pas un lien, pour ne pas faire sortir le visiteur du parcours. -->
+<header class="tete">
+  <div class="tete__inner">
+    <span class="tete__marque">
+      <img src="/img/logo-lockup.png" alt="Cabinet chiropratique Thomas Nunes" width="560" height="213">
+    </span>
+    <a class="btn btn--ghost btn--sm tete__tel" href="tel:{{PHONE_E164}}"><span class="btn__label">{{PHONE}}</span></a>
+  </div>
+</header>
+
+<main id="contenu">
+{{CONTENT}}
+</main>
+
+<footer class="pied">
+  <div class="wrap pied__inner">
+    <p>Cabinet chiropratique Thomas Nunes · 56 boulevard de Strasbourg, 31000 Toulouse</p>
+    <p class="pied__liens">
+      <a href="/">Le site du cabinet</a>
+      <span aria-hidden="true">·</span>
+      <a href="/mentions-legales/">Mentions légales et confidentialité</a>
+      <span aria-hidden="true">·</span>
+      <a href="#" data-consent-open>Gérer les cookies</a>
+    </p>
+  </div>
+</footer>
+
+<!-- Barre fixe en bas d'écran, sur téléphone : là où tombe le pouce. -->
+<div class="barre" data-barre hidden>
+  <a class="btn btn--solid barre__principal" href="#agenda"><span class="btn__label">Voir les créneaux</span></a>
+  <a class="btn btn--ghost barre__tel" href="tel:{{PHONE_E164}}"><span class="btn__label">Appeler</span></a>
+</div>
+
+<div class="consent" data-consent hidden>
+  <div class="consent__inner">
+    <p class="consent__text">
+      Avec votre accord, cette page utilise le pixel Meta (Facebook, Instagram) pour mesurer
+      l’efficacité de nos publicités et les proposer à des personnes susceptibles d’être intéressées.
+      Sans votre accord, rien n’est déposé. <a href="/mentions-legales/#cookies">En savoir plus</a>
+    </p>
+    <div class="consent__actions">
+      <button class="btn btn--sm consent__btn" type="button" data-consent-no><span class="btn__label">Refuser</span></button>
+      <button class="btn btn--sm consent__btn" type="button" data-consent-yes><span class="btn__label">Accepter</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/site.js" defer></script>
+</body>
+</html>

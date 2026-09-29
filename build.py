@@ -39,6 +39,11 @@ NAV = [
     ("/tarifs-et-remboursements/", "Tarifs et remboursements"),
 ]
 
+# Pixel Meta du cabinet. Il n'est activé que sur les pages qui le demandent
+# (en-tête « pixel: tunnel » ou « pixel: confirmation ») et, même là, ne se
+# charge qu'après l'accord du visiteur. Le reste du site n'a aucun traceur.
+META_PIXEL = "822434550625671"
+
 SOCIAL = [
     ("Instagram", "https://www.instagram.com/nuneschiropratique/"),
     ("Facebook", "https://www.facebook.com/profile.php?id=61585701608209"),
@@ -90,9 +95,21 @@ def mobile_nav_markup(current):
     return "\n            ".join(items)
 
 
-def build_page(path, layout):
+_GABARITS = {}
+
+
+def gabarit(nom):
+    """layout.html par défaut ; « layout: tunnel » -> layout-tunnel.html."""
+    fichier = "layout.html" if not nom else "layout-%s.html" % nom
+    if fichier not in _GABARITS:
+        _GABARITS[fichier] = open(os.path.join(SRC, fichier), encoding="utf-8").read()
+    return _GABARITS[fichier]
+
+
+def build_page(path, layout=None):
     raw = open(path, encoding="utf-8").read()
     meta, body = parse_front_matter(raw)
+    layout = gabarit(meta.get("layout"))
 
     slug = meta.get("slug", "")
     url = SITE + ("/" + slug + "/" if slug else "/")
@@ -110,6 +127,8 @@ def build_page(path, layout):
         "OG_IMAGE": og_image,
         "OG_TYPE": meta.get("og_type", "website"),
         "BODY_CLASS": meta.get("body_class", ""),
+        "BODY_ATTRS": (' data-pixel="%s" data-pixel-mode="%s"' % (META_PIXEL, meta["pixel"])
+                       if meta.get("pixel") else ""),
         "NAV": nav_markup(canonical),
         "MOBILE_NAV": mobile_nav_markup(canonical),
         "CONTENT": body,
@@ -207,13 +226,19 @@ def politique_securite(page_html):
         h = hashlib.sha256(corps.encode("utf-8")).digest()
         empreintes.append("'sha256-" + base64.b64encode(h).decode("ascii") + "'")
 
+    # Les pages de publicité chargent le pixel Meta (après accord) : on
+    # n'ouvre ses deux domaines que sur ces pages-là.
+    meta_ = 'data-pixel="' in page_html
+    fb_script = " https://connect.facebook.net" if meta_ else ""
+    fb_envoi = " https://www.facebook.com" if meta_ else ""
+
     directives = [
         ("default-src", "'none'"),
-        ("script-src", " ".join(["'self'"] + empreintes)),
+        ("script-src", " ".join(["'self'"] + empreintes) + fb_script),
         ("style-src", "'self'"),
-        ("img-src", "'self' data:"),
+        ("img-src", "'self' data:" + fb_envoi),
         ("font-src", "'self'"),
-        ("connect-src", "'self' " + FORMSPREE),
+        ("connect-src", "'self' " + FORMSPREE + fb_envoi + fb_script),
         ("frame-src", PRACTICEHUB + " https://www.google.com https://maps.google.com"),
         ("form-action", "'self' " + FORMSPREE),
         ("base-uri", "'self'"),
@@ -412,7 +437,6 @@ def main():
 
     copytree(STATIC, DIST)
 
-    layout = open(os.path.join(SRC, "layout.html"), encoding="utf-8").read()
 
     pages = sorted(
         os.path.join(SRC, "pages", f)
@@ -421,7 +445,7 @@ def main():
     )
     built = []
     for p in pages:
-        canonical, meta = build_page(p, layout)
+        canonical, meta = build_page(p)
         built.append((canonical, meta))
         print("  ·", canonical)
 

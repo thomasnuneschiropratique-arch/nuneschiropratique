@@ -2050,3 +2050,182 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .venir__modes{grid-template-columns:1fr;gap:0}
   .venir__mode{padding-block:1em}
 }
+
+/* =========================================================================
+   34. Tunnel de publicité (/bilan/)
+   Une seule action : réserver. Pas de menu, un logo qui ne fait pas sortir,
+   l'offre et les faits dès le premier écran d'un téléphone, une barre fixe
+   en bas pour réserver ou appeler à tout moment.
+   ========================================================================= */
+.tunnel{padding-bottom:0}
+
+/* en-tête minimal */
+.tete{
+  position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb,var(--paper) 94%,transparent);
+  backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);
+  border-bottom:1px solid var(--rule);
+}
+.tete__inner{
+  max-width:var(--wrap);margin-inline:auto;padding:10px var(--gutter);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.tete__marque img{height:clamp(40px,4vw,56px);width:auto}
+.tete__tel{white-space:nowrap}
+
+/* ouverture : l'offre, les faits, le bouton, la note */
+.ouv{position:relative;isolation:isolate;color:#fff}
+.ouv__media{position:absolute;inset:0;z-index:-1;overflow:hidden;background:var(--petrol-darkest)}
+.ouv__img{width:100%;height:100%;object-fit:cover;object-position:62% 40%}
+.ouv__media::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(97deg,rgba(14,30,29,.86) 0%,rgba(14,30,29,.72) 45%,rgba(14,30,29,.35) 80%,rgba(14,30,29,.2) 100%),
+    linear-gradient(180deg,rgba(14,30,29,.2) 0%,rgba(14,30,29,.55) 100%);
+}
+.ouv__inner{padding-block:clamp(28px,6vw,96px) clamp(28px,5vw,80px)}
+.ouv__accroche{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(1.05rem,1.6vw,1.35rem);color:#CFE0DD;
+}
+.ouv__titre{
+  margin-top:.25em;max-width:14ch;
+  font-size:clamp(2.2rem,5.6vw,4.6rem);line-height:1.02;color:#fff;
+}
+.ouv__sous{margin-top:.8em;max-width:40ch;font-size:clamp(1rem,1.2vw,1.15rem);line-height:1.55;color:rgba(255,255,255,.88)}
+.ouv__faits{margin-top:clamp(16px,2vw,26px);display:flex;flex-wrap:wrap;gap:8px}
+.ouv__faits li{
+  font-size:.8rem;letter-spacing:.02em;white-space:nowrap;
+  padding:.42em .85em;border:1px solid rgba(255,255,255,.34);border-radius:999px;
+  background:rgba(255,255,255,.08);
+}
+.ouv__actions{margin-top:clamp(20px,2.6vw,32px);display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px}
+.ouv__cta{white-space:nowrap;background:#fff;color:var(--petrol-darkest);border-color:#fff}
+.ouv__cta::after{background:var(--petrol-wash)}
+.ouv__cta:hover,.ouv__cta:focus-visible{color:var(--petrol-darkest)}
+.ouv__tel{font-size:.95rem;color:#fff;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,.45)}
+.ouv__note{margin-top:clamp(16px,2vw,24px);display:inline-flex;align-items:center;gap:.6em;font-size:.9rem;color:#fff}
+.ouv__etoiles{color:#F2C14E;letter-spacing:.1em}
+
+/* titres communs */
+.t-titre{font-size:clamp(1.8rem,3.6vw,3rem);line-height:1.08}
+
+/* avis */
+.t-avis{padding-block:clamp(48px,7vw,104px)}
+.t-avis__grille{
+  margin-top:clamp(24px,3vw,40px);
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,2vw,24px);
+}
+.t-avis__item{
+  display:flex;flex-direction:column;justify-content:space-between;gap:1.2em;
+  padding:clamp(20px,2.4vw,32px);background:var(--paper-pure);border:1px solid var(--rule);
+}
+.t-avis__item blockquote{font-family:var(--serif);font-size:clamp(1.15rem,1.6vw,1.4rem);line-height:1.35}
+.t-avis__item figcaption{font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol)}
+.t-avis__item figcaption::before{content:"★★★★★";display:block;margin-bottom:.5em;color:var(--petrol);letter-spacing:.12em}
+.t-avis__src{margin-top:clamp(16px,2vw,24px);display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;font-size:.86rem;color:var(--ink-faint)}
+
+/* vous vous reconnaissez */
+.t-signal{background:var(--petrol-veil);padding-block:clamp(48px,7vw,104px)}
+.t-signal__grille{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,80px);align-items:start}
+.t-signal__p{margin-top:1em;color:var(--ink-soft);max-width:46ch}
+.t-signal__liste{border-top:1px solid var(--rule-strong)}
+.t-signal__liste li{padding:1em 0;border-bottom:1px solid var(--rule-strong);color:var(--ink-soft);line-height:1.5}
+.t-signal__liste strong{display:block;font-family:var(--serif);font-weight:400;font-size:clamp(1.15rem,1.6vw,1.35rem);color:var(--ink)}
+
+/* déroulé et tarif */
+.t-deroule{padding-block:clamp(48px,7vw,104px)}
+.t-deroule__intro{margin-top:.8em;font-size:clamp(1.05rem,1.3vw,1.2rem);color:var(--ink-soft);max-width:52ch}
+.t-etapes{
+  margin-top:clamp(28px,3.4vw,48px);
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.6vw,40px);
+}
+.t-etape{padding-top:1em;border-top:2px solid var(--petrol)}
+.t-etape__quand{display:block;margin-bottom:.7em;font-size:.72rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol)}
+.t-etape h3{font-size:clamp(1.25rem,1.8vw,1.55rem);margin-bottom:.45em}
+.t-etape p{font-size:.94rem;color:var(--ink-soft);line-height:1.6}
+.t-tarif{
+  margin-top:clamp(32px,4vw,56px);padding:clamp(18px,2.4vw,30px);
+  display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:clamp(16px,3vw,48px);
+  background:var(--paper-warm);
+}
+.t-tarif dt{font-size:.7rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol)}
+.t-tarif dd{margin:.35em 0 0;font-family:var(--serif);font-size:clamp(1.1rem,1.5vw,1.3rem);line-height:1.35}
+.t-tarif div:first-child dd{font-size:clamp(2rem,3.4vw,2.8rem);line-height:1;color:var(--petrol)}
+
+/* agenda */
+.t-agenda{background:var(--petrol-veil);padding-block:clamp(48px,7vw,104px)}
+.t-agenda__aide{margin-top:.8em;color:var(--ink-soft);max-width:60ch}
+.t-agenda__cadre{margin-top:clamp(20px,2.6vw,32px)}
+.t-agenda__secours{margin-top:1em;font-size:.88rem;color:var(--ink-soft)}
+.t-agenda__secours a{color:var(--petrol);text-decoration:underline;text-underline-offset:3px}
+
+/* Thomas */
+.t-thomas{padding-block:clamp(48px,7vw,104px)}
+.t-thomas__grille{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(24px,5vw,80px);align-items:center}
+.t-thomas__photo{aspect-ratio:4/5;overflow:hidden;background:var(--paper-warm)}
+.t-thomas__photo img{width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.t-thomas__sur{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--petrol)}
+.t-thomas__p{margin-top:1em;color:var(--ink-soft);max-width:54ch}
+.t-thomas__faits{margin-top:1.4em;border-top:1px solid var(--rule-strong)}
+.t-thomas__faits li{padding:.8em 0;border-bottom:1px solid var(--rule);color:var(--ink-soft)}
+.t-thomas__faits strong{font-weight:500;color:var(--ink)}
+
+/* FAQ */
+.t-faq{background:var(--paper-warm);padding-block:clamp(48px,7vw,104px)}
+.t-faq .faq{margin-top:clamp(20px,2.6vw,32px)}
+
+/* dernier appel */
+.t-fin{background:var(--petrol-deep);color:#fff;padding-block:clamp(56px,8vw,120px)}
+.t-fin__grille{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,80px);align-items:end}
+.t-fin__titre{font-size:clamp(2rem,4.4vw,3.6rem);color:#fff;max-width:14ch}
+.t-fin__lead{margin-top:.9em;color:#B9C6C4;max-width:36ch}
+.t-fin__actions{margin-top:clamp(22px,2.8vw,36px);display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
+.t-fin__actions .btn{white-space:nowrap}
+.t-fin__tel{font-family:var(--serif);font-size:clamp(1.3rem,1.9vw,1.6rem);color:#fff;border-bottom:1px solid rgba(255,255,255,.3)}
+.t-fin__adresse{font-family:var(--serif);font-size:clamp(1.2rem,1.7vw,1.45rem);line-height:1.3}
+.t-fin__heures{margin-top:1em;border-top:1px solid rgba(255,255,255,.18)}
+.t-fin__heures li{display:flex;justify-content:space-between;gap:1em;padding:.7em 0;border-bottom:1px solid rgba(255,255,255,.18);font-size:.92rem;color:#DCE7E5}
+
+/* pied de page */
+.pied{background:var(--petrol-darkest);color:#8FA09E;font-size:.82rem;padding-block:28px}
+.pied__inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 28px}
+.pied__liens{display:flex;flex-wrap:wrap;gap:4px 10px}
+.pied a:hover{color:#fff}
+
+/* barre fixe en bas, téléphones seulement */
+.barre{display:none}
+@media (max-width:900px){
+  .barre{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    display:grid;grid-template-columns:1fr auto;gap:10px;
+    padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb,var(--paper) 96%,transparent);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border-top:1px solid var(--rule);
+    transform:translateY(0);transition:transform .35s var(--ease-out);
+  }
+  .barre[hidden]{display:grid;transform:translateY(110%);visibility:hidden}
+  .barre .btn{justify-content:center;white-space:nowrap}
+  .tunnel .pied{padding-bottom:calc(28px + 76px)}
+}
+
+/* consentement : deux boutons de même poids, refuser aussi simple qu'accepter */
+.consent__btn{border:1px solid var(--petrol);color:var(--petrol);background:var(--paper-pure)}
+.consent__btn::after{background:var(--petrol)}
+.consent__btn:hover,.consent__btn:focus-visible{color:#fff}
+
+/* petits écrans */
+@media (max-width:900px){
+  .t-avis__grille,.t-signal__grille,.t-etapes,.t-thomas__grille,.t-fin__grille{grid-template-columns:1fr}
+  .t-tarif{grid-template-columns:1fr 1fr}
+  .t-tarif div:last-child{grid-column:1/-1}
+  .t-thomas__photo{max-width:320px}
+}
+@media (max-width:480px){
+  .tete__marque img{height:38px}
+  .ouv__titre{font-size:2.15rem}
+  .ouv__sous{font-size:.98rem}
+  .ouv__faits li{font-size:.74rem}
+  .ouv__cta{padding-inline:1.6em}
+}
