@@ -409,15 +409,13 @@ def elaguer_photos():
                 continue
             texte = open(os.path.join(dirpath, fn_), encoding="utf-8").read()
             for chemin in re.findall(r'/img/photos/([\w.-]+\.jpg)', texte):
-                base = re.sub(r"-(?:800|1200)\.jpg$", ".jpg", chemin)
-                utilisees.add(base)
+                utilisees.add(chemin)
 
     retirees = octets = 0
     for fichier in os.listdir(dossier):
         if not fichier.endswith(".jpg"):
             continue
-        base = re.sub(r"-(?:800|1200)\.jpg$", ".jpg", fichier)
-        if base not in utilisees:
+        if fichier not in utilisees:
             chemin = os.path.join(dossier, fichier)
             octets += os.path.getsize(chemin)
             os.remove(chemin)

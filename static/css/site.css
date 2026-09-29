@@ -390,6 +390,7 @@ em,.italic{font-style:italic}
 /* « Gérer les cookies » est un bouton (il ouvre un panneau), habillé comme les liens voisins */
 .pied__btn{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left;transition:color .25s var(--ease)}
 .pied__btn:hover{color:#fff}
+.site-footer :focus-visible{outline-color:#fff}
 .site-footer__top{
   display:grid;grid-template-columns:minmax(0,3fr) minmax(0,9fr);
   gap:clamp(36px,5vw,72px);align-items:start;
@@ -2144,6 +2145,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .t-signal__note{grid-column:1;grid-row:2}
 .t-signal__note .t-signal__p:first-child{margin-top:0}
 .t-signal__liste{grid-column:2;grid-row:1/span 2}
+@media (min-width:901px){.t-signal__grille{grid-template-rows:auto 1fr}}
 .t-signal__p{margin-top:1em;color:var(--ink-soft);max-width:46ch}
 .t-signal__liste{border-top:1px solid var(--rule-strong)}
 .t-signal__liste li{padding:1em 0;border-bottom:1px solid var(--rule-strong);color:var(--ink-soft);line-height:1.5}
@@ -2240,6 +2242,11 @@ html:not(.js) .t-agenda .booking{display:none}
   .t-tarif{grid-template-columns:1fr 1fr}
   .t-tarif div:nth-child(n+3){grid-column:1/-1}
   .t-thomas__photo{max-width:320px}
+}
+/* moins de 360 px : le bouton passe avant les pastilles, pour rester au-dessus du bandeau */
+@media (max-width:359px){
+  .ouv__inner{display:flex;flex-direction:column;align-items:flex-start}
+  .ouv__sous{order:1}.ouv__faits{order:2}.ouv__note{order:3}
 }
 @media (max-width:480px){
   .tete__marque img{height:38px}

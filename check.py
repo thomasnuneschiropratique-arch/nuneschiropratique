@@ -156,7 +156,7 @@ for p in pages:
         errors.append(f"{name}: CSP ouvert à Meta sur une page sans pixel")
     if a_pixel and 'content="noindex"' not in t:
         errors.append(f"{name}: page à pixel Meta sans noindex")
-    if not a_pixel and re.search(r'href="/bilan/?"', t):
+    if not a_pixel and re.search(r'href="(?:https?://(?:www\.)?nuneschiropratique\.fr)?/bilan(?:[/?#"]|index)', t):
         errors.append(f"{name}: lien vers le tunnel /bilan/ (il doit rester caché)")
     if a_pixel and name.startswith("reservation-confirmee"):
         errors.append(f"{name}: pixel sur la page de confirmation (elle reçoit des données patient)")
@@ -172,12 +172,28 @@ for p in pages:
 
 # Meta ne doit recevoir que la visite de page : aucun événement lié au
 # rendez-vous, à l'agenda ou aux appels (santé, conditions de Meta).
-js = open(os.path.join(DIST, "js", "site.js"), encoding="utf-8").read()
-for ev in re.findall(r"fbq\(\s*'track'\s*,\s*'([^']+)'", js):
-    if ev != "PageView":
-        errors.append(f"site.js : événement Meta « {ev} » (seul PageView est permis)")
-if re.search(r"fbq\(\s*'track'\s*,\s*[^'\s]", js):
-    errors.append("site.js : événement Meta au nom calculé (seul PageView est permis)")
+# Liste blanche : tout appel à fbq() doit correspondre à l'un de ces motifs,
+# dans les fichiers .js comme dans les scripts en ligne des pages.
+_Q = "['\"`]"
+_FBQ_OK = [
+    re.compile(r"^\s*{Q}track{Q}\s*,\s*{Q}PageView{Q}\s*$".replace("{Q}", _Q)),
+    re.compile(r"^\s*{Q}init{Q}\s*,\s*PIXEL_ID\s*$".replace("{Q}", _Q)),
+    re.compile(r"^\s*{Q}consent{Q}\s*,\s*{Q}(?:grant|revoke){Q}\s*$".replace("{Q}", _Q)),
+    re.compile(r"^\s*{Q}set{Q}\s*,\s*{Q}autoConfig{Q}\s*,\s*false\s*,\s*PIXEL_ID\s*$".replace("{Q}", _Q)),
+]
+_sources = []
+for dp, _d, fs in os.walk(DIST):
+    for f in fs:
+        if f.endswith(".js"):
+            _sources.append((rel(os.path.join(dp, f)), open(os.path.join(dp, f), encoding="utf-8").read()))
+for p in pages:
+    for corps in re.findall(r"<script\b[^>]*>(.*?)</script>", open(p, encoding="utf-8").read(), re.S):
+        _sources.append((rel(p), corps))
+for _nom, _code in _sources:
+    for m in re.finditer(r"\bfbq\s*\(([^)]*)\)", _code):
+        arg = m.group(1)
+        if not any(ok.match(arg) for ok in _FBQ_OK):
+            errors.append("%s : appel Meta non autorisé fbq(%s) (seul PageView est permis)" % (_nom, arg.strip()[:60]))
 
 if not os.path.exists(os.path.join(DIST, "bilan", "index.html")):
     errors.append("tunnel /bilan/ absent")

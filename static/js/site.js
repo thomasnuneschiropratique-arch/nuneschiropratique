@@ -351,7 +351,13 @@
 
     // Un cadre sans src charge about:blank, qui déclenche aussi « load » :
     // on ne compte que le chargement de l'agenda lui-même.
-    frame.addEventListener('load', function () { if (frame.getAttribute('src')) settled(true); });
+    // Au retour dans l'historique sans bfcache, le navigateur remet lui-même
+    // l'agenda dans le cadre alors que l'attribut src est vide : on ne le
+    // recharge pas (double chargement, entrée d'historique en trop).
+    function dejaCharge() {
+      try { return frame.contentWindow.location.href !== 'about:blank'; } catch (e) { return true; }
+    }
+    frame.addEventListener('load', function () { if (frame.getAttribute('src') || dejaCharge()) settled(true); });
     frame.addEventListener('error', function () { settled(false); });
 
     var differe = frame.getAttribute('data-src');
@@ -364,6 +370,7 @@
 
     function lancer() {
       if (frame.getAttribute('src')) return;
+      if (dejaCharge()) { settled(true); return; }   // restauré par l'historique
       frame.setAttribute('src', avecUtm(differe));
       armer();
     }
@@ -404,7 +411,7 @@
     var PIXEL_ID = corps.getAttribute('data-pixel');
     var banner = $('[data-consent]');
     var CLE = 'nc-consent-pub';
-    var VERSION = 2;
+    var VERSION = 3;
     var SIX_MOIS = 182 * 24 * 3600 * 1000;
 
     function lire() {
