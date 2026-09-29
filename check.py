@@ -200,6 +200,26 @@ if not os.path.exists(os.path.join(DIST, "bilan", "index.html")):
 if "/bilan/" in open(os.path.join(DIST, "sitemap.xml"), encoding="utf-8").read():
     errors.append("le tunnel /bilan/ figure dans le sitemap")
 
+# --- avis : datés, et retirés au plus tard 3 ans après leur publication ---
+# Engagement pris dans les mentions légales (rubrique « Avis publiés sur
+# Google »), et obligation d'afficher la date de chaque avis (code de la
+# consommation, L111-7-2 et D111-10).
+import datetime as _dt
+_auj = _dt.date.today()
+for p in pages:
+    t = open(p, encoding="utf-8").read()
+    name = rel(p)
+    for an, mo in re.findall(r'<time class="date-avis" datetime="(\d{4})-(\d{2})"', t):
+        age = (_auj.year - int(an)) * 12 + (_auj.month - int(mo))
+        if age > 36:
+            errors.append(f"{name}: avis publié en {mo}/{an}, affiché depuis plus de 3 ans : le retirer")
+        elif age < 0:
+            errors.append(f"{name}: date d'avis dans le futur ({mo}/{an})")
+    for bloc in re.findall(r'<(?:footer|figcaption)\b[^>]*>(.*?)</(?:footer|figcaption)>', t, re.S):
+        if re.search(r'avis__nom|temoin__nom|t-avis__source', bloc) and "date-avis" not in bloc:
+            auteur = re.sub(r"<[^>]+>", " ", bloc).split()[:2]
+            warnings.append(f"{name}: avis sans date de publication ({' '.join(auteur)})")
+
 # --- srcset : chaque largeur annoncée doit correspondre au fichier réel ---
 def _jpeg_w(chemin):
     try:
