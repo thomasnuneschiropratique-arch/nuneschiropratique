@@ -39,11 +39,6 @@ NAV = [
     ("/tarifs-et-remboursements/", "Tarifs et remboursements"),
 ]
 
-# Pixel Meta du cabinet. Il n'est activé que sur les pages qui le demandent
-# (en-tête « pixel: tunnel » ou « pixel: confirmation ») et, même là, ne se
-# charge qu'après l'accord du visiteur. Le reste du site n'a aucun traceur.
-META_PIXEL = "822434550625671"
-
 SOCIAL = [
     ("Instagram", "https://www.instagram.com/nuneschiropratique/"),
     ("Facebook", "https://www.facebook.com/profile.php?id=61585701608209"),
@@ -127,8 +122,9 @@ def build_page(path, layout=None):
         "OG_IMAGE": og_image,
         "OG_TYPE": meta.get("og_type", "website"),
         "BODY_CLASS": meta.get("body_class", ""),
-        "BODY_ATTRS": (' data-pixel="%s" data-pixel-mode="%s"' % (META_PIXEL, meta["pixel"])
-                       if meta.get("pixel") else ""),
+        # « layout: tunnel » : la page de publicité. Le script y lit data-tunnel
+        # pour transmettre les utm_ de l'annonce à l'agenda.
+        "BODY_ATTRS": " data-tunnel" if meta.get("layout") == "tunnel" else "",
         "NAV": nav_markup(canonical),
         "MOBILE_NAV": mobile_nav_markup(canonical),
         "CONTENT": body,
@@ -226,19 +222,13 @@ def politique_securite(page_html):
         h = hashlib.sha256(corps.encode("utf-8")).digest()
         empreintes.append("'sha256-" + base64.b64encode(h).decode("ascii") + "'")
 
-    # Les pages de publicité chargent le pixel Meta (après accord) : on
-    # n'ouvre ses deux domaines que sur ces pages-là.
-    meta_ = 'data-pixel="' in page_html
-    fb_script = " https://connect.facebook.net" if meta_ else ""
-    fb_envoi = " https://www.facebook.com" if meta_ else ""
-
     directives = [
         ("default-src", "'none'"),
-        ("script-src", " ".join(["'self'"] + empreintes) + fb_script),
+        ("script-src", " ".join(["'self'"] + empreintes)),
         ("style-src", "'self'"),
-        ("img-src", "'self' data:" + fb_envoi),
+        ("img-src", "'self' data:"),
         ("font-src", "'self'"),
-        ("connect-src", "'self' " + FORMSPREE + fb_envoi + fb_script),
+        ("connect-src", "'self' " + FORMSPREE),
         # 'self' : après une réservation, PracticeHub redirige son cadre vers
         # /reservation-confirmee/ (notre site). Sans 'self', le navigateur
         # bloque cette page dans le cadre et le patient ne voit aucune

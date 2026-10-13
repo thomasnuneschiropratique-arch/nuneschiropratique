@@ -144,25 +144,24 @@ for p in pages:
             errors.append(f"{name}: script en ligne non couvert par le CSP "
                           f"(empreinte attendue sha256-{h})")
 
-# --- pages de publicité : cachées, et seules à parler à Meta ---
+# --- page de publicité : cachée, et aucun traceur nulle part ---
 # Le tunnel ne doit être relié par aucune page du site, ni indexé par Google.
-# Les domaines de Meta ne doivent être ouverts que sur les pages à pixel.
+# Le site n'a plus de pixel Meta : Meta bloque les événements de conversion
+# des cabinets de santé, et les réservations venues des publicités se comptent
+# grâce aux utm_ que le tunnel transmet à l'agenda.
 for p in pages:
     t = open(p, encoding="utf-8").read()
     name = rel(p)
-    a_pixel = 'data-pixel="' in t
+    est_tunnel = re.search(r"<body[^>]*\bdata-tunnel\b", t) is not None
     csp = re.search(r'<meta http-equiv="Content-Security-Policy" content="([^"]+)"', t)
-    if csp and "facebook" in csp.group(1) and not a_pixel:
-        errors.append(f"{name}: CSP ouvert à Meta sur une page sans pixel")
-    if a_pixel and 'content="noindex"' not in t:
-        errors.append(f"{name}: page à pixel Meta sans noindex")
-    if not a_pixel and re.search(r'href="(?:https?://(?:www\.)?nuneschiropratique\.fr)?/bilan(?:[/?#"]|index)', t):
+    if csp and "facebook" in csp.group(1):
+        errors.append(f"{name}: CSP ouvert à Meta (le site n'a plus de pixel)")
+    if est_tunnel and 'content="noindex"' not in t:
+        errors.append(f"{name}: page de publicité sans noindex")
+    if not est_tunnel and re.search(r'href="(?:https?://(?:www\.)?nuneschiropratique\.fr)?/bilan(?:[/?#"]|index)', t):
         errors.append(f"{name}: lien vers le tunnel /bilan/ (il doit rester caché)")
-    if a_pixel and name.startswith("reservation-confirmee"):
-        errors.append(f"{name}: pixel sur la page de confirmation (elle reçoit des données patient)")
-    # l'accord au pixel ne se donne que sur la page de publicité, dans son bandeau
-    if not a_pixel and "data-consent-yes" in t:
-        errors.append(f"{name}: bouton « Accepter » le pixel sur une page sans pixel")
+    if "data-pixel" in t or "data-consent" in t:
+        errors.append(f"{name}: reste du pixel Meta ou de son bandeau de consentement")
     # PracticeHub redirige son cadre vers /reservation-confirmee/ (notre site) :
     # sans 'self' dans frame-src, le patient ne verrait aucune confirmation
     if "data-booking-frame" in t and csp:
@@ -170,33 +169,26 @@ for p in pages:
         if not fs or "'self'" not in fs.group(1):
             errors.append(f"{name}: agenda en cadre sans 'self' dans frame-src (confirmation bloquée)")
 
-# Meta ne doit recevoir que la visite de page : aucun événement lié au
-# rendez-vous, à l'agenda ou aux appels (santé, conditions de Meta).
-# Liste blanche : tout appel à fbq() doit correspondre à l'un de ces motifs,
-# dans les fichiers .js comme dans les scripts en ligne des pages.
-_Q = "['\"`]"
-_FBQ_OK = [
-    re.compile(r"^\s*{Q}track{Q}\s*,\s*{Q}PageView{Q}\s*$".replace("{Q}", _Q)),
-    re.compile(r"^\s*{Q}init{Q}\s*,\s*PIXEL_ID\s*$".replace("{Q}", _Q)),
-    re.compile(r"^\s*{Q}consent{Q}\s*,\s*{Q}(?:grant|revoke){Q}\s*$".replace("{Q}", _Q)),
-    re.compile(r"^\s*{Q}set{Q}\s*,\s*{Q}autoConfig{Q}\s*,\s*false\s*,\s*PIXEL_ID\s*$".replace("{Q}", _Q)),
-]
+# Aucun script ni appel de Meta, ni dans les pages, ni dans les fichiers .js.
 _sources = []
 for dp, _d, fs in os.walk(DIST):
     for f in fs:
-        if f.endswith(".js"):
+        if f.endswith((".js", ".html")):
             _sources.append((rel(os.path.join(dp, f)), open(os.path.join(dp, f), encoding="utf-8").read()))
-for p in pages:
-    for corps in re.findall(r"<script\b[^>]*>(.*?)</script>", open(p, encoding="utf-8").read(), re.S):
-        _sources.append((rel(p), corps))
 for _nom, _code in _sources:
-    for m in re.finditer(r"\bfbq\s*\(([^)]*)\)", _code):
-        arg = m.group(1)
-        if not any(ok.match(arg) for ok in _FBQ_OK):
-            errors.append("%s : appel Meta non autorisé fbq(%s) (seul PageView est permis)" % (_nom, arg.strip()[:60]))
+    if re.search(r"\bfbq\s*\(|fbevents|connect\.facebook\.net", _code):
+        errors.append("%s : pixel Meta détecté (le site n'en a plus)" % _nom)
 
-if not os.path.exists(os.path.join(DIST, "bilan", "index.html")):
+_tunnel = os.path.join(DIST, "bilan", "index.html")
+if not os.path.exists(_tunnel):
     errors.append("tunnel /bilan/ absent")
+else:
+    # sans cet attribut, les utm_ de l'annonce ne passeraient plus à l'agenda
+    # et les réservations venues des publicités ne seraient plus reconnues
+    if not re.search(r"<body[^>]*\bdata-tunnel\b", open(_tunnel, encoding="utf-8").read()):
+        errors.append("tunnel /bilan/ sans data-tunnel : les utm_ ne passeraient plus à l'agenda")
+    if "data-tunnel" not in open(os.path.join(DIST, "js", "site.js"), encoding="utf-8").read():
+        errors.append("site.js ne lit plus data-tunnel : les utm_ ne passeraient plus à l'agenda")
 if "/bilan/" in open(os.path.join(DIST, "sitemap.xml"), encoding="utf-8").read():
     errors.append("le tunnel /bilan/ figure dans le sitemap")
 

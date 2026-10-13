@@ -296,13 +296,13 @@
      lancé une fois la page affichée, ou plus tôt si le visiteur va vers
      l'agenda. Les paramètres de campagne de l'annonce (utm_) sont alors
      ajoutés à son adresse : PracticeHub les enregistre avec la réservation,
-     ce qui dit quelles réservations viennent des publicités, même pour les
-     visiteurs qui refusent le pixel. Seuls les utm_ passent, aucun
-     identifiant de clic.
+     ce qui dit quelles réservations viennent des publicités. Seuls les utm_
+     passent, aucun identifiant de clic. Le site n'a aucun traceur
+     publicitaire : ni pixel, ni cookie de mesure.
 
      Ici on gère aussi le voile de chargement et le secours si rien ne vient. */
   var utmAnnonce = (function () {
-    if (document.body.getAttribute('data-pixel-mode') !== 'tunnel' || !window.URLSearchParams) return [];
+    if (!document.body.hasAttribute('data-tunnel') || !window.URLSearchParams) return [];
     var liste = [];
     new URLSearchParams(location.search).forEach(function (valeur, cle) {
       if (/^utm_[a-z]+$/.test(cle) && valeur.length < 120) liste.push([cle, valeur]);
@@ -383,130 +383,6 @@
       }, { rootMargin: '150% 0px' });
       guet.observe(host);
     }
-  })();
-
-
-
-
-  /* ---------------------------------------------------------------- 11. Mesure publicitaire
-     Pixel Meta, seulement sur la page de publicité (attribut data-pixel,
-     posé par build.py) et seulement après l'accord du visiteur : le script
-     de Meta n'est même pas téléchargé avant. Le reste du site n'a aucun
-     traceur.
-
-     Un seul événement : PageView, la visite de la page. Meta classe les
-     cabinets de santé dans une catégorie dont il bloque les événements de
-     conversion (vérifié dans le Gestionnaire d'événements du cabinet), et
-     ses conditions interdisent de lui transmettre des informations liées à
-     la santé : on ne lui dit donc ni qui ouvre l'agenda, ni qui appelle, ni
-     qui prend rendez-vous. Les réservations venues des publicités se
-     comptent dans PracticeHub, grâce aux utm (section 10).
-
-     L'accord ne se donne que sur la page de publicité, dans son bandeau.
-     Ailleurs, « Gérer les cookies » permet seulement de refuser. Le choix
-     est gardé 6 mois avec la version du texte : si le texte change, la
-     question est reposée. */
-  (function () {
-    var corps = document.body;
-    var PIXEL_ID = corps.getAttribute('data-pixel');
-    var banner = $('[data-consent]');
-    var CLE = 'nc-consent-pub';
-    var VERSION = 3;
-    var SIX_MOIS = 182 * 24 * 3600 * 1000;
-
-    function lire() {
-      try {
-        var v = JSON.parse(localStorage.getItem(CLE) || 'null');
-        if (!v || v.v !== VERSION || (v.choix !== 'oui' && v.choix !== 'non')) return null;
-        if (Date.now() - v.date > SIX_MOIS) return null;
-        return v.choix;
-      } catch (e) { return null; }
-    }
-    function ecrire(choix) {
-      try { localStorage.setItem(CLE, JSON.stringify({ choix: choix, date: Date.now(), v: VERSION })); } catch (e) { /* navigation privée */ }
-    }
-
-    function charger() {
-      if (!PIXEL_ID) return;
-      if (window.fbq) { window.fbq('consent', 'grant'); return; }
-
-      /* extrait officiel Meta, recopié tel quel */
-      !function (f, b, e, v, n, t, s) {
-        if (f.fbq) return; n = f.fbq = function () {
-          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-        };
-        if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
-        t = b.createElement(e); t.async = !0; t.src = v;
-        s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
-      }(window, document, 'script', 'https://connect.facebook.net/fr_FR/fbevents.js');
-
-      // Pas de collecte automatique (clics, texte des boutons, champs) :
-      // Meta ne reçoit que la visite de la page.
-      window.fbq('set', 'autoConfig', false, PIXEL_ID);
-      window.fbq('init', PIXEL_ID);
-      window.fbq('track', 'PageView');
-    }
-
-    function revoquer() {
-      if (window.fbq) window.fbq('consent', 'revoke');
-      // effacer ce que Meta a pu déposer
-      var h = location.hostname;
-      ['_fbp', '_fbc'].forEach(function (nom) {
-        [h, '.' + h, '.' + h.replace(/^www\./, '')].forEach(function (dom) {
-          document.cookie = nom + '=; Max-Age=0; path=/; domain=' + dom;
-        });
-        document.cookie = nom + '=; Max-Age=0; path=/';
-      });
-      try { localStorage.removeItem('multiFbc'); localStorage.removeItem('fbcEbpOrigin'); } catch (e) { /* rien */ }
-    }
-
-    var ouvertPar = null;
-    function montrer(depuis) {
-      if (!banner) return;
-      banner.hidden = false;
-      corps.classList.add('consent-ouvert');
-      // ouvert depuis le pied de page : le clavier va au bandeau
-      if (depuis) {
-        ouvertPar = depuis;
-        var premier = banner.querySelector('button');
-        if (premier) premier.focus();
-      }
-    }
-    function cacher() {
-      if (!banner) return;
-      banner.hidden = true;
-      corps.classList.remove('consent-ouvert');
-      if (ouvertPar) { try { ouvertPar.focus(); } catch (e) {} ouvertPar = null; }
-    }
-    function decider(choix) {
-      ecrire(choix);
-      cacher();
-      if (choix === 'oui') charger(); else revoquer();
-    }
-
-    if (banner) {
-      var oui = banner.querySelector('[data-consent-yes]');
-      var non = banner.querySelector('[data-consent-no]');
-      var fermer = banner.querySelector('[data-consent-close]');
-      // accepter n'existe que sur la page de publicité
-      if (oui && PIXEL_ID) oui.addEventListener('click', function () { decider('oui'); });
-      if (non) non.addEventListener('click', function () { decider('non'); });
-      if (fermer) fermer.addEventListener('click', cacher);
-      banner.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ouvertPar) cacher(); });
-    }
-    // « Gérer les cookies », en pied de page : revenir sur son choix à tout moment
-    $$('[data-consent-open]').forEach(function (lien) {
-      lien.addEventListener('click', function (e) {
-        e.preventDefault();
-        montrer(lien);
-      });
-    });
-
-    if (!PIXEL_ID) { cacher(); return; }
-
-    var choix = lire();
-    if (choix === 'oui') charger();
-    else if (choix !== 'non') montrer();
   })();
 
 
@@ -991,7 +867,7 @@
   /* ---------------------------------------------------------------- 22. Tunnel : barre fixe en bas d'écran
      Elle apparaît une fois le bouton du haut sorti de l'écran, et s'efface
      quand l'agenda occupe l'écran (inutile, et il faut de la place pour
-     réserver) ou quand le bandeau de consentement est ouvert. */
+     réserver). */
   (function () {
     var barre = $('[data-barre]');
     var cta = $('[data-cta-ouverture]');
@@ -1000,15 +876,13 @@
     var ctaVisible = true, agendaVisible = false;
 
     function maj() {
-      var consent = document.body.classList.contains('consent-ouvert');
-      barre.hidden = ctaVisible || agendaVisible || consent;
+      barre.hidden = ctaVisible || agendaVisible;
     }
     new IntersectionObserver(function (e) { ctaVisible = e[0].isIntersecting; maj(); }).observe(cta);
     if (agenda) {
       new IntersectionObserver(function (e) { agendaVisible = e[0].isIntersecting; maj(); },
         { rootMargin: '-30% 0px -30% 0px' }).observe(agenda);
     }
-    new MutationObserver(maj).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   })();
 
 })();

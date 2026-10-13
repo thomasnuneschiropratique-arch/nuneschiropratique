@@ -387,9 +387,6 @@ em,.italic{font-style:italic}
 }
 .site-footer a{transition:color .25s var(--ease)}
 .site-footer a:hover{color:#fff}
-/* « Gérer les cookies » est un bouton (il ouvre un panneau), habillé comme les liens voisins */
-.pied__btn{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left;transition:color .25s var(--ease)}
-.pied__btn:hover{color:#fff}
 .site-footer :focus-visible{outline-color:#fff}
 .site-footer__top{
   display:grid;grid-template-columns:minmax(0,3fr) minmax(0,9fr);
@@ -949,40 +946,6 @@ em,.italic{font-style:italic}
   .facts__grid{grid-template-columns:1fr}
   .facts__item{border-right:0;border-bottom:1px solid var(--rule)}
   .facts__item:last-child{border-bottom:0}
-}
-
-/* ---------- 26. Bandeau de consentement ----------
-   Ne s'affiche que si un identifiant de pixel est réellement configuré
-   (voir static/js/site.js, section 11). Sans cela, le site ne dépose rien. */
-.consent{
-  position:fixed;left:0;right:0;bottom:0;z-index:120;
-  background:var(--paper-pure);
-  border-top:1px solid var(--rule);
-  box-shadow:0 -1px 24px rgba(27,37,35,.06);
-}
-.consent[hidden]{display:none}
-.consent__inner{
-  width:100%;max-width:var(--wrap);margin-inline:auto;
-  padding:clamp(16px,2vw,22px) var(--gutter);
-  display:flex;flex-wrap:wrap;gap:14px clamp(20px,3vw,44px);
-  align-items:center;justify-content:space-between;
-}
-.consent__text{
-  font-size:.86rem;line-height:1.55;color:var(--ink-soft);
-  max-width:74ch;margin:0;
-}
-.consent__text a{
-  color:var(--petrol);text-decoration:underline;
-  text-decoration-thickness:1px;text-underline-offset:3px;
-}
-.consent__actions{display:flex;gap:10px;flex:none}
-.site-footer__sep{margin-inline:.6em;opacity:.45}
-@media (max-width:620px){
-  /* compact : le bouton de réservation doit rester visible au-dessus */
-  .consent__inner{flex-direction:column;align-items:stretch;padding-block:12px;gap:10px}
-  .consent__text{font-size:.8rem;line-height:1.45}
-  .consent__actions{justify-content:stretch}
-  .consent__actions .btn{flex:1;justify-content:center}
 }
 
 /* ---------- 27. La scène des 3 stress ----------
@@ -2230,11 +2193,6 @@ html:not(.js) .t-agenda .booking{display:none}
   .barre .btn{justify-content:center;white-space:nowrap}
   .tunnel .pied{padding-bottom:calc(28px + 76px)}
 }
-
-/* consentement : deux boutons de même poids, refuser aussi simple qu'accepter */
-.consent__btn{border:1px solid var(--petrol);color:var(--petrol);background:var(--paper-pure)}
-.consent__btn::after{background:var(--petrol)}
-.consent__btn:hover,.consent__btn:focus-visible{color:#fff}
 
 /* petits écrans */
 @media (max-width:900px){

@@ -99,8 +99,8 @@ ne tomberont donc pas sur une erreur 404 après avoir réservé. Elles sont masq
 des moteurs de recherche. Dans PracticeHub (réglages de la réservation en ligne),
 vérifie que les adresses de redirection sont bien
 `https://nuneschiropratique.fr/reservation-confirmee/` et
-`https://nuneschiropratique.fr/reservation-confirmee-copie/`. Si un pixel Meta
-mesurait les conversions sur ces pages, il faudra le remettre (voir plus bas).
+`https://nuneschiropratique.fr/reservation-confirmee-copie/`. Aucun pixel Meta
+n'est posé sur ces pages.
 
 **Un point à surveiller :** PracticeHub n'envoie pas la hauteur de son contenu, et
 l'iframe est sur un autre domaine - impossible de la mesurer automatiquement. La
@@ -197,30 +197,24 @@ haut : ne résilie que l'hébergement, jamais l'abonnement au domaine).
 Le site ne dépose **aucun cookie** et ne charge **aucun traceur**. Pas de bandeau
 de consentement, donc, puisqu'il n'y a rien à consentir.
 
-Ton Pixel Meta est sur ton **tunnel de vente**, pas ici : tes campagnes continuent
-de remonter leurs conversions comme avant, la refonte du site n'y change rien.
+Le pixel Meta, un temps posé sur la page de publicité `/bilan/`, a été retiré le
+14 octobre 2026 : Meta classe le cabinet dans la catégorie santé et bloque ses
+événements de conversion, et la campagne en cours (formulaire instantané) n'en
+a pas besoin.
 
-### Si un jour tu envoies des pubs vers le site
+### Mesurer les publicités sans pixel
 
-L'infrastructure est déjà posée, en sommeil. Une seule ligne à remplir, dans
-`static/js/site.js` (section 11) :
+- Meta compte lui-même les formulaires remplis.
+- Les réservations venues des publicités se comptent dans PracticeHub : la page
+  `/bilan/` ajoute les paramètres de l'annonce (`utm_source`, `utm_campaign`...)
+  à l'adresse de l'agenda, et PracticeHub les enregistre avec le rendez-vous.
+  `check.py` vérifie que ce mécanisme reste en place (attribut `data-tunnel`).
 
-```js
-var PIXEL_ID = 'VOTRE_ID_PIXEL_META';   // <- remplacer par ton identifiant
-```
+### Si un jour tu remets un pixel
 
-Dès que la valeur est renseignée :
-
-- un bandeau de consentement sobre apparaît en bas de page à la première visite ;
-- le pixel ne se charge **qu'après un clic sur « Accepter »** - c'est ce qu'exige
-  la CNIL, et c'est aussi meilleur pour la vitesse du site ;
-- l'événement `PageView` part sur toutes les pages, et `Lead` sur la page
-  « Prendre rendez-vous » - l'équivalent du suivi posé sur le bouton, en plus
-  fiable puisque le bouton mène désormais à une page du site ;
-- un lien « Gérer les cookies » en pied de page permet de revenir sur son choix.
-
-L'identifiant se trouve dans le Gestionnaire d'événements Meta, rubrique
-« Sources de données ».
-
-Pour Google Analytics, c'est le même principe : dis-le-moi et je le branche
-derrière le même bandeau.
+Il faudra un bandeau de consentement (c'est ce qu'exige la CNIL), le script
+chargé seulement après accord, l'ouverture des domaines de Meta dans la
+politique de sécurité de `build.py`, et la mise à jour des mentions légales.
+Ne jamais lui envoyer d'événement lié à la santé (prise de rendez-vous,
+appel...). L'ancien code se retrouve dans l'historique git : cherche le commit
+« Pixel Meta retiré » et remonte d'un cran.
