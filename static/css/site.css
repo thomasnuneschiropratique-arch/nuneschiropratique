@@ -1183,22 +1183,16 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   color:var(--petrol);margin-bottom:1.1em;
 }
 .gains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.4vw,18px)}
+/* Simples énoncés, pas des boutons : ni « + » ni effet au survol, qui
+   laissaient croire qu'on pouvait cliquer. Un trait discret en tête. */
 .gain{
-  position:relative;overflow:hidden;
   min-height:clamp(120px,11vw,156px);
   padding:clamp(16px,1.6vw,22px);
-  display:flex;align-items:flex-end;
+  display:flex;flex-direction:column;justify-content:space-between;gap:14px;
   font-family:var(--serif);font-size:clamp(1.15rem,1.6vw,1.45rem);line-height:1.18;
   background:var(--petrol-veil);color:var(--petrol-darkest);
-  transition:background .5s var(--ease),color .5s var(--ease);
 }
-.gain::before{
-  content:"+";position:absolute;top:clamp(10px,1.2vw,16px);right:clamp(14px,1.4vw,20px);
-  font-family:var(--sans);font-size:1.3rem;font-weight:300;color:var(--petrol);
-  transition:transform .6s var(--ease-out),color .5s var(--ease);
-}
-.gain:hover{background:var(--petrol);color:#fff}
-.gain:hover::before{transform:rotate(90deg);color:#fff}
+.gain::before{content:"";flex:none;width:22px;height:1px;background:var(--petrol)}
 
 /* ---------- 31b. Le système nerveux ----------
    Dessiné dans le style du logo : vert pétrole sur fond clair, traits
@@ -1568,7 +1562,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 /* ---------- 31h. Petits écrans ---------- */
 @media (max-width:1100px){
   .gains{grid-template-columns:1fr}
-  .gain{min-height:0;padding-block:1em;padding-right:3em}
+  .gain{min-height:0;padding-block:1em}
   .chiffres{grid-template-columns:1fr 1fr}
 }
 @media (max-width:900px){
