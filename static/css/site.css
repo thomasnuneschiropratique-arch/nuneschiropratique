@@ -789,8 +789,11 @@ body:not(.tunnel) .faq__a a,body:not(.tunnel) .form__note a,.temoignages__src a,
 .d-4{--d:.35s}
 .js [data-reveal="fade"]{transform:none}
 
-/* titres révélés mot à mot */
-.js [data-words] .word{display:inline-block;overflow:hidden;vertical-align:top}
+/* titres révélés mot à mot
+   Le cache descend un peu sous la ligne (padding compensé par la marge) pour
+   ne pas rogner la boucle des g, p, q, j : l'interligne serré des titres est
+   plus court que ces lettres. La mise en page ne bouge pas. */
+.js [data-words] .word{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.18em;margin-bottom:-.18em}
 .js [data-words] .word > span{
   display:inline-block;transform:translateY(105%) rotateX(38deg);opacity:0;
   transform-origin:top center;

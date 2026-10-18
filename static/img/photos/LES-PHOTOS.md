@@ -8,7 +8,7 @@
 | `accueil-approche.jpg` | La chiropratique, « Au-delà des symptômes » | ajustement cervical, pull marine |
 | `chiropratique-ajustement.jpg` | La chiropratique, « Le système nerveux » | ajustement cervical (portrait) |
 | `chiropratique-explication.jpg` | La chiropratique, sous « Pourquoi la chiropratique ? » ; Accueil, « Votre première visite » | explication avec le modèle de colonne |
-| `a-propos-portrait.jpg` | À propos, « Qui suis-je ? » ; Accueil, « Mon approche » | portrait studio |
+| `a-propos-portrait.jpg` | À propos, « Qui suis-je ? » ; Accueil, « Mon approche » ; page de publicité (/bilan/) | portrait assis au cabinet, chemise bleue |
 | `a-propos-examen.jpg` | À propos, « Ce que vous trouverez au cabinet » | examen postural debout |
 
 Les fichiers `-800` et `-1200` sont les versions pour petits écrans,
