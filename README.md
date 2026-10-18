@@ -47,7 +47,7 @@ static/js/site.js        les animations et interactions
 static/fonts/            les polices (woff2) - servies depuis le site
 static/img/              logo, favicons, image de partage
 static/img/photos/       les photos du cabinet + leurs variantes
-tools/                   utilitaires (génération de l'image de partage)
+tools/                   dessins du site, et ancienne carte de partage au logo (og.png)
 build.py                 le générateur (navigation, sitemap, données structurées)
 check.py                 les contrôles avant mise en ligne
 dist/                    résultat de la construction - ne pas modifier à la main
@@ -67,8 +67,9 @@ sur la page de rendez-vous, Google Maps sur la page contact, Formspree à
 l'envoi du formulaire. `check.py` échoue si quoi que ce soit d'autre
 s'ajoute.
 
-**Images adaptées à l'écran.** Chaque photo existe en 800, 1200 et 2000 px ;
-le navigateur prend la bonne. Les variantes sont fabriquées sur ton Mac par
+**Images adaptées à l'écran.** Chaque photo est publiée dans sa taille d'origine
+(2000 px au plus, jamais agrandie), avec des versions 800 et 1200 px quand elles
+sont plus étroites et plus légères ; le navigateur prend la bonne. Les variantes sont fabriquées sur ton Mac par
 `import-photos.py`, pas au moment de la mise en ligne - la construction
 reste ainsi sans dépendance et continue de fonctionner sur le serveur.
 

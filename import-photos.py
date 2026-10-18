@@ -24,9 +24,12 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 
 RACINE = os.path.dirname(os.path.abspath(__file__))
 DEST = os.path.join(RACINE, "static", "img", "photos")
+# image de partage (WhatsApp, Messenger, SMS…), tirée de la photo d'ouverture
+OG = os.path.join(RACINE, "static", "img", "og-cabinet.jpg")
 MAX_EDGE = 2000
 # Attention, sips a sa propre échelle : « formatOptions 60 » donne un JPEG de
 # qualité 85 environ (lue dans les tables de quantification du fichier).
@@ -123,8 +126,10 @@ def _jpeg_sans_metadonnees(chemin):
 
     Ces blocs peuvent contenir la position GPS, la date ou l'appareil : on ne
     copie donc tel quel qu'un JPEG qui n'en a pas, ce qui évite toute perte.
-    Les autres passent par sips, comme avant. Seuls sont admis JFIF (APP0),
-    le profil de couleur (APP2) et Adobe (APP14).
+    Les autres passent par sips, qui NE retire PAS ces données : la position
+    GPS est donc contrôlée après coup, sur chaque fichier produit (voir
+    _position_gps). Seuls sont admis ici JFIF (APP0), le profil de couleur
+    (APP2) et Adobe (APP14).
     """
     try:
         with open(chemin, "rb") as f:
@@ -142,6 +147,37 @@ def _jpeg_sans_metadonnees(chemin):
                                 and marqueur not in (0xE0, 0xE2, 0xEE)):
             return False
         pos += 2 + int.from_bytes(d[pos + 2:pos + 4], "big")
+    return False
+
+
+def _position_gps(chemin):
+    """Vrai si le JPEG porte une position GPS (balise 0x8825 de son EXIF).
+
+    Le dépôt du site est public : une photo prise avec la localisation
+    activée dévoilerait l'endroit où elle a été prise.
+    """
+    try:
+        with open(chemin, "rb") as f:
+            d = f.read()
+    except OSError:
+        return False
+    pos = 2
+    while pos + 4 <= len(d) and d[pos] == 0xFF:
+        marqueur = d[pos + 1]
+        longueur = int.from_bytes(d[pos + 2:pos + 4], "big")
+        if marqueur == 0xDA:
+            return False
+        bloc = d[pos + 4:pos + 2 + longueur]
+        if marqueur == 0xE1 and bloc[:6] == b"Exif\x00\x00":
+            tiff = bloc[6:]
+            ordre = "little" if tiff[:2] == b"II" else "big"
+            ifd = int.from_bytes(tiff[4:8], ordre)
+            n = int.from_bytes(tiff[ifd:ifd + 2], ordre)
+            for k in range(n):
+                e = ifd + 2 + 12 * k
+                if int.from_bytes(tiff[e:e + 2], ordre) == 0x8825:
+                    return True
+        pos += 2 + longueur
     return False
 
 
@@ -163,31 +199,79 @@ def convert(src, dest):
     trop_grande = max(largeur_src, hauteur_src) > MAX_EDGE
     edge = MAX_EDGE if trop_grande else None
 
-    if not trop_grande and _jpeg_sans_metadonnees(src):
-        shutil.copyfile(src, dest)
-        taille = os.path.getsize(dest)
-        if taille > TARGET_BYTES:
-            taille = _sips(src, dest, edge, QUALITY)
-    else:
-        taille = _sips(src, dest, edge, QUALITY)
-    for quality in (55, 50, 45):
-        if taille <= TARGET_BYTES:
-            break
-        taille = _sips(src, dest, edge, quality)
+    # Tout est fabriqué à part, dans un dossier temporaire : si la photo est
+    # refusée (position GPS), celle qui est en place sur le site ne bouge pas.
+    atelier = tempfile.mkdtemp(prefix="import-photo-")
+    try:
+        tmp = os.path.join(atelier, os.path.basename(dest))
+        if not trop_grande and _jpeg_sans_metadonnees(src):
+            shutil.copyfile(src, tmp)
+            taille = os.path.getsize(tmp)
+            if taille > TARGET_BYTES:
+                taille = _sips(src, tmp, edge, QUALITY)
+        else:
+            taille = _sips(src, tmp, edge, QUALITY)
+        for quality in (55, 50, 45):
+            if taille <= TARGET_BYTES:
+                break
+            taille = _sips(src, tmp, edge, quality)
 
-    # Variantes : seulement plus étroites que la photo, et seulement si elles
-    # pèsent moins qu'elle. Sinon le navigateur prendrait autant de poids
-    # pour moins de détail ; une ancienne variante devenue inutile est effacée.
-    base, ext = os.path.splitext(dest)
-    large, _haut = _dimensions(dest)
-    for largeur in LARGEURS:
-        variante = "%s-%d%s" % (base, largeur, ext)
-        if large and largeur < large:
-            if _sips(dest, variante, largeur, QUALITY, mode="width") < taille:
-                continue
-        if os.path.exists(variante):
-            os.remove(variante)
+        # Variantes : seulement plus étroites que la photo, et seulement si
+        # elles pèsent moins qu'elle. Sinon le navigateur prendrait autant de
+        # poids pour moins de détail.
+        tbase, ext = os.path.splitext(tmp)
+        large, _haut = _dimensions(tmp)
+        gardees = []
+        for largeur in LARGEURS:
+            variante = "%s-%d%s" % (tbase, largeur, ext)
+            if large and largeur < large:
+                if _sips(tmp, variante, largeur, QUALITY, mode="width") < taille:
+                    gardees.append(largeur)
+                    continue
+            if os.path.exists(variante):
+                os.remove(variante)
+
+        produits = [tmp] + ["%s-%d%s" % (tbase, l, ext) for l in gardees]
+        if any(_position_gps(f) for f in produits):
+            sys.exit("Cette photo contient sa position GPS : elle n'a pas été importée, "
+                     "la photo actuelle du site est conservée.\n"
+                     "Sur l'iPhone : Partager > Options > désactiver « Localisation », "
+                     "enregistrer la photo, puis la réimporter.")
+
+        # Acceptée : on remplace la photo du site et ses variantes ; une
+        # ancienne variante devenue inutile est effacée.
+        base, _ext = os.path.splitext(dest)
+        shutil.move(tmp, dest)
+        for largeur in LARGEURS:
+            cible = "%s-%d%s" % (base, largeur, ext)
+            if largeur in gardees:
+                shutil.move("%s-%d%s" % (tbase, largeur, ext), cible)
+            elif os.path.exists(cible):
+                os.remove(cible)
+    finally:
+        shutil.rmtree(atelier, ignore_errors=True)
     return taille, large
+
+
+def apercu_de_partage(photo):
+    """Refait l'image de partage (WhatsApp, Messenger, SMS…), img/og-cabinet.jpg,
+    à partir de la photo d'ouverture : bande du haut, au format 1200×630.
+    Le cadre part de 1,5 % sous le haut de la photo : sur accueil.jpg, la
+    suspension en osier reste entière. Attention, pour sips, un décalage de 0
+    veut dire « cadre centré » : le décalage vaut donc au moins 1."""
+    largeur, hauteur = _dimensions(photo)
+    bande = round(largeur * 630 / 1200) if largeur else 0
+    decalage = max(1, round(hauteur * 0.015)) if hauteur else 0
+    if not bande or not hauteur or bande + decalage > hauteur:
+        print("     ! Aperçu de partage à refaire à la main : voir build.py.")
+        return
+    tmp = os.path.join(tempfile.gettempdir(), "og-cabinet.bmp")
+    subprocess.run(["sips", "--cropToHeightWidth", str(bande), str(largeur), "--cropOffset", str(decalage), "0",
+                    "-s", "format", "bmp", photo, "--out", tmp], check=True, capture_output=True)
+    subprocess.run(["sips", "--resampleHeightWidth", "630", "1200", "-s", "format", "jpeg",
+                    "-s", "formatOptions", str(QUALITY), tmp, "--out", OG], check=True, capture_output=True)
+    os.remove(tmp)
+    print("     ✓ aperçu de partage refait : img/og-cabinet.jpg")
 
 
 def deviner(nom_fichier):
@@ -217,6 +301,8 @@ def importer(src, cle):
     print("  ✓ %-28s -> %-20s %4d px  %3d Ko" % (
         os.path.basename(src)[:28], fichier, large or 0, taille // 1024))
     print("     %s" % description)
+    if cle == "accueil":
+        apercu_de_partage(os.path.join(DEST, fichier))
 
 
 def main():

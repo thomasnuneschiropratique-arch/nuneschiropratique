@@ -38,6 +38,11 @@ python3 build.py
 Les huit photos sont toutes utilisées. Une photo qu'aucune page n'affiche
 n'est pas publiée.
 
+Une photo n'est jamais agrandie, et une photo qui contient sa position GPS
+est refusée (sur l'iPhone : Partager > Options > désactiver « Localisation »).
+Après un changement de `accueil.jpg`, le script refait aussi l'aperçu de
+partage, `static/img/og-cabinet.jpg`.
+
 ## Les dessins
 
 Le système nerveux (accueil, et la carte des motifs de La chiropratique) et

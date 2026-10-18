@@ -39,9 +39,10 @@
   --header-h:104px;
   --header-h-stuck:66px;
 
-  /* Petites capitales (sur-titres, étiquettes) : une seule taille et un seul
-     espacement pour tout le site. 12 px au moins, lettres moins écartées
-     qu'avant (.16 à .18em) : elles restent un repère sans faire « gabarit ». */
+  /* Petites capitales (sur-titres, étiquettes) : taille et espacement de
+     référence, 12 px au moins, lettres moins écartées qu'avant (.16 à .18em).
+     Les écarts (ouverture de l'accueil, étiquettes du dessin, fil d'Ariane,
+     chiffres) sont voulus. */
   --caps-size:.75rem;
   --caps-track:.12em;
 }
@@ -135,14 +136,17 @@ em,.italic{font-style:italic}
    (bandeau pratique, réponses de la FAQ, notes) : sur un téléphone, sans
    survol, un lien de la couleur du texte n'existe pas pour le visiteur. */
 .prose a:not(.btn):not(.link),
-.facts__note a,.faq__a a,.form__note a{
+.facts__note a,.faq__a a,.form__note a,.temoignages__src a,.avis__note a{
   color:var(--petrol);text-decoration:underline;
   text-decoration-thickness:1px;text-underline-offset:3px;
   text-decoration-color:color-mix(in srgb,var(--petrol) 35%,transparent);
   transition:text-decoration-color .25s var(--ease);
 }
 .prose a:not(.btn):not(.link):hover,
-.facts__note a:hover,.faq__a a:hover,.form__note a:hover{text-decoration-color:var(--petrol)}
+.facts__note a:hover,.faq__a a:hover,.form__note a:hover,.temoignages__src a:hover,.avis__note a:hover{text-decoration-color:var(--petrol)}
+/* liens dans les notes et la FAQ : zone à toucher plus haute (lien en ligne,
+   rien ne bouge à l'écran) ; /bilan/ n'est pas concernée */
+body:not(.tunnel) .faq__a a,body:not(.tunnel) .form__note a,.temoignages__src a,.avis__note a{padding-block:.5em}
 
 .tnum{font-variant-numeric:tabular-nums}
 
@@ -361,7 +365,7 @@ em,.italic{font-style:italic}
 .drawer{
   position:fixed;inset:0;z-index:99;
   background:var(--paper);
-  padding:calc(var(--header-h) + 28px) var(--gutter) calc(40px + env(safe-area-inset-bottom,0px));
+  padding:calc(var(--header-h) + 28px) var(--gutter) 40px;
   display:flex;flex-direction:column;justify-content:space-between;
   overflow-y:auto;overscroll-behavior:contain;
   opacity:0;visibility:hidden;
@@ -526,7 +530,7 @@ em,.italic{font-style:italic}
 .fig--libre{aspect-ratio:auto}
 .fig--libre img{height:auto}
 .fig__cap{
-  margin-top:14px;font-size:.78rem;line-height:1.55;color:var(--ink-faint);
+  margin-top:14px;font-size:.78rem;line-height:1.55;color:var(--ink-faint);text-wrap:pretty;
   max-width:38ch;padding-left:16px;border-left:1px solid var(--rule-strong);
 }
 .fig--bleed{margin-inline:calc(var(--gutter) * -1)}
@@ -1455,10 +1459,11 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   content:"";position:absolute;z-index:-1;
   inset:14% -5% -9% 16%;background:var(--petrol-wash);
 }
-/* La 3e colonne, plus large : « 150 à 300 € » y tient sur une ligne au lieu
-   de déborder de son filet sur ordinateur. */
+/* La 3e colonne ne descend jamais sous la largeur de « 150 à 300 € »
+   (montant insécable, colonne au moins aussi large que lui) : il tient sur
+   une ligne sans déborder de son filet ; l'étiquette, elle, passe à la ligne. */
 .chiffres{
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.45fr);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(min-content,1.45fr);
   gap:clamp(14px,2vw,30px);margin-top:clamp(32px,4vw,56px);
 }
 .chiffre{display:flex;flex-direction:column-reverse;justify-content:flex-end;border-top:1px solid var(--rule-strong);padding-top:.95em}
@@ -1614,11 +1619,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .manif__suite,.nerfs__grid,.approche__grille,
   .parcours__tete,.temoignages__grille,.fin__grille{grid-template-columns:1fr}
   .nerfs__art{max-width:420px}
-  /* la photo reste en haut de l'écran pendant qu'on lit les étapes ; quand
-     l'en-tête réapparaît (on remonte), elle descend avec lui au lieu de
-     passer dessous */
-  .approche__media{top:0;z-index:2;margin-inline:calc(var(--gutter) * -1);transition:top .45s var(--ease-out)}
-  html:has(.site-header.is-stuck:not(.is-hidden)) .approche__media{top:var(--header-h-stuck)}
+  .approche__media{top:0;z-index:2;margin-inline:calc(var(--gutter) * -1)}
   .approche__cadre{aspect-ratio:auto;height:36vh}
   .voie__pas{padding-block:clamp(32px,7vh,64px)}
   .voie__pas:not(:first-child) .voie__rameau{--haut:clamp(32px,7vh,64px)}
@@ -1636,7 +1637,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 @media (max-width:560px){
   .manif__txt{font-size:clamp(1.7rem,7.4vw,2.2rem)}
-  .nerfs__label{font-size:.68rem;letter-spacing:.06em}
+  .nerfs__label{font-size:.62rem;letter-spacing:.06em;line-height:1.2}
   .chiffres{grid-template-columns:1fr}
   .temoins__btn{width:44px;height:44px}
 }
@@ -1854,15 +1855,14 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .pourquoi__photo .fig{aspect-ratio:3/2}
   /* la silhouette reste en haut de l'écran pendant qu'on parcourt la liste,
      sinon on ne verrait jamais la zone s'allumer */
-  .carte__art{top:0;z-index:2;padding-block:10px;background:var(--petrol-veil);transition:top .45s var(--ease-out)}
-  html:has(.site-header.is-stuck:not(.is-hidden)) .carte__art{top:var(--header-h-stuck)}
+  .carte__art{top:0;z-index:2;padding-block:10px;background:var(--petrol-veil)}
   .carte__svg{height:30vh}
   .au-dela__photo .fig,.qui__photo .fig,.cabinet__media .fig{aspect-ratio:4/3}
   /* cadre paysage, photos en hauteur : on cadre plus haut pour ne pas
-     couper la tête au ras des cheveux (photo du soin : on garde aussi
-     les mains et la patiente dans le cadre) */
+     couper la tête au ras des cheveux. Photo du soin : compromis, la tête
+     de Thomas, ses mains et la patiente restent dans le cadre. */
   .qui__photo img{object-position:50% 24%}
-  .au-dela__photo img{object-position:50% 32%}
+  .au-dela__photo img{object-position:50% 40%}
   .annees__n{font-size:clamp(7rem,34vw,11rem)}
 }
 @media (prefers-reduced-motion:reduce){
@@ -2294,7 +2294,15 @@ html:not(.js) .t-agenda .booking{display:none}
   .nerfs__citation .trad{margin-left:auto}
 }
 .envoi .trad{margin:clamp(18px,2.2vw,28px) auto 0}
-/* sur téléphone, « à Toulouse » ferait passer le sur-titre sur deux lignes */
-@media (max-width:479px){.hero__ville{display:none}}
+/* Accueil, ouverture : le nom suit « Chiropracteur à Toulouse » et ne se
+   coupe pas. Sur téléphone, il est masqué pour garder le sur-titre d'origine
+   sur une ligne, au même rythme (les lettres masquées viennent en dernier). */
+.hero__nom{white-space:nowrap}
+@media (max-width:479px){.hero__nom{display:none}}
+/* Accueil, « Mon approche » : signature, même allure que celle de /bilan/
+   mais classe propre à l'accueil */
+.approche__signature{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--petrol)}
 .fcol sup{line-height:0}
 .fcol__horaires{margin-top:1.1em;font-size:.86em;line-height:1.7;color:#8FA09E}
+/* mots ou plages à ne pas couper (horaires, « bien-être », « en dit ») */
+.nw{white-space:nowrap}

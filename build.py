@@ -111,12 +111,13 @@ def build_page(path, layout=None):
     canonical = "/" + slug + "/" if slug else "/"
     # Carte de partage (lien envoyé sur WhatsApp, Messenger, par SMS…) : la
     # salle de soin, img/og-cabinet.jpg, 1200×630 comme l'annonce layout.html.
-    # Elle a été découpée dans photos/accueil.jpg, cadrée comme l'ouverture de
-    # l'accueil sur ordinateur :
-    #   sips --cropToHeightWidth 1050 2000 --cropOffset 90 0 -s format bmp \
+    # Elle est découpée dans photos/accueil.jpg (bande du haut, suspension en
+    # osier entière ; pour sips, --cropOffset 0 voudrait dire « centré ») par
+    # import-photos.py, à chaque nouvelle photo d'ouverture :
+    #   sips --cropToHeightWidth 1050 2000 --cropOffset 20 0 -s format bmp \
     #        static/img/photos/accueil.jpg --out /tmp/og.bmp
     #   sips --resampleHeightWidth 630 1200 -s format jpeg \
-    #        -s formatOptions 70 /tmp/og.bmp --out static/img/og-cabinet.jpg
+    #        -s formatOptions 60 /tmp/og.bmp --out static/img/og-cabinet.jpg
     # Une page peut la remplacer avec « og_image: photos/xxx.jpg » dans son
     # en-tête (c'est le cas de /bilan/). L'ancienne carte, le logo sur fond
     # papier (img/og.png, tools/make-og.py), reste en réserve.

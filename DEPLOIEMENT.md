@@ -181,8 +181,10 @@ pas l'abonnement au domaine en résiliant l'hébergement WordPress.
       destination technique a changé), donc rien à modifier sur la fiche.
 - [x] Parcourir le site sur ton téléphone.
 - [x] Coller le lien du site dans un message (WhatsApp, LinkedIn) pour voir
-      l'aperçu : c'est l'image `static/img/og.png`, le logo sur fond papier.
-      Pour la refaire après un changement de logo : `python3 tools/make-og.py`.
+      l'aperçu : c'est l'image `static/img/og-cabinet.jpg`, la salle de soin,
+      découpée dans la photo d'ouverture de l'accueil. `import-photos.py` la refait
+      à chaque nouvelle photo d'ouverture (commandes notées dans `build.py`).
+      L'ancienne carte au logo (`og.png`, `tools/make-og.py`) reste en réserve.
 - [x] Envoyer un message test via le formulaire - vérifié le 28 septembre 2026,
       depuis le vrai domaine en ligne.
 

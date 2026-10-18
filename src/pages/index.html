@@ -9,13 +9,15 @@ body_class: page-home
 
 <section class="hero">
   <div class="hero__media">
+    <!-- data-sizes : photo 3:2 dans un hero de min(84vh, 780px) de haut, donc plus large que l'écran
+         sur téléphone : 84vh × 1,5 = 126vh ; 780 / 0,84 = 928 ; 780 × 1,5 = 1170. À refaire si la photo ou .hero change. -->
     <img class="hero__img" src="/img/photos/accueil.jpg"
          alt="La salle de soin du cabinet : trois tables de soin, cheminée en marbre, parquet et haute fenêtre haussmannienne"
          width="2000" height="1333" fetchpriority="high" decoding="async" data-sizes="(max-aspect-ratio: 5/4) and (max-height: 928px) 126vh, (max-aspect-ratio: 5/4) 1170px, 100vw">
   </div>
 
   <div class="hero__inner">
-    <p class="eyebrow hero__eyebrow" data-chars>Thomas Nunes · chiropracteur<span class="hero__ville"> à Toulouse</span></p>
+    <p class="eyebrow hero__eyebrow" data-chars>Chiropracteur à Toulouse <span class="hero__nom">·&nbsp;Thomas&nbsp;Nunes</span></p>
     <h1 class="hero__title" data-words>Retrouvez un corps qui fonctionne à son plein potentiel</h1>
     <div class="hero__actions d-4" data-reveal>
       <a class="btn btn--light btn--lg" href="/prendre-rendez-vous/"><span class="btn__label">Prendre rendez-vous</span></a>
@@ -37,7 +39,7 @@ body_class: page-home
         <p class="facts__v">
           56 boulevard de Strasbourg<br>31000 Toulouse
         </p>
-        <p class="facts__note">1<sup>er</sup>&nbsp;étage · métro ligne B, station Jeanne d’Arc</p>
+        <p class="facts__note">1<sup>er</sup>&nbsp;étage&nbsp;· métro ligne B, station Jeanne d’Arc</p>
       </div>
 
       <div class="facts__item d-1" data-reveal>
@@ -116,8 +118,8 @@ body_class: page-home
 
       <div class="nerfs__text">
         <h2 class="d-l" id="quest-ce-que" data-words>Qu’est-ce que la chiropratique&nbsp;?</h2>
-        <p class="lead mt-3" data-reveal>Une approche manuelle de la santé, qui part du système nerveux.</p>
-        <p class="nerfs__p mt-2" data-reveal>Elle aide votre <span class="nerfs__mot" data-part="cerveau">cerveau</span>, votre <span class="nerfs__mot" data-part="colonne">colonne vertébrale</span> et <span class="nerfs__mot" data-part="corps">l’ensemble de votre corps</span> à mieux communiquer, pour que tout fonctionne en harmonie.</p>
+        <p class="lead mt-3" data-reveal>Une approche manuelle de la santé, centrée sur le système nerveux.</p>
+        <p class="nerfs__p mt-2" data-reveal>Elle vise à aider votre <span class="nerfs__mot" data-part="cerveau">cerveau</span>, votre <span class="nerfs__mot" data-part="colonne">colonne vertébrale</span> et <span class="nerfs__mot" data-part="corps">l’ensemble de votre corps</span> à mieux communiquer, pour que tout fonctionne le plus harmonieusement possible.</p>
         <p class="mt-3" data-reveal>
           <a class="link" href="/la-chiropratique/">La chiropratique <span class="link__arrow" aria-hidden="true">→</span></a>
         </p>
@@ -162,8 +164,8 @@ body_class: page-home
       <div class="approche__texte">
         <h2 class="d-l" id="mon-approche" data-words>Mon approche</h2>
         <p class="lead mt-3" data-reveal>Je vous accompagne avec précision et bienveillance pour que votre corps retrouve équilibre, mobilité et vitalité, et puisse exprimer tout son potentiel.</p>
-        <p class="approche__p mt-2" data-reveal>Je veux vous aider à reprendre confiance en votre corps, à comprendre ses signaux et à renouer avec ses capacités naturelles. Ensemble, nous mettons en place de quoi entretenir durablement votre santé et votre bien-être.</p>
-        <p class="t-thomas__sur mt-2" data-reveal>Thomas Nunes, diplômé de l’IFEC en&nbsp;2025</p>
+        <p class="approche__p mt-2" data-reveal>Je veux vous aider à reprendre confiance en votre corps, à comprendre ses signaux et à renouer avec ses capacités naturelles. Ensemble, nous mettons en place ce qu’il faut pour entretenir durablement votre santé et votre <span class="nw">bien-être</span>.</p>
+        <p class="approche__signature mt-2" data-reveal>Thomas Nunes, chiropracteur</p>
         <p class="mt-3" data-reveal>
           <a class="link" href="/a-propos/">À propos <span class="link__arrow" aria-hidden="true">→</span></a>
         </p>
@@ -176,8 +178,8 @@ body_class: page-home
           </li>
           <li class="voie__pas">
             <svg class="voie__rameau" viewBox="0 0 140 56" aria-hidden="true" focusable="false"><use href="#rameau"/></svg>
-            <h3 class="voie__t">J’ajuste avec précision</h3>
-            <p class="voie__d">Chaque geste est adapté à votre corps et à votre situation.</p>
+            <h3 class="voie__t">J’ajuste</h3>
+            <p class="voie__d">Des gestes précis, adaptés à votre corps et à votre situation.</p>
           </li>
           <li class="voie__pas">
             <svg class="voie__rameau" viewBox="0 0 140 56" aria-hidden="true" focusable="false"><use href="#rameau"/></svg>
@@ -208,7 +210,7 @@ body_class: page-home
             <dd class="chiffre__v">30&nbsp;min</dd>
           </div>
           <div class="chiffre">
-            <dt class="chiffre__l">Par an en général, pris en charge par de nombreuses mutuelles</dt>
+            <dt class="chiffre__l">Pris en charge chaque année par de nombreuses mutuelles, en général</dt>
             <dd class="chiffre__v">150 à 300&nbsp;€</dd>
           </div>
         </dl>
@@ -259,7 +261,7 @@ body_class: page-home
     <div class="temoignages__grille">
 
       <div class="temoignages__cote">
-        <h2 class="d-l" id="avis-titre" data-words>Ce qu’en disent mes patients</h2>
+        <h2 class="d-l" id="avis-titre" data-words>Ce qu’on <span class="nw">en dit</span> sur Google</h2>
         <div class="review__stars mt-3" role="img" aria-label="5 étoiles sur 5">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.8.8-5 4.7 1.3 6.7L12 17.3 6 20.5l1.3-6.7-5-4.7 6.8-.8z"/></svg>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.8.8-5 4.7 1.3 6.7L12 17.3 6 20.5l1.3-6.7-5-4.7 6.8-.8z"/></svg>
@@ -267,8 +269,8 @@ body_class: page-home
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.8.8-5 4.7 1.3 6.7L12 17.3 6 20.5l1.3-6.7-5-4.7 6.8-.8z"/></svg>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.8.8-5 4.7 1.3 6.7L12 17.3 6 20.5l1.3-6.7-5-4.7 6.8-.8z"/></svg>
         </div>
-        <p class="avis__src">5,0 sur Google · 34&nbsp;avis</p>
-        <p class="temoignages__src">Note relevée le 29&nbsp;septembre 2026. J’ai choisi ces extraits parmi les avis de ma fiche Google&nbsp;; ils sont cités mot pour mot. Ces avis ne sont vérifiés ni par Google ni par moi.</p>
+        <p class="avis__src">5,0 sur Google · 34&nbsp;avis au 29&nbsp;septembre 2026</p>
+        <p class="temoignages__src">Extraits choisis parmi les avis de ma fiche Google, cités mot pour mot. Ni Google ni le cabinet ne les vérifient (<a href="/mentions-legales/#avis">comment ces avis sont présentés</a>).</p>
         <div class="noms" data-temoins-noms hidden>
           <button class="nom" type="button" data-cible="0" aria-controls="temoin-0">Molly D.</button>
           <button class="nom" type="button" data-cible="1" aria-controls="temoin-1">Bayan D.</button>

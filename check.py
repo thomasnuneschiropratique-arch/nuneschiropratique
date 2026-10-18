@@ -72,8 +72,40 @@ for d, ps in descs.items():
     if len(ps) > 1: errors.append(f"description dupliquée sur {ps}")
 
 for f in ("sitemap.xml", "robots.txt", "CNAME", "404.html", ".nojekyll",
-          "site.webmanifest", "img/og.png", "css/fonts.css"):
+          "site.webmanifest", "css/fonts.css"):
     if not os.path.exists(os.path.join(DIST, f)): errors.append(f"fichier manquant : {f}")
+
+# --- image de partage (WhatsApp, Messenger, SMS…) : elle doit exister ---
+for p in pages:
+    t = open(p, encoding="utf-8").read()
+    for url in re.findall(r'<meta property="og:image" content="([^"]+)"', t):
+        chemin = re.sub(r"^https?://[^/]+/", "", url)
+        if not os.path.exists(os.path.join(DIST, chemin)):
+            errors.append(f"{rel(p)}: image de partage introuvable ({chemin})")
+
+# --- aucune photo publiée ne doit porter de position GPS ---
+# Le dépôt est public : la balise GPS (0x8825) de l'EXIF dévoilerait où la
+# photo a été prise. import-photos.py la refuse déjà ; ceci rattrape le reste.
+def _gps(chemin):
+    d = open(chemin, "rb").read()
+    pos = 2
+    while pos + 4 <= len(d) and d[pos] == 0xFF and d[pos + 1] != 0xDA:
+        n = int.from_bytes(d[pos + 2:pos + 4], "big")
+        bloc = d[pos + 4:pos + 2 + n]
+        if d[pos + 1] == 0xE1 and bloc[:6] == b"Exif\x00\x00":
+            tiff = bloc[6:]
+            o = "little" if tiff[:2] == b"II" else "big"
+            ifd = int.from_bytes(tiff[4:8], o)
+            for k in range(int.from_bytes(tiff[ifd:ifd + 2], o)):
+                e = ifd + 2 + 12 * k
+                if int.from_bytes(tiff[e:e + 2], o) == 0x8825:
+                    return True
+        pos += 2 + n
+    return False
+for dp, _d, fs in os.walk(os.path.join(DIST, "img")):
+    for f in fs:
+        if f.lower().endswith((".jpg", ".jpeg")) and _gps(os.path.join(dp, f)):
+            errors.append(f"{rel(os.path.join(dp, f))}: photo avec position GPS (à réimporter sans localisation)")
 
 # --- adresses de l'ancien site : elles ne doivent pas disparaître ---
 # Ces adresses sont connues de Google, de la fiche Google Business, des
