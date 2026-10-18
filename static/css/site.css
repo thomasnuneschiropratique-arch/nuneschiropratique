@@ -38,6 +38,12 @@
   --ease-out:cubic-bezier(.16,1,.3,1);
   --header-h:104px;
   --header-h-stuck:66px;
+
+  /* Petites capitales (sur-titres, étiquettes) : une seule taille et un seul
+     espacement pour tout le site. 12 px au moins, lettres moins écartées
+     qu'avant (.16 à .18em) : elles restent un repère sans faire « gabarit ». */
+  --caps-size:.75rem;
+  --caps-track:.12em;
 }
 
 /* ---------- 2. Reset ---------- */
@@ -51,7 +57,9 @@ button,input,textarea,select{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
 address{font-style:normal}
-:focus-visible{outline:2px solid var(--petrol);outline-offset:3px;border-radius:2px}
+/* Contour de focus : pétrole sur fond clair ; les bandes sombres déclarent
+   --focus:#fff, sinon le contour s'y confond avec le fond. */
+:focus-visible{outline:2px solid var(--focus,var(--petrol));outline-offset:3px;border-radius:2px}
 
 html{scroll-behavior:smooth}
 html.lenis,html.lenis body{height:auto}
@@ -94,9 +102,9 @@ em,.italic{font-style:italic}
 
 .eyebrow{
   font-family:var(--sans);
-  font-size:.72rem;
+  font-size:var(--caps-size);
   font-weight:500;
-  letter-spacing:.17em;
+  letter-spacing:var(--caps-track);
   text-transform:uppercase;
   color:var(--petrol);
   display:block;
@@ -123,13 +131,18 @@ em,.italic{font-style:italic}
 .prose p{max-width:var(--measure)}
 .prose p + p{margin-top:1.05em}
 .prose strong{font-weight:600;color:var(--ink)}
-.prose a:not(.btn):not(.link){
+/* Liens pris dans une phrase : pétrole et trait fin. Hors .prose aussi
+   (bandeau pratique, réponses de la FAQ, notes) : sur un téléphone, sans
+   survol, un lien de la couleur du texte n'existe pas pour le visiteur. */
+.prose a:not(.btn):not(.link),
+.facts__note a,.faq__a a,.form__note a{
   color:var(--petrol);text-decoration:underline;
   text-decoration-thickness:1px;text-underline-offset:3px;
   text-decoration-color:color-mix(in srgb,var(--petrol) 35%,transparent);
   transition:text-decoration-color .25s var(--ease);
 }
-.prose a:not(.btn):not(.link):hover{text-decoration-color:var(--petrol)}
+.prose a:not(.btn):not(.link):hover,
+.facts__note a:hover,.faq__a a:hover,.form__note a:hover{text-decoration-color:var(--petrol)}
 
 .tnum{font-variant-numeric:tabular-nums}
 
@@ -140,7 +153,7 @@ em,.italic{font-style:italic}
 .section--tight{padding-block:clamp(52px,7vw,96px)}
 .section--wash{background:var(--petrol-veil)}
 .section--warm{background:var(--paper-warm)}
-.section--dark{background:var(--petrol-darkest);color:#EDF1F0}
+.section--dark{background:var(--petrol-darkest);color:#EDF1F0;--focus:#fff}
 .section--dark .eyebrow{color:var(--petrol-light)}
 .section--dark .eyebrow::before{background:var(--petrol-light)}
 .section--dark .lead{color:#B9C6C4}
@@ -216,8 +229,11 @@ em,.italic{font-style:italic}
 /* lien fléché souligné */
 .link{
   display:inline-flex;align-items:baseline;gap:.55em;
-  font-size:.86rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;
+  font-size:.86rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;
   color:var(--petrol);padding-bottom:.45em;position:relative;
+  /* zone à toucher agrandie vers le haut (≈ 40 px) ; la marge négative
+     compense : rien ne bouge à l'écran */
+  padding-top:.75em;margin-top:-.75em;
 }
 .link::before{
   content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;
@@ -255,7 +271,7 @@ em,.italic{font-style:italic}
   /* filet clair : c'est lui qui dit où s'arrête la barre et où commence
      la photo. Sans arête, la barre flottait sur l'image. */
   border-bottom-color:rgba(255,255,255,.22);
-  color:#fff;
+  color:#fff;--focus:#fff;
 }
 /* Bande sous la barre de navigation : sans elle, les entrées passent sur les
    fenêtres claires de la photo et deviennent illisibles. Elle s'arrête net à
@@ -322,10 +338,12 @@ em,.italic{font-style:italic}
 
 .site-header__actions{display:flex;align-items:center;gap:14px;flex:none}
 
+/* 44 × 44 px à toucher ; les traits restent calés sur le bord du texte de
+   la page, la zone déborde un peu dans la marge. */
 .burger{
-  display:none;width:40px;height:40px;
+  display:none;width:44px;height:44px;
   flex-direction:column;justify-content:center;align-items:flex-end;gap:6px;
-  margin-right:-8px;
+  padding-right:11px;margin-right:-11px;
 }
 .burger__bar{
   display:block;height:1.5px;background:var(--ink);
@@ -338,11 +356,14 @@ em,.italic{font-style:italic}
 .burger[aria-expanded="true"] .burger__bar:nth-child(2){width:22px;transform:translateY(-3.75px) rotate(-45deg)}
 
 /* ---------- 7. Tiroir mobile ---------- */
+/* Le tiroir défile s'il dépasse l'écran (petit téléphone, paysage) : la page
+   dessous est bloquée, c'est donc lui qui doit défiler. */
 .drawer{
   position:fixed;inset:0;z-index:99;
   background:var(--paper);
-  padding:calc(var(--header-h) + 28px) var(--gutter) 40px;
+  padding:calc(var(--header-h) + 28px) var(--gutter) calc(40px + env(safe-area-inset-bottom,0px));
   display:flex;flex-direction:column;justify-content:space-between;
+  overflow-y:auto;overscroll-behavior:contain;
   opacity:0;visibility:hidden;
   transition:opacity .4s var(--ease),visibility .4s;
 }
@@ -372,8 +393,13 @@ em,.italic{font-style:italic}
   padding:.62em 0;
 }
 .drawer__idx{
-  font-family:var(--sans);font-size:.6rem;letter-spacing:.16em;
-  color:var(--petrol);flex:none;
+  font-family:var(--sans);font-size:.72rem;letter-spacing:.06em;
+  color:var(--petrol);flex:none;font-variant-numeric:tabular-nums;
+}
+/* téléphone couché : des entrées plus compactes, pour en voir davantage */
+@media (max-height:500px){
+  .drawer{padding-top:calc(var(--header-h) + 12px)}
+  .drawer__nav a{font-size:1.35rem;padding:.42em 0}
 }
 .drawer__foot{display:flex;flex-direction:column;gap:18px;align-items:flex-start;padding-top:28px}
 .drawer img{align-self:flex-start}
@@ -398,17 +424,21 @@ em,.italic{font-style:italic}
   gap:clamp(24px,3vw,44px);
 }
 .fcol__h{
-  font-family:var(--sans);font-size:.68rem;font-weight:500;
-  letter-spacing:.18em;text-transform:uppercase;
+  font-family:var(--sans);font-size:var(--caps-size);font-weight:500;
+  letter-spacing:var(--caps-track);text-transform:uppercase;
   color:var(--petrol-light);margin-bottom:1.35em;
 }
 .fcol address,.fcol__list{line-height:1.95}
 .fcol{min-width:0}
 .fcol address{overflow-wrap:anywhere}
 .fcol address a[href^="mailto"]{font-size:.92em;letter-spacing:-.005em}
+/* Liens en ligne : le remplissage vertical agrandit la zone à toucher sur
+   toute la hauteur de la ligne sans rien déplacer (un élément en ligne ne
+   change pas la hauteur de sa ligne). Le filet de survol est recalé d'autant. */
+.fcol__list a,.fcol address a{padding-block:.4em}
 .fcol__list a{position:relative}
 .fcol__list a::after{
-  content:"";position:absolute;left:0;bottom:-1px;width:100%;height:1px;
+  content:"";position:absolute;left:0;bottom:calc(.4em - 1px);width:100%;height:1px;
   background:currentColor;transform:scaleX(0);transform-origin:right;
   transition:transform .4s var(--ease-out);
 }
@@ -420,6 +450,7 @@ em,.italic{font-style:italic}
   display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between;
   font-size:.82rem;color:#8FA09E;
 }
+.site-footer__bottom a{padding-block:.5em}
 
 /* ---------- 9. Hero ---------- */
 .hero{position:relative;min-height:min(84vh,780px);display:flex;align-items:flex-end;isolation:isolate}
@@ -447,7 +478,7 @@ em,.italic{font-style:italic}
      barre de navigation et s'y trouvait masqué. Le hero ayant une hauteur
      minimale et non fixe, il s'agrandit au besoin plutôt que de rogner. */
   padding:calc(var(--header-h) + clamp(16px,3vw,32px)) var(--gutter) clamp(52px,8vw,104px);
-  color:#fff;
+  color:#fff;--focus:#fff;
 }
 .hero__title{font-size:clamp(2.5rem,6.2vw,5.1rem);max-width:15ch;color:#fff}
 .hero__sub{
@@ -455,7 +486,8 @@ em,.italic{font-style:italic}
   color:rgba(255,255,255,.84);line-height:1.62;
 }
 .hero__actions{margin-top:clamp(28px,3.5vw,44px);display:flex;flex-wrap:wrap;gap:14px}
-.hero__eyebrow{color:rgba(255,255,255,.82);margin-bottom:1.5em}
+/* le sur-titre du hero garde son réglage d'affiche, plus espacé */
+.hero__eyebrow{color:rgba(255,255,255,.82);margin-bottom:1.5em;font-size:.72rem;letter-spacing:.17em}
 .hero__eyebrow::before{background:rgba(255,255,255,.55)}
 .hero__scroll{
   position:absolute;right:var(--gutter);bottom:clamp(52px,8vw,104px);
@@ -476,8 +508,9 @@ em,.italic{font-style:italic}
 .pagehead__inner{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,4vw,64px);align-items:end}
 .pagehead__title{font-size:clamp(2.6rem,6vw,4.6rem)}
 .pagehead__lead{padding-bottom:.6em}
-.breadcrumb{display:flex;gap:.6em;align-items:center;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-ghost);margin-bottom:1.8em}
-.breadcrumb a{color:var(--ink-faint)}
+.breadcrumb{display:flex;gap:.6em;align-items:center;font-size:var(--caps-size);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-ghost);margin-bottom:1.8em}
+/* zone à toucher plus haute, compensée par la marge : rien ne bouge */
+.breadcrumb a{color:var(--ink-faint);padding-block:.8em;margin-block:-.8em}
 .breadcrumb a:hover{color:var(--petrol)}
 
 /* ---------- 10. Figures ---------- */
@@ -547,8 +580,8 @@ em,.italic{font-style:italic}
 .quote--wide blockquote{max-width:26ch}
 .quote cite{
   display:block;margin-top:clamp(22px,2.6vw,34px);
-  font-family:var(--sans);font-style:normal;font-size:.72rem;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);
+  font-family:var(--sans);font-style:normal;font-size:var(--caps-size);
+  letter-spacing:var(--caps-track);text-transform:uppercase;color:var(--ink-faint);
 }
 .section--dark .quote cite{color:var(--petrol-light)}
 
@@ -624,7 +657,7 @@ em,.italic{font-style:italic}
 /* ---------- 15-16. (le tarif et les horaires sont dans la section 33) ---------- */
 .badge{
   display:inline-flex;align-items:center;gap:.5em;
-  font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;
+  font-size:var(--caps-size);letter-spacing:.1em;text-transform:uppercase;
   color:var(--petrol);background:var(--petrol-wash);
   padding:.55em 1em;border-radius:999px;
 }
@@ -633,16 +666,17 @@ em,.italic{font-style:italic}
 .form{display:grid;gap:clamp(18px,2.2vw,26px)}
 .field{display:grid;gap:.5em}
 .field label{
-  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);
+  font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);
 }
 .field .req{color:var(--petrol)}
 .field input,.field textarea{
   width:100%;background:transparent;border:0;border-bottom:1px solid var(--rule-strong);
   padding:.72em 0;font-size:1.02rem;border-radius:0;
-  transition:border-color .3s var(--ease);
+  transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
 }
 .field input:hover,.field textarea:hover{border-bottom-color:var(--ink-ghost)}
-.field input:focus,.field textarea:focus{outline:0;border-bottom-color:var(--petrol)}
+/* au focus, le trait du bas s'épaissit (1 px → 2 px) en plus de changer de ton */
+.field input:focus,.field textarea:focus{outline:0;border-bottom-color:var(--petrol);box-shadow:0 1px 0 0 var(--petrol)}
 .field textarea{resize:vertical;min-height:120px;line-height:1.6}
 .field--hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form__note{font-size:.8rem;color:var(--ink-faint);max-width:46ch;line-height:1.6}
@@ -810,6 +844,9 @@ em,.italic{font-style:italic}
 @media (max-width:980px){
   :root{--header-h:76px;--header-h-stuck:62px}
   .nav{display:none}
+  /* sans la navigation (qui portait margin-left:auto), le burger restait
+     collé au logo : on repousse les actions au bord droit */
+  .site-header__actions{margin-left:auto}
   .burger{display:flex}
     .site-header__actions .btn{display:none}
   .site-header.is-over-hero .burger__bar{background:#fff}
@@ -929,9 +966,11 @@ em,.italic{font-style:italic}
   padding:clamp(26px,3.4vw,46px) clamp(16px,2vw,32px);
   border-right:1px solid var(--rule);
 }
+/* la première case démarre au bord du texte de la page, comme le titre */
+.facts__item:first-child{padding-left:0}
 .facts__item:last-child{border-right:0}
 .facts__k{
-  display:block;font-size:.68rem;letter-spacing:.17em;text-transform:uppercase;
+  display:block;font-size:var(--caps-size);font-weight:500;letter-spacing:var(--caps-track);text-transform:uppercase;
   color:var(--petrol);margin-bottom:1.1em;
 }
 .facts__v{font-family:var(--serif);font-size:clamp(1.05rem,1.5vw,1.3rem);line-height:1.35}
@@ -939,12 +978,14 @@ em,.italic{font-style:italic}
   text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;
   text-decoration-color:color-mix(in srgb,var(--ink) 22%,transparent);
   transition:text-decoration-color .3s var(--ease),color .3s var(--ease);
+  padding-block:.45em; /* zone à toucher plus haute ; lien en ligne : rien ne bouge */
 }
+.facts__note a{padding-block:.6em}
 .facts__v a:hover{color:var(--petrol);text-decoration-color:var(--petrol)}
 .facts__note{margin-top:.7em;font-size:.82rem;color:var(--ink-faint);line-height:1.5}
 @media (max-width:820px){
   .facts__grid{grid-template-columns:1fr}
-  .facts__item{border-right:0;border-bottom:1px solid var(--rule)}
+  .facts__item{border-right:0;border-bottom:1px solid var(--rule);padding-inline:0}
   .facts__item:last-child{border-bottom:0}
 }
 
@@ -988,10 +1029,10 @@ em,.italic{font-style:italic}
 .scene__kicker{
   display:flex;align-items:baseline;gap:.8em;
   font-family:var(--sans);font-size:.78rem;font-weight:600;
-  letter-spacing:.15em;text-transform:uppercase;
+  letter-spacing:var(--caps-track);text-transform:uppercase;
   margin-bottom:.9em;
 }
-.scene__num{color:var(--petrol);font-size:.7rem;letter-spacing:.14em}
+.scene__num{color:var(--petrol);font-size:var(--caps-size);letter-spacing:.08em;font-variant-numeric:tabular-nums}
 
 .scene__hint{
   margin-top:clamp(14px,2vw,22px);text-align:center;
@@ -1179,7 +1220,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 .manif__suite p{color:var(--ink-soft);max-width:40ch;font-size:1.06rem}
 .manif__suite .manif__res{
-  font-size:.7rem;font-weight:500;letter-spacing:.17em;text-transform:uppercase;
+  font-size:var(--caps-size);font-weight:500;letter-spacing:var(--caps-track);text-transform:uppercase;
   color:var(--petrol);margin-bottom:1.1em;
 }
 .gains{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.4vw,18px)}
@@ -1279,7 +1320,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .nerfs__label{
   position:absolute;left:73.6%;transform:translateY(-50%);
   max-width:9em;line-height:1.35;
-  font-size:.66rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  font-size:.7rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
   color:var(--ink-faint);transition:color .4s var(--ease);
 }
 .nerfs__label--cerveau{top:5.6%}
@@ -1308,7 +1349,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   max-width:17ch;color:var(--petrol-darkest);
 }
 .nerfs__citation cite{
-  font-style:normal;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+  font-style:normal;font-size:var(--caps-size);letter-spacing:var(--caps-track);text-transform:uppercase;
   color:var(--petrol);
 }
 
@@ -1414,8 +1455,10 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   content:"";position:absolute;z-index:-1;
   inset:14% -5% -9% 16%;background:var(--petrol-wash);
 }
+/* La 3e colonne, plus large : « 150 à 300 € » y tient sur une ligne au lieu
+   de déborder de son filet sur ordinateur. */
 .chiffres{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.45fr);
   gap:clamp(14px,2vw,30px);margin-top:clamp(32px,4vw,56px);
 }
 .chiffre{display:flex;flex-direction:column-reverse;justify-content:flex-end;border-top:1px solid var(--rule-strong);padding-top:.95em}
@@ -1451,7 +1494,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 .etape__quand{
   display:block;margin-bottom:.95em;
-  font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--petrol);
+  font-size:var(--caps-size);font-weight:500;letter-spacing:var(--caps-track);text-transform:uppercase;color:var(--petrol);
 }
 .etape h3{font-size:clamp(1.3rem,1.8vw,1.62rem);margin-bottom:.55em}
 .etape p{font-size:.93rem;color:var(--ink-soft);line-height:1.62}
@@ -1505,7 +1548,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 .temoin figcaption{margin-top:1.1em}
 .temoin__nom{
-  font-size:.74rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--petrol);
+  font-size:var(--caps-size);font-weight:500;letter-spacing:var(--caps-track);text-transform:uppercase;color:var(--petrol);
 }
 .temoin__date{margin-left:.6em;font-size:.8rem;letter-spacing:.02em;color:var(--ink-faint)}
 
@@ -1534,14 +1577,16 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 
 /* ---------- 31g. Dernier appel ----------
    La photo occupe toute la hauteur de la bande, bord à bord. */
-.fin{position:relative;background:var(--petrol-deep);color:#fff}
+.fin{position:relative;background:var(--petrol-deep);color:#fff;--focus:#fff}
 .fin__grille{
   display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
   gap:clamp(32px,6vw,110px);
 }
 .fin__texte{padding-block:clamp(72px,9vw,136px)}
-.fin .eyebrow{color:var(--petrol-light)}
-.fin .eyebrow::before{background:var(--petrol-light)}
+/* un ton plus clair que --petrol-light : sur ce vert moyen, celui-ci
+   restait sous le seuil de lisibilité (3,5:1 ; ici 4,9:1) */
+.fin .eyebrow{color:#8FB5B2}
+.fin .eyebrow::before{background:#8FB5B2}
 .fin__titre{font-size:clamp(2.3rem,5.2vw,4.4rem);color:#fff;max-width:13ch}
 .fin__lead{margin-top:1.1em;color:#B9C6C4;max-width:36ch;font-size:clamp(1.02rem,1.2vw,1.15rem)}
 .fin__actions{margin-top:clamp(30px,3.6vw,48px);display:flex;flex-wrap:wrap;align-items:center;gap:18px 32px}
@@ -1569,8 +1614,11 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .manif__suite,.nerfs__grid,.approche__grille,
   .parcours__tete,.temoignages__grille,.fin__grille{grid-template-columns:1fr}
   .nerfs__art{max-width:420px}
-  /* la photo reste en haut de l'écran pendant qu'on lit les étapes */
-  .approche__media{top:0;z-index:2;margin-inline:calc(var(--gutter) * -1)}
+  /* la photo reste en haut de l'écran pendant qu'on lit les étapes ; quand
+     l'en-tête réapparaît (on remonte), elle descend avec lui au lieu de
+     passer dessous */
+  .approche__media{top:0;z-index:2;margin-inline:calc(var(--gutter) * -1);transition:top .45s var(--ease-out)}
+  html:has(.site-header.is-stuck:not(.is-hidden)) .approche__media{top:var(--header-h-stuck)}
   .approche__cadre{aspect-ratio:auto;height:36vh}
   .voie__pas{padding-block:clamp(32px,7vh,64px)}
   .voie__pas:not(:first-child) .voie__rameau{--haut:clamp(32px,7vh,64px)}
@@ -1588,7 +1636,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 @media (max-width:560px){
   .manif__txt{font-size:clamp(1.7rem,7.4vw,2.2rem)}
-  .nerfs__label{font-size:.56rem;letter-spacing:.12em}
+  .nerfs__label{font-size:.68rem;letter-spacing:.06em}
   .chiffres{grid-template-columns:1fr}
   .temoins__btn{width:44px;height:44px}
 }
@@ -1676,7 +1724,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 @keyframes onde{0%{transform:scale(1);opacity:.7}100%{transform:scale(2);opacity:0}}
 
 /* ---------- 32c. Au delà des symptômes ---------- */
-.au-dela{background:var(--petrol-darkest);color:#EDF1F0;padding-block:clamp(84px,10vw,156px)}
+.au-dela{background:var(--petrol-darkest);color:#EDF1F0;padding-block:clamp(84px,10vw,156px);--focus:#fff}
 .au-dela__phrase{
   font-family:var(--serif);font-size:clamp(2.2rem,5.6vw,5rem);
   line-height:1.05;letter-spacing:-.02em;max-width:15ch;
@@ -1718,7 +1766,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 .envoi cite{
   display:block;margin-top:clamp(22px,2.6vw,34px);
-  font-style:normal;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--petrol);
+  font-style:normal;font-size:var(--caps-size);letter-spacing:var(--caps-track);text-transform:uppercase;color:var(--petrol);
 }
 
 /* ---------- 32e. A propos : qui suis-je ---------- */
@@ -1737,7 +1785,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .qui__texte [data-reveal]{margin-top:clamp(18px,2.4vw,32px)}
 
 /* ---------- 32f. A propos : le parcours ---------- */
-.trajet{background:var(--petrol);color:#fff;padding-block:clamp(84px,10vw,150px);overflow:hidden}
+.trajet{background:var(--petrol);color:#fff;padding-block:clamp(84px,10vw,150px);overflow:hidden;--focus:#fff}
 .trajet__grille{
   display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
   gap:clamp(36px,6vw,110px);align-items:center;
@@ -1749,7 +1797,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 .annees__l{
   padding-bottom:1.1em;max-width:12ch;line-height:1.5;
-  font-size:.78rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  font-size:.78rem;font-weight:500;letter-spacing:var(--caps-track);text-transform:uppercase;
   color:rgba(255,255,255,.78);
 }
 .trajet .d-m{color:#fff}
@@ -1806,9 +1854,15 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   .pourquoi__photo .fig{aspect-ratio:3/2}
   /* la silhouette reste en haut de l'écran pendant qu'on parcourt la liste,
      sinon on ne verrait jamais la zone s'allumer */
-  .carte__art{top:0;z-index:2;padding-block:10px;background:var(--petrol-veil)}
+  .carte__art{top:0;z-index:2;padding-block:10px;background:var(--petrol-veil);transition:top .45s var(--ease-out)}
+  html:has(.site-header.is-stuck:not(.is-hidden)) .carte__art{top:var(--header-h-stuck)}
   .carte__svg{height:30vh}
   .au-dela__photo .fig,.qui__photo .fig,.cabinet__media .fig{aspect-ratio:4/3}
+  /* cadre paysage, photos en hauteur : on cadre plus haut pour ne pas
+     couper la tête au ras des cheveux (photo du soin : on garde aussi
+     les mains et la patiente dans le cadre) */
+  .qui__photo img{object-position:50% 24%}
+  .au-dela__photo img{object-position:50% 32%}
   .annees__n{font-size:clamp(7rem,34vw,11rem)}
 }
 @media (prefers-reduced-motion:reduce){
@@ -1829,7 +1883,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   font-family:var(--serif);font-size:clamp(2rem,5vw,4.4rem);
   line-height:1.08;letter-spacing:-.02em;max-width:18em;text-wrap:pretty;
 }
-.prix{background:var(--petrol-darkest);color:#EDF1F0;padding-block:clamp(84px,10vw,150px)}
+.prix{background:var(--petrol-darkest);color:#EDF1F0;padding-block:clamp(84px,10vw,150px);--focus:#fff}
 .prix__grille{
   display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
   gap:clamp(36px,6vw,110px);align-items:center;
@@ -1840,7 +1894,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   letter-spacing:-.045em;color:#fff;white-space:nowrap;
 }
 .prix__l{
-  margin-top:.6em;font-size:.78rem;font-weight:500;letter-spacing:.16em;
+  margin-top:.6em;font-size:.78rem;font-weight:500;letter-spacing:var(--caps-track);
   text-transform:uppercase;color:var(--petrol-light);
 }
 .prix .d-l{color:#fff}
@@ -1852,7 +1906,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:1em;
   padding:.95em 0;border-bottom:1px solid rgba(255,255,255,.14);
 }
-.prix__meta dt{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol-light);padding-top:.25em}
+.prix__meta dt{font-size:var(--caps-size);letter-spacing:var(--caps-track);text-transform:uppercase;color:var(--petrol-light);padding-top:.25em}
 .prix__meta dd{margin:0;font-family:var(--serif);font-size:clamp(1.1rem,1.5vw,1.3rem);color:#EDF1F0}
 
 .rembours{padding-block:clamp(84px,10vw,150px)}
@@ -1911,7 +1965,7 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 }
 .avis__pied{margin-top:1.4em;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px}
 .avis__nom{font-family:var(--serif);font-size:1.15rem}
-.avis__verif{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol)}
+.avis__verif{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--petrol)}
 
 /* ---------- 33c. Contact ---------- */
 .coord{padding-block:clamp(72px,9vw,130px)}
@@ -1947,9 +2001,10 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   font-size:.8rem;letter-spacing:.04em;font-variant-numeric:tabular-nums;
   color:var(--petrol);background:var(--petrol-wash);
   padding:.42em .9em;border-radius:999px;
-  opacity:0;transform:scale(.92);
   transition:opacity .5s var(--ease) var(--sd,0s),transform .6s var(--ease-out) var(--sd,0s);
 }
+/* les pastilles ne se cachent que si le script tourne, comme [data-reveal] */
+.js .horaires__creneau{opacity:0;transform:scale(.92)}
 .horaires.is-in .horaires__creneau{opacity:1;transform:none}
 .horaires__jour:nth-child(1) .horaires__creneau:nth-child(1){--sd:.05s}
 .horaires__jour:nth-child(1) .horaires__creneau:nth-child(2){--sd:.12s}
@@ -1960,13 +2015,25 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
 .horaires__jour:nth-child(4) .horaires__creneau:nth-child(2){--sd:.47s}
 .horaires__jour.is-aujourdhui .horaires__nom{color:var(--petrol)}
 .horaires__jour.is-aujourdhui .horaires__nom::after{
-  content:"aujourd’hui";display:inline-block;margin-left:.8em;vertical-align:.25em;
-  font-family:var(--sans);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  content:"aujourd’hui";display:inline-block;margin-left:.8em;vertical-align:.2em;
+  font-family:var(--sans);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
 }
 .horaires__jour.is-aujourdhui .horaires__creneau{background:var(--petrol);color:#fff}
 .horaires__ferme{margin-top:1em;font-size:.88rem;color:var(--ink-faint)}
 
-.venir{background:var(--petrol);color:#fff;padding-block:clamp(84px,10vw,150px)}
+/* Horaires de la page Prendre rendez-vous : semaine complète, en lignes,
+   mêmes filets et même colonne de jours que le bloc ci-dessus ; les jours
+   fermés sont atténués. */
+.hours{border-top:1px solid var(--rule-strong)}
+.hours__row{
+  display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:1em;
+  align-items:baseline;padding:.6em 0;border-bottom:1px solid var(--rule);
+}
+.hours__day{font-family:var(--serif);font-size:clamp(1.05rem,1.3vw,1.2rem);line-height:1.3}
+.hours__time{font-variant-numeric:tabular-nums;color:var(--ink-soft)}
+.hours__row--off .hours__day,.hours__row--off .hours__time{color:var(--ink-ghost)}
+
+.venir{background:var(--petrol);color:#fff;padding-block:clamp(84px,10vw,150px);--focus:#fff}
 .venir .d-l{color:#fff}
 .venir__modes{
   margin-top:clamp(32px,4vw,56px);
@@ -1977,12 +2044,12 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   display:grid;align-content:start;gap:.35em;
   padding-top:1.1em;border-top:1px solid rgba(255,255,255,.3);
 }
-.venir__k{font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.venir__k{font-size:var(--caps-size);font-weight:500;letter-spacing:var(--caps-track);text-transform:uppercase;color:rgba(255,255,255,.72)}
 .venir__t{font-family:var(--serif);font-size:clamp(1.35rem,2vw,1.8rem);line-height:1.2}
 .venir__d{font-size:.92rem;color:rgba(255,255,255,.78)}
 .venir__map{margin-top:clamp(48px,6vw,88px);border-color:rgba(255,255,255,.18)}
 
-.ecrire{background:var(--petrol-darkest);color:#EDF1F0;padding-block:clamp(84px,10vw,150px)}
+.ecrire{background:var(--petrol-darkest);color:#EDF1F0;padding-block:clamp(84px,10vw,150px);--focus:#fff}
 .ecrire__grille{
   display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);
   gap:clamp(36px,6vw,110px);align-items:start;
@@ -1995,9 +2062,10 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
   color:#fff;border-bottom-color:rgba(255,255,255,.35);
 }
 .form--clair .field input:hover,.form--clair .field textarea:hover{border-bottom-color:rgba(255,255,255,.6)}
-.form--clair .field input:focus,.form--clair .field textarea:focus{border-bottom-color:#fff}
+.form--clair .field input:focus,.form--clair .field textarea:focus{border-bottom-color:#fff;box-shadow:0 1px 0 0 #fff}
 .form--clair .form__note{color:#AFC0BD}
-.form--clair .form__note a{color:#DCE7E5}
+.form--clair .form__note a{color:#fff;text-decoration-color:rgba(255,255,255,.45)}
+.form--clair .form__note a:hover{text-decoration-color:#fff}
 .ecrire .form__status{background:rgba(255,255,255,.08);border-left-color:var(--petrol-light);color:#EDF1F0}
 .ecrire .form__status--err{background:rgba(168,67,58,.25);border-left-color:#E8A59E}
 
@@ -2023,6 +2091,8 @@ html{scrollbar-color:var(--rule-strong) transparent;scrollbar-width:thin}
    ========================================================================= */
 .tunnel{padding-bottom:0}
 .tunnel [id]{scroll-margin-top:72px}
+/* le tunnel garde le lien fléché d'origine (réglé avant les retouches du site) */
+.tunnel .link{letter-spacing:.09em;padding-top:0;margin-top:0}
 
 /* en-tête minimal */
 .tete{
