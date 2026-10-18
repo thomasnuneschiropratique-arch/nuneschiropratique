@@ -5,8 +5,9 @@ Importe les photos du cabinet, quel que soit leur format.
     python3 import-photos.py photos-a-importer
 
 Accepte HEIC (photos iPhone), JPEG, PNG, TIFF, WebP. Chaque fichier est
-converti en JPEG, redimensionné, et enregistré à l'emplacement du site qui
-lui correspond, avec ses variantes pour petits écrans.
+converti en JPEG, réduit s'il dépasse 2000 px (jamais agrandi), et
+enregistré à l'emplacement du site qui lui correspond, avec ses variantes
+pour petits écrans.
 
 Le classement se fait sur le NOM du fichier : une photo dont le nom contient
 « portrait » va à l'emplacement portrait, « salle » ou « cabinet » à la vue
@@ -20,13 +21,18 @@ Pour forcer un emplacement précis :
 N'utilise que `sips`, fourni avec macOS. Rien à installer.
 """
 import os
+import shutil
 import subprocess
 import sys
 
 RACINE = os.path.dirname(os.path.abspath(__file__))
 DEST = os.path.join(RACINE, "static", "img", "photos")
 MAX_EDGE = 2000
-QUALITY = 80
+# Attention, sips a sa propre échelle : « formatOptions 60 » donne un JPEG de
+# qualité 85 environ (lue dans les tables de quantification du fichier).
+# L'ancien réglage de 80 donnait une qualité 93 environ : des fichiers
+# presque moitié plus lourds, pour une différence invisible à l'œil.
+QUALITY = 60
 TARGET_BYTES = 450 * 1024
 LARGEURS = (800, 1200)
 
@@ -78,9 +84,19 @@ EXTS = {".jpg", ".jpeg", ".png", ".heic", ".heif", ".tif", ".tiff", ".webp"}
 
 
 def _sips(src, dest, edge, quality, mode="fit"):
-    """mode 'fit'   : contraint le plus grand côté (plafond général)
-       mode 'width' : contraint la largeur — c'est ce qu'attend srcset."""
-    dimension = ["-Z", str(edge)] if mode == "fit" else ["--resampleWidth", str(edge)]
+    """mode 'fit'   : réduit le plus grand côté à `edge`
+       mode 'width' : réduit la largeur à `edge` — c'est ce qu'attend srcset
+       edge None    : garde la taille, ne fait que convertir en JPEG.
+
+    Attention : « sips -Z » et « --resampleWidth » AGRANDISSENT une image plus
+    petite que la cible. Les appels ci-dessous ne les utilisent donc que pour
+    réduire (voir convert)."""
+    if edge is None:
+        dimension = []
+    elif mode == "fit":
+        dimension = ["-Z", str(edge)]
+    else:
+        dimension = ["--resampleWidth", str(edge)]
     subprocess.run(
         ["sips"] + dimension +
         ["-s", "format", "jpeg", "-s", "formatOptions", str(quality),
@@ -90,37 +106,87 @@ def _sips(src, dest, edge, quality, mode="fit"):
     return os.path.getsize(dest)
 
 
-def _largeur(chemin):
-    r = subprocess.run(["sips", "-g", "pixelWidth", chemin],
+def _dimensions(chemin):
+    """(largeur, hauteur) en pixels, lues par sips."""
+    r = subprocess.run(["sips", "-g", "pixelWidth", "-g", "pixelHeight", chemin],
                        capture_output=True, text=True)
+    valeurs = {}
     for ligne in r.stdout.split("\n"):
-        if "pixelWidth" in ligne:
-            return int(ligne.split(":")[1])
-    return None
+        if ":" in ligne and ligne.strip().startswith("pixel"):
+            cle, val = ligne.split(":", 1)
+            valeurs[cle.strip()] = int(val)
+    return valeurs.get("pixelWidth"), valeurs.get("pixelHeight")
+
+
+def _jpeg_sans_metadonnees(chemin):
+    """Vrai pour un JPEG qui ne porte ni EXIF, ni XMP, ni IPTC, ni commentaire.
+
+    Ces blocs peuvent contenir la position GPS, la date ou l'appareil : on ne
+    copie donc tel quel qu'un JPEG qui n'en a pas, ce qui évite toute perte.
+    Les autres passent par sips, comme avant. Seuls sont admis JFIF (APP0),
+    le profil de couleur (APP2) et Adobe (APP14).
+    """
+    try:
+        with open(chemin, "rb") as f:
+            d = f.read()
+    except OSError:
+        return False
+    if d[:2] != b"\xff\xd8":
+        return False
+    pos = 2
+    while pos + 4 <= len(d) and d[pos] == 0xFF:
+        marqueur = d[pos + 1]
+        if marqueur == 0xDA:                 # début des données de l'image
+            return True
+        if marqueur == 0xFE or (0xE0 <= marqueur <= 0xEF
+                                and marqueur not in (0xE0, 0xE2, 0xEE)):
+            return False
+        pos += 2 + int.from_bytes(d[pos + 2:pos + 4], "big")
+    return False
 
 
 def convert(src, dest):
     """Convertit en JPEG web, puis produit les variantes pour petits écrans.
 
-    On vise 2000 px et une qualité de 80. Si le fichier dépasse ~450 Ko, on
-    redescend la qualité : une page qui s'affiche vite compte plus que 2 %
-    de finesse. On n'agrandit jamais une image — cela n'ajoute aucun détail.
+    On n'agrandit jamais une image : cela n'ajoute aucun détail, seulement
+    du poids. Une photo plus grande que 2000 px est réduite à 2000 px ; une
+    photo plus petite garde sa taille. Si c'est déjà un JPEG sans
+    métadonnées, il est copié tel quel : le réencoder ne ferait que perdre
+    un peu de finesse.
+
+    Si le fichier dépasse ~450 Ko, on redescend la qualité : une page qui
+    s'affiche vite compte plus que 2 % de finesse.
     """
-    taille = _sips(src, dest, MAX_EDGE, QUALITY)
-    for quality in (72, 64, 56):
+    largeur_src, hauteur_src = _dimensions(src)
+    if not largeur_src or not hauteur_src:
+        sys.exit("Image illisible : " + src)
+    trop_grande = max(largeur_src, hauteur_src) > MAX_EDGE
+    edge = MAX_EDGE if trop_grande else None
+
+    if not trop_grande and _jpeg_sans_metadonnees(src):
+        shutil.copyfile(src, dest)
+        taille = os.path.getsize(dest)
+        if taille > TARGET_BYTES:
+            taille = _sips(src, dest, edge, QUALITY)
+    else:
+        taille = _sips(src, dest, edge, QUALITY)
+    for quality in (55, 50, 45):
         if taille <= TARGET_BYTES:
             break
-        taille = _sips(src, dest, MAX_EDGE, quality)
+        taille = _sips(src, dest, edge, quality)
 
+    # Variantes : seulement plus étroites que la photo, et seulement si elles
+    # pèsent moins qu'elle. Sinon le navigateur prendrait autant de poids
+    # pour moins de détail ; une ancienne variante devenue inutile est effacée.
     base, ext = os.path.splitext(dest)
-    large = _largeur(dest)
+    large, _haut = _dimensions(dest)
     for largeur in LARGEURS:
         variante = "%s-%d%s" % (base, largeur, ext)
-        if large and largeur >= large:
-            if os.path.exists(variante):
-                os.remove(variante)
-            continue
-        _sips(dest, variante, largeur, 78, mode="width")
+        if large and largeur < large:
+            if _sips(dest, variante, largeur, QUALITY, mode="width") < taille:
+                continue
+        if os.path.exists(variante):
+            os.remove(variante)
     return taille, large
 
 

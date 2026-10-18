@@ -109,10 +109,18 @@ def build_page(path, layout=None):
     slug = meta.get("slug", "")
     url = SITE + ("/" + slug + "/" if slug else "/")
     canonical = "/" + slug + "/" if slug else "/"
-    # Carte de partage : le logo sur fond papier, générée par tools/make-og.py.
+    # Carte de partage (lien envoyé sur WhatsApp, Messenger, par SMS…) : la
+    # salle de soin, img/og-cabinet.jpg, 1200×630 comme l'annonce layout.html.
+    # Elle a été découpée dans photos/accueil.jpg, cadrée comme l'ouverture de
+    # l'accueil sur ordinateur :
+    #   sips --cropToHeightWidth 1050 2000 --cropOffset 90 0 -s format bmp \
+    #        static/img/photos/accueil.jpg --out /tmp/og.bmp
+    #   sips --resampleHeightWidth 630 1200 -s format jpeg \
+    #        -s formatOptions 70 /tmp/og.bmp --out static/img/og-cabinet.jpg
     # Une page peut la remplacer avec « og_image: photos/xxx.jpg » dans son
-    # en-tête — à faire quand les vraies photos seront en place.
-    og_image = SITE + "/img/" + meta.get("og_image", "og.png")
+    # en-tête (c'est le cas de /bilan/). L'ancienne carte, le logo sur fond
+    # papier (img/og.png, tools/make-og.py), reste en réserve.
+    og_image = SITE + "/img/" + meta.get("og_image", "og-cabinet.jpg")
 
     out = layout
     repl = {
