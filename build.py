@@ -35,7 +35,7 @@ NAV = [
     ("/la-chiropratique/", "La chiropratique"),
     ("/a-propos/", "À propos de moi"),
     ("/avis/", "Avis"),
-    ("/contact-et-acces/", "Contact et Accès"),
+    ("/contact-et-acces/", "Contact et accès"),
     ("/tarifs-et-remboursements/", "Tarifs et remboursements"),
 ]
 
