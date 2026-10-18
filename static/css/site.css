@@ -530,7 +530,7 @@ body:not(.tunnel) .faq__a a,body:not(.tunnel) .form__note a,.temoignages__src a,
 .fig--libre{aspect-ratio:auto}
 .fig--libre img{height:auto}
 .fig__cap{
-  margin-top:14px;font-size:.78rem;line-height:1.55;color:var(--ink-faint);text-wrap:pretty;
+  margin-top:14px;font-size:.78rem;line-height:1.55;color:var(--ink-faint);
   max-width:38ch;padding-left:16px;border-left:1px solid var(--rule-strong);
 }
 .fig--bleed{margin-inline:calc(var(--gutter) * -1)}
