@@ -237,7 +237,14 @@
       status.hidden = false;
       status.classList.toggle('form__status--err', !!isError);
       status.setAttribute('role', isError ? 'alert' : 'status');
+      // le message est au-dessus du formulaire : sur téléphone, on le ramène
+      // à l'écran, sinon le patient ne voit ni la confirmation ni l'erreur
+      if (status.scrollIntoView) status.scrollIntoView({ block: 'center', behavior: 'smooth' });
     }
+
+    var MSG_EMAIL = "Votre adresse e-mail semble incomplète (par exemple prenom.nom@gmail.com). "
+      + 'Corrigez-la, puis cliquez à nouveau sur Envoyer.';
+    var champEmail = form.querySelector('[name="email"]');
 
     form.addEventListener('submit', function (e) {
       var action = form.getAttribute('action') || '';
@@ -257,6 +264,13 @@
       if (!window.fetch) return; // laisse le POST natif faire le travail
 
       e.preventDefault();
+      // le navigateur accepte « nom@gmail » sans extension, Formspree le refuse :
+      // on le dit avant d'envoyer, avec la bonne raison
+      if (champEmail && !/^[^@\s]+@[^@\s]+\.[^@\s.]{2,}$/.test(champEmail.value.trim())) {
+        say(MSG_EMAIL, true);
+        champEmail.focus({ preventScroll: true });
+        return;
+      }
       var btn = form.querySelector('[type="submit"]');
       var label = btn ? btn.querySelector('.btn__label') : null;
       var original = label ? label.textContent : '';
@@ -272,11 +286,20 @@
           form.reset();
           say('Merci, votre message est bien parti. Je vous réponds au plus vite.');
         } else {
-          return res.json().then(function (d) {
-            throw new Error((d.errors && d.errors.map(function (x) { return x.message; }).join(', ')) || 'Erreur');
+          return res.json().catch(function () { return {}; }).then(function (d) {
+            // codes seulement (jamais le contenu du message), pour comprendre une panne
+            if (window.console) console.warn('Formulaire : refus du service', res.status, d.errors || d.error || '');
+            var err = new Error('refus');
+            err.email = (d.errors || []).some(function (x) { return x.field === 'email'; });
+            throw err;
           });
         }
-      }).catch(function () {
+      }).catch(function (err) {
+        if (err && err.email) {
+          say(MSG_EMAIL, true);
+          if (champEmail) champEmail.focus({ preventScroll: true });
+          return;
+        }
         say("L'envoi n'a pas abouti. Vous pouvez écrire à thomasnunes.chiropratique@gmail.com "
           + 'ou appeler le 06 88 75 54 52.', true);
       }).then(function () {
